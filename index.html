@@ -3,142 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
     <title>landing-page-ElytraTech</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
+    <link rel="icon" href="img/img_header.png">
 
 </head>
 <body>
 
     <header class="STYcabecalho">
-        <img class="img-logo" src="img_header.png">
-
+        <div class="brand">
+            <img class="img-logo" src="img/img_header.png" alt="Elytra Tech">
+            <span class="brand-name">ELYTRA TECH</span>
+        </div>
         <ul>
             <li><a href="#Home-Scroll">Home</a></li>
-            <li><a href="#">Sobre</a></li>
-            <li><a href="#">Serviços</a></li>
-            <li><a href="#">Contato</a></li>
+            <li><a href="#QuemSomos-Scroll">Quem Somos?</a></li>
+            <li><a href="#Serviços-Scroll">Serviços</a></li>
+            <li><a href="#Casos-Scroll">Casos</a></li>
         </ul>
-
-        <button class="Color-button-anim">FALAR COM ESPECIALISTAS</button>
+        <a href="#QuemSomos-Scroll" class="nav-cta">Conheça mais sobre nós</a>
+        <button class="Color-button-anim" aria-label="Abrir menu">☰</button>
     </header>
-    <section id="Home-Scroll" class= "Prim-Sec">
-        <div class="conten-title">
-            <h1 class="titleH1">TECNOLOGIA QUE</h1>
-            <h1 class="colorH1">EVOLUI COM VOCÊ</h1>
-            <p>Construímos ecossistemas digitais de altíssima performance, inteligência<br> artificial sob medida e sistemas escaláveis desenhados para acelerar a<br> transformação do seu negócio.</p>
-            <div class="nav-btn">
-                <button class="Color-button-anim">FALAR COM ESPECIALISTAS</button>
 
-                <button class="gray-button-anim">FALAR COM ESPECIALISTAS</button>
+    <section id="Home-Scroll" class="Prim-Sec">
+
+        <div class="hero-content">
+
+            <span class="company-name">ELYTRA TECH</span>
+
+            <h1>
+                Tecnologia que
+                <span>resolve.</span>
+            </h1>
+
+            <p class="hero-description">
+                Transformamos problemas complexos em soluções digitais
+                inteligentes, escaláveis e feitas para o seu negócio.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#Serviços-Scroll" class="hero-button">
+                    Conheça nossas soluções
+                </a>
+
+                <a href="#QuemSomos-Scroll" class="hero-link">
+                    Saiba mais →
+                </a>
             </div>
+
         </div>
 
-        <div class="tech-card">
 
-    <!-- Cabeçalho da Janela -->
-    <div class="card-header">
-        <div class="window-dots">
+        <!-- PAINEL DIREITO -->
+        <div class="hero-dashboard">
+
+            <div class="dashboard-header">
+                <div>
+                    <span class="dashboard-label">ELYTRA TECH</span>
+                    <h3>Performance</h3>
+                </div>
+
+                <span class="dashboard-status">
+                    ● Operacional
+                </span>
+            </div>
+
+
+            <div class="chart-area">
+
+                <div class="chart-value">
+                    +42.8%
+                </div>
+
+                <div class="chart-subtitle">
+                    Evolução dos resultados
+                </div>
+
+                <svg
+                    class="chart"
+                    viewBox="0 0 600 220"
+                    preserveAspectRatio="none"
+                >
+                    <defs>
+                        <linearGradient
+                            id="chartGradient"
+                            x1="0%"
+                            y1="0%"
+                            x2="100%"
+                            y2="0%"
+                        >
+                            <stop offset="0%" stop-color="#a855f7"/>
+                            <stop offset="100%" stop-color="#ff4fc3"/>
+                        </linearGradient>
+
+                        <linearGradient
+                            id="areaGradient"
+                            x1="0%"
+                            y1="0%"
+                            x2="0%"
+                            y2="100%"
+                        >
+                            <stop
+                                offset="0%"
+                                stop-color="#a855f7"
+                                stop-opacity=".30"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#ff4fc3"
+                                stop-opacity="0"
+                            />
+                        </linearGradient>
+                    </defs>
+
+                    <!-- área abaixo da curva -->
+                    <path
+                        class="chart-area-fill"
+                        d="
+                            M0,190
+                            L60,175
+                            L120,180
+                            L180,145
+                            L240,155
+                            L300,110
+                            L360,125
+                            L420,75
+                            L480,90
+                            L540,45
+                            L600,20
+                            L600,220
+                            L0,220
+                            Z
+                        "
+                    />
+
+                    <!-- linha -->
+                    <path
+                        class="chart-line"
+                        d="
+                            M0,190
+                            L60,175
+                            L120,180
+                            L180,145
+                            L240,155
+                            L300,110
+                            L360,125
+                            L420,75
+                            L480,90
+                            L540,45
+                            L600,20
+                        "
+                    />
+                </svg>
+
+            </div>
+
+
+            <div class="dashboard-footer">
+
+                <div>
+                    <span>Projetos entregues</span>
+                    <strong>+120</strong>
+                </div>
+
+                <div>
+                    <span>Performance</span>
+                    <strong>99.9%</strong>
+                </div>
+
+                <div>
+                    <span>Escalabilidade</span>
+                    <strong>100%</strong>
+                </div>
+
+            </div>
 
         </div>
-        <span class="engine-title">elytra-engine.v3.2</span>
-    </div>
 
-    <!-- Conteúdo do Painel -->
-    <div class="card-body">
-        
-        <!-- Métrica 1: Desempenho com Barra -->
-        <div class="metric-item">
-            <div class="metric-info">
-                <span class="metric-title"> Desempenho da API</span>
-                <span class="metric-value badge-green">99.9% Uptime</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill fill-api"></div>
-            </div>
-        </div>
-
-        <!-- Métrica 2: Segurança com Badge Glow -->
-        <div class="metric-item">
-            <div class="metric-info">
-                <span class="metric-title"> Proteção do banco</span>
-                <span class="metric-value badge-purple">Ativo</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill fill-sec"></div>
-            </div>
-        </div>
-
-        <!-- Métrica 3: Requisições em Tempo Real -->
-        <div class="metric-item">
-            <div class="metric-info">
-                <span class="metric-title"> Latência Global</span>
-                <span class="metric-value badge-pink">&lt; 12ms</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill fill-lat"></div>
-            </div>
-        </div>
-
-        <!-- Terminal de Logs / Status -->
-        <div class="system-log">
-            <div class="log-line"><span class="log-prefix">&gt;</span> Sistema centralizado operando sem falhas.</div>
-            <div class="log-line"><span class="log-prefix">&gt;</span> Nodos de IA sincronizados em 12 regiões.</div>
-        </div>
-
-    </div>
-
-    <!-- Rodapé da Janela -->
-    <div class="card-footer">
-        <span class="status-dot"></span>
-        <span>Status do Sistema: <strong>100% Operacional</strong></span>
-    </div>
-</div>        
     </section>
 
-    <section class="Sec-Difer">
-        <div class="cont-text">
-            <p class="difer-label">Por que escolher a Elytra?</p>
-    
-            <h1>Engenharia de Software de Última Geração</h1>
-            <p>Combinamos design arrojado, arquitetura resiliente e inteligência de dados para transformar<br> problemas complexos em soluções simples e rentáveis.</p>
-            
-            <div class="info-balons">
-    <!-- Card 1 -->
-    <div class="balons">
-        <div class="icon-box">
-            <i class="ph ph-brain" style="font-size: 32px; color: white;"></i> 
-        </div>
-        <h3>Arquitetura Escalonável</h3>
-        <p>Sistemas preparados para crescer com o seu negócio sem perder estabilidade.</p>
-    </div>
+    <section id="QuemSomos-Scroll" class="Seg-Sec">
 
-    <!-- Card 2 (Ativo) -->
-    <div class="balons">
-        <div class="icon-box">
-            <i class="ph ph-cpu" style="font-size: 32px; color: white;"></i>
-        </div>
-        <h3>Inteligência Artificial Integrada</h3>
-        <p>Automação de processos internos e algoritmos preditivos que economizam tempo e aumentam a margem de lucro.</p>
-    </div>
+        <div class="wrap">
 
-    <!-- Card 3 -->
-    <div class="balons">
-        <div class="icon-box">
-            <i class="ph ph-layout" style="font-size: 32px; color: white;"></i>
-        </div>
-        <h3>Design High-End</h3>
-        <p>Interfaces intuitivas e focadas na experiência do utilizador para máxima conversão.</p>
-    </div>
+            <div class="section-head">
+    <p class="section-tag">Quem somos</p>
+    <h2>A empresa por trás da Elytra Tech</h2>
+    <p>Desenvolvemos ecossistemas digitais de alta performance, unindo design moderno e tecnologia escalável para impulsionar o seu negócio.</p>
 </div>
 
-        
+<div class="mvv-grid">
+
+    <div class="mvv-card">
+        <i class="ph ph-target"></i>
+        <h3>Missão</h3>
+        <p>Facilitar o contato das empresas com seus clientes, eliminando barreiras digitais e garantindo que nenhuma oportunidade de alcançar novos públicos seja perdida.</p>
+    </div>
+
+    <div class="mvv-card">
+        <i class="ph ph-eye"></i>
+        <h3>Visão</h3>
+        <p>Transformar a presença digital dos nossos clientes através de ecossistemas organizados, onde as informações mais importantes sobre produtos e serviços fiquem claras e acessíveis.</p>
+    </div>
+
+    <div class="mvv-card">
+        <i class="ph ph-heart"></i>
+        <h3>Valores</h3>
+        <p>Acessibilidade, simplicidade no uso, clareza nas informações e compromisso em entregar soluções intuitivas e de alta eficiência.</p>
+    </div>
+
+</div>
+
+
+
+    <div class="section-head">
+        <p class="section-tag">Por que escolher a Elytra?</p>
+        <h2>A concorrência vende arquivos. Nós vendemos resultados.</h2>
+        <p>Enquanto a maioria entrega um site solto e desaparece, a Elytra implementa um ecossistema focado em conversão e crescimento contínuo.</p>
+    </div>
+
+    <div class="differentials-grid">
+        <!-- Diferencial 1 -->
+        <div class="diff-card">
+            <div class="diff-icon-box">
+                <i class="ph ph-chats-circle"></i>
+            </div>
+            <div class="diff-content">
+                <span class="diff-number">01</span>
+                <h3>Treinamento de Vendas + Script de WhatsApp</h3>
+                <p>Não adianta atrair dezenas de visitantes se você não souber fechar o negócio. Entregamos o seu site acompanhado de um roteiro prático de atendimento para a sua equipe converter leads em faturamento real.</p>
+            </div>
+        </div>
+
+        <!-- Diferencial 2 -->
+        <div class="diff-card">
+            <div class="diff-icon-box">
+                <i class="ph ph-arrows-clockwise"></i>
+            </div>
+            <div class="diff-content">
+                <span class="diff-number">02</span>
+                <h3>Acompanhamento Trimestral "Evolui Com Você"</h3>
+                <p>Sites tradicionais ficam velhos e abandonados em poucos meses. O ecossistema Elytra inclui um diagnóstico a cada 3 meses para analisar mapas de calor, otimizar a experiência e manter sua empresa sempre no topo.</p>
+            </div>
+        </div>
+    </div>
+
+
+            <div class="team-head">
+                <h3>EQUIPE COM FOCO EM ATENDER A SUAS DÚVIDAS</h3>
+                <span>6 integrantes</span>
+            </div>
+
+            <div class="team-grid">
+
+                <div class="team-member">
+                    <div class="member-photo"></div>
+                    <span class="member-name">Dinameryca</span>
+                    <p>_</p>
+                    <span class="member-function">Gerente/Doc</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo"></div>
+                    <span class="member-name">Gustavo V.</span>
+                    <p>_</p>
+                    <span class="member-function">Design/Doc</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo"></div>
+                    <span class="member-name">Maria Eduarda .</span>
+                    <p>_</p>
+                    <span class="member-function">QA(tester)</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo"></div>
+                    <span class="member-name">Igor Ab.</span>
+                    <p>_</p>
+                    <span class="member-function">QA(tester)</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo"></div>
+                    <span class="member-name">Ingrid R.</span>
+                    <p>_</p>
+                    <span class="member-function">Lider Tecnico</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-photo"></div>
+                    <span class="member-name">Luiz Fernando B.</span>
+                    <p>_</p>
+                    <span class="member-function">Lider Tecnico</span>
+                </div>
+
+            </div>
+
+        </div>
+
     </section>
 
-<script src="ts.ts"></script>
+    <section id="Serviços-Scroll" class="Terc-Sec">
+
+        <div class="wrap">
+
+            <div class="problem-box">
+    <span class="section-tag">Problema que resolvemos</span>
+    <h3>Sistemas lentos e sites desatualizados travam o seu crescimento.</h3>
+    <p>Empresas perdem clientes todos os dias por conta de páginas demoradas, sem foco em conversão e que ficam abandonadas logo após a entrega.</p>
+</div>
+
+            <div class="section-head">
+                <p class="section-tag">Serviços</p>
+                <h2>O que oferecemos</h2>
+            </div>
+
+            <div class="services-grid">
+
+                <div class="service-card">
+    <i class="ph ph-rocket-launch"></i>
+    <h3>Elytra Launch</h3>
+    <p>Landing Page ultra-rápida e focada em converter visitantes em mensagens diretas no WhatsApp do seu negócio.</p>
+</div>
+
+<div class="service-card">
+    <i class="ph ph-buildings"></i>
+    <h3>Elytra Institutional</h3>
+    <p>Site corporativo completo e multipáginas, otimizado para o Google (SEO) para gerar autoridade e credibilidade.</p>
+</div>
+
+<div class="service-card">
+    <i class="ph ph-trend-up"></i>
+    <h3>Elytra Scale</h3>
+    <p>Plataforma comercial com área do cliente, formulários inteligentes e automação para escalar suas operações.</p>
+</div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="Casos-Scroll" class="Quart-Sec">
+
+        <div class="wrap">
+
+            <div class="section-head">
+                <p class="section-tag">Casos de sucesso</p>
+                <h2>Projetos que já entregamos</h2>
+            </div>
+
+            <div class="cases-grid">
+
+                <div class="case-card">
+                    <div class="case-media">Imagem do projeto</div>
+                    <div class="case-body">
+                        <h3>Nome do Projeto</h3>
+                        <p>Resutado ou explicação do projeto</p>
+                    </div>
+                </div>
+
+                <div class="case-card">
+                    <div class="case-media">Imagem do projeto</div>
+                    <div class="case-body">
+                        <h3>Nome do Projeto</h3>
+                        <p>Resutado ou explicação do projeto</p>
+                    </div>
+                </div>
+
+                <div class="case-card">
+                    <div class="case-media">Imagem do projeto</div>
+                    <div class="case-body">
+                        <h3>Nome do Projeto</h3>
+                        <p>Resutado ou explicação do projeto</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer class="STYrodape">
+        <div class="wrap footer-row">
+            <div class="footer-brand">
+                <img class="img-escrita" src="img/logo_escrita_sem_fundo.png" alt="Elytra Tech">
+            </div>
+            <div class="footer-links">
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=elytra.tech.company@gmail.com" target="_blank" rel="noopener">
+                    <i class="ph ph-envelope-simple"></i>
+                    elytra.tech.company@gmail.com
+                </a>
+
+                <a href="https://github.com/Elytra-Tech/Site-ElytraTech" target="_blank" rel="noopener">
+                    <i class="ph ph-github-logo"></i>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </footer>
+
+<script>
+    const menuBtn = document.querySelector('.Color-button-anim');
+    const navList = document.querySelector('.STYcabecalho ul');
+    menuBtn.addEventListener('click', function () {
+        navList.classList.toggle('open');
+    });
+    document.querySelectorAll('.STYcabecalho ul a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            navList.classList.remove('open');
+        });
+    });
+</script>
 </body>
 </html>
