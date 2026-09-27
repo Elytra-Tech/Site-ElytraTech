@@ -1,12 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>landing-page-ElytraTech</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+
 </head>
 <body>
+
+    <header class="STYcabecalho">
+        <img class="img-logo" src="img_header.png">
+
+        <ul>
+            <li><a href="#Home-Scroll">Home</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Serviços</a></li>
+            <li><a href="#">Contato</a></li>
+        </ul>
+
+        <button class="Color-button-anim">FALAR COM ESPECIALISTAS</button>
+    </header>
+    <section id="Home-Scroll" class= "Prim-Sec">
+        <div class="conten-title">
+            <h1 class="titleH1">TECNOLOGIA QUE</h1>
+            <h1 class="colorH1">EVOLUI COM VOCÊ</h1>
+            <p>Construímos ecossistemas digitais de altíssima performance, inteligência<br> artificial sob medida e sistemas escaláveis desenhados para acelerar a<br> transformação do seu negócio.</p>
+            <div class="nav-btn">
+                <button class="Color-button-anim">FALAR COM ESPECIALISTAS</button>
+
+                <button class="gray-button-anim">FALAR COM ESPECIALISTAS</button>
+            </div>
+        </div>
+
+        <div class="tech-card">
+
+    <!-- Cabeçalho da Janela -->
+    <div class="card-header">
+        <div class="window-dots">
+
+        </div>
+        <span class="engine-title">elytra-engine.v3.2</span>
+    </div>
+
+    <!-- Conteúdo do Painel -->
+    <div class="card-body">
+        
+        <!-- Métrica 1: Desempenho com Barra -->
+        <div class="metric-item">
+            <div class="metric-info">
+                <span class="metric-title"> Desempenho da API</span>
+                <span class="metric-value badge-green">99.9% Uptime</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill fill-api"></div>
+            </div>
+        </div>
+
+        <!-- Métrica 2: Segurança com Badge Glow -->
+        <div class="metric-item">
+            <div class="metric-info">
+                <span class="metric-title"> Proteção do banco</span>
+                <span class="metric-value badge-purple">Ativo</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill fill-sec"></div>
+            </div>
+        </div>
+
+        <!-- Métrica 3: Requisições em Tempo Real -->
+        <div class="metric-item">
+            <div class="metric-info">
+                <span class="metric-title"> Latência Global</span>
+                <span class="metric-value badge-pink">&lt; 12ms</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill fill-lat"></div>
+            </div>
+        </div>
+
+        <!-- Terminal de Logs / Status -->
+        <div class="system-log">
+            <div class="log-line"><span class="log-prefix">&gt;</span> Sistema centralizado operando sem falhas.</div>
+            <div class="log-line"><span class="log-prefix">&gt;</span> Nodos de IA sincronizados em 12 regiões.</div>
+        </div>
+
+    </div>
+
+    <!-- Rodapé da Janela -->
+    <div class="card-footer">
+        <span class="status-dot"></span>
+        <span>Status do Sistema: <strong>100% Operacional</strong></span>
+    </div>
+</div>        
+    </section>
+
+    <section class="Sec-Difer">
+        <div class="cont-text">
+            <p class="difer-label">Por que escolher a Elytra?</p>
     
+            <h1>Engenharia de Software de Última Geração</h1>
+            <p>Combinamos design arrojado, arquitetura resiliente e inteligência de dados para transformar<br> problemas complexos em soluções simples e rentáveis.</p>
+            
+            <div class="info-balons">
+    <!-- Card 1 -->
+    <div class="balons">
+        <div class="icon-box">
+            <i class="ph ph-brain" style="font-size: 32px; color: white;"></i> 
+        </div>
+        <h3>Arquitetura Escalonável</h3>
+        <p>Sistemas preparados para crescer com o seu negócio sem perder estabilidade.</p>
+    </div>
+
+    <!-- Card 2 (Ativo) -->
+    <div class="balons">
+        <div class="icon-box">
+            <i class="ph ph-cpu" style="font-size: 32px; color: white;"></i>
+        </div>
+        <h3>Inteligência Artificial Integrada</h3>
+        <p>Automação de processos internos e algoritmos preditivos que economizam tempo e aumentam a margem de lucro.</p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="balons">
+        <div class="icon-box">
+            <i class="ph ph-layout" style="font-size: 32px; color: white;"></i>
+        </div>
+        <h3>Design High-End</h3>
+        <p>Interfaces intuitivas e focadas na experiência do utilizador para máxima conversão.</p>
+    </div>
+</div>
+
+        
+    </section>
+
+<script src="ts.ts"></script>
 </body>
 </html>
