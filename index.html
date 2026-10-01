@@ -13,7 +13,6 @@
 
 </head>
 <body>
-
     <header class="STYcabecalho">
         <div class="brand">
             <img class="img-logo" src="img/img_header.png" alt="Elytra Tech">
@@ -30,7 +29,7 @@
     </header>
 
     <section id="Home-Scroll" class="Prim-Sec">
-
+        <canvas id="particles"></canvas>    
         <div class="hero-content">
 
             <span class="company-name">ELYTRA TECH</span>
@@ -160,26 +159,6 @@
                         "
                     />
                 </svg>
-
-            </div>
-
-
-            <div class="dashboard-footer">
-
-                <div>
-                    <span>Projetos entregues</span>
-                    <strong>+120</strong>
-                </div>
-
-                <div>
-                    <span>Performance</span>
-                    <strong>99.9%</strong>
-                </div>
-
-                <div>
-                    <span>Escalabilidade</span>
-                    <strong>100%</strong>
-                </div>
 
             </div>
 
@@ -354,34 +333,47 @@
                 <h2>Projetos que já entregamos</h2>
             </div>
 
-            <div class="cases-grid">
-
-                <div class="case-card">
-                    <div class="case-media">Imagem do projeto</div>
-                    <div class="case-body">
-                        <h3>Nome do Projeto</h3>
-                        <p>Resutado ou explicação do projeto</p>
-                    </div>
+        <div class="cases-grid">
+            <div class="case-card">
+                <div class="case-media">
+                    <img src="img/BarbeariaP1.png" alt="Barbearia">
                 </div>
-
-                <div class="case-card">
-                    <div class="case-media">Imagem do projeto</div>
-                    <div class="case-body">
-                        <h3>Nome do Projeto</h3>
-                        <p>Resutado ou explicação do projeto</p>
-                    </div>
+            <div class="case-body">
+                    <h3>Imperium Barbearia</h3>
+                    <p>Reformulação do site da barbearia Imperium</p>
+                    <a href="http://127.0.0.1:5500/index1.html" class="case-link" target="_blank" rel="noopener">
+                        Clique para saber mais →
+                    </a>
                 </div>
-
-                <div class="case-card">
-                    <div class="case-media">Imagem do projeto</div>
-                    <div class="case-body">
-                        <h3>Nome do Projeto</h3>
-                        <p>Resutado ou explicação do projeto</p>
-                    </div>
-                </div>
-
             </div>
 
+            <div class="case-card">
+                <div class="case-media">
+                    <img src="img/RP_Cadastro.png" alt="Cadastro RP">
+                </div>
+                <div class="case-body">
+                    <h3>Cadastro Jogo de RP</h3>
+                    <p>Criação do site para cadastrar usuários em jogos de RP</p>
+                    <a href="https://louisfacio01.github.io/PROJETO-S.P.E.A.R/" class="case-link" target="_blank" rel="noopener">
+                        Clique para saber mais →
+                    </a>
+                </div>
+            </div>
+
+            <div class="case-card">
+                <div class="case-media">
+                    <img src="img/Salão_Beauty.png" alt="Salão Beauty">
+                </div>
+                <div class="case-body">
+                    <h3>Salão Beauty</h3>
+                    <p>Criação de um site para um salão de beleza</p>
+                    <a href="https://officeembeleze-test.vercel.app/" class="case-link" target="_blank" rel="noopener">
+                        Clique para saber mais →
+                    </a>
+                </div>
+            </div>
+
+        </div>
         </div>
 
     </section>
@@ -405,17 +397,5 @@
         </div>
     </footer>
 
-<script>
-    const menuBtn = document.querySelector('.Color-button-anim');
-    const navList = document.querySelector('.STYcabecalho ul');
-    menuBtn.addEventListener('click', function () {
-        navList.classList.toggle('open');
-    });
-    document.querySelectorAll('.STYcabecalho ul a').forEach(function (link) {
-        link.addEventListener('click', function () {
-            navList.classList.remove('open');
-        });
-    });
-</script>
 </body>
 </html>

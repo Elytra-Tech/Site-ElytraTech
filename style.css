@@ -1,11 +1,11 @@
 :root {
-    --deep: #0b0b0f;
-    --deep-2: #131018;
-    --pink: #ff4fc3;
-    --purple: #a855f7;
-    --ink: #f2eef4;
-    --muted: #a79fb0;
-    --line: rgba(248, 200, 216, 0.14);
+    --deep: hsl(240, 15%, 5%);
+    --deep-2: hsl(263, 20%, 8%);
+    --pink: hsl(320, 100%, 65%);
+    --purple: hsl(271, 91%, 65%);
+    --ink: hsl(280, 21%, 95%);
+    --muted: hsl(268, 10%, 66%);
+    --line: hsla(340, 77%, 88%, 0.14);
 }
 
 * {
@@ -23,6 +23,16 @@ body {
     color: var(--ink);
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
+}
+
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
 }
 
 h1, h2, h3 {
@@ -632,11 +642,13 @@ img {
     aspect-ratio: 16/9;
     background: linear-gradient(160deg, rgba(168,85,247,0.18), rgba(11,11,15,0.5));
     border-bottom: 1px dashed rgba(248,200,216,0.3);
-    display: flex;
     align-items: center;
     justify-content: center;
     color: var(--muted);
     font-size: 13px;
+    object-fit: cover;               /* preenche o círculo sem esticar a foto */
+    object-position: center top;     /* mira no rosto; mude para "center" se precisar */
+    display: block;
 }
 .service-card:hover{border-color:rgba(255,79,195,0.4);}
 .service-card i{font-size:24px; color:var(--pink); margin-bottom:14px; display:block;}
@@ -847,4 +859,14 @@ img {
     .brand-name {
         font-size: 0.95rem;
     }
+}
+
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Fica atrás de todo o conteúdo */
+    pointer-events: none; /* Permite clicar nos elementos por cima do canvas */
 }
