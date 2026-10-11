@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elytra Tech | Editor de Prévia</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="editor-page">
+
+    <header class="editor-topbar">
+        <a href="index.html" class="editor-brand">
+            <img src="img/img_header.png" alt="Elytra Tech">
+            <span>ELYTRA TECH</span>
+        </a>
+
+        <div class="editor-topbar-info">
+            <span class="editor-status"></span>
+            Editor de prévia
+        </div>
+
+        <a href="index.html" class="editor-back">Voltar ao site</a>
+    </header>
+
+    <main class="editor-layout">
+
+        <aside class="editor-sidebar">
+            <div class="editor-heading">
+                <span class="editor-tag">AMBIENTE DE CRIAÇÃO</span>
+                <h1>Editor visual</h1>
+                <p>Adicione componentes e monte sua página.</p>
+            </div>
+
+            <section class="editor-group">
+                <h2>Adicionar componentes</h2>
+
+                <div class="editor-component-list">
+                    <button type="button" data-add="header">
+                        <span>▤</span>
+                        Cabeçalho
+                        <span class="editor-plus">+</span>
+                    </button>
+
+                    <button type="button" data-add="title">
+                        <span>T</span>
+                        Título
+                        <span class="editor-plus">+</span>
+                    </button>
+
+                    <button type="button" data-add="text">
+                        <span>¶</span>
+                        Texto
+                        <span class="editor-plus">+</span>
+                    </button>
+
+                    <button type="button" data-add="button">
+                        <span>▱</span>
+                        Botão
+                        <span class="editor-plus">+</span>
+                    </button>
+
+                    <button type="button" data-add="section">
+                        <span>▦</span>
+                        Seção
+                        <span class="editor-plus">+</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="editor-group editor-properties">
+                <h2>Propriedades</h2>
+                <p class="editor-hint" id="editor-hint">
+                    Selecione um componente na prévia para editá-lo.
+                </p>
+
+                <div id="editor-fields" hidden>
+                    <label for="component-content">Conteúdo</label>
+                    <textarea id="component-content" rows="3"></textarea>
+
+                    <label for="component-color">Cor do texto</label>
+                    <input id="component-color" type="color" value="#f2edf5">
+
+                    <button type="button" id="remove-component" class="editor-remove">
+                        Remover componente
+                    </button>
+                </div>
+            </section>
+
+            <button type="button" id="clear-preview" class="editor-clear">
+                Limpar prévia
+            </button>
+        </aside>
+
+        <section class="editor-workspace">
+            <div class="editor-workspace-bar">
+                <div>
+                    <strong>Minha página</strong>
+                    <span>Área de visualização</span>
+                </div>
+
+                <span class="editor-preview-label">
+                    <span></span> PRÉVIA
+                </span>
+            </div>
+
+            <div class="editor-canvas-wrapper">
+                <div id="preview-canvas" class="editor-canvas">
+                    <div class="editor-empty" id="editor-empty">
+                        <div class="editor-empty-icon">✦</div>
+                        <h2>Sua página começa aqui</h2>
+                        <p>Escolha um componente no painel lateral para começar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="editor-footer-note">
+                As alterações desta versão existem apenas nesta prévia.
+            </p>
+
+            
+            <div class="editor-control-group">
+                <label class="editor-control-label">Alinhamento do texto</label>
+
+                <div class="editor-alignment-options">
+                    <button type="button" class="alignment-button" data-align="left" title="Alinhar à esquerda">
+                        <span>☰</span>
+                        <small>Esquerda</small>
+                    </button>
+
+                    <button type="button" class="alignment-button" data-align="center" title="Centralizar texto">
+                        <span>☷</span>
+                        <small>Centro</small>
+                    </button>
+
+                    <button type="button" class="alignment-button" data-align="right" title="Alinhar à direita">
+                        <span>☰</span>
+                        <small>Direita</small>
+                    </button>
+                </div>
+            </div>
+
+
+            
+            <!-- Personalização avançada -->
+            <div class="editor-control-group">
+                <label class="editor-control-label" for="font-size">
+                    Tamanho da fonte
+                </label>
+
+                <div class="editor-range-row">
+                    <input type="range" id="font-size"
+                        min="10" max="72" value="16">
+                    <span id="font-size-value">16 px</span>
+                </div>
+            </div>
+
+            <div class="editor-control-group">
+                <label class="editor-control-label">
+                    Estilo do texto
+                </label>
+
+                <button type="button" id="bold-toggle"
+                    class="editor-option-button">
+                    <strong>B</strong> Negrito
+                </button>
+            </div>
+
+            <div class="editor-control-group">
+                <label class="editor-control-label" for="padding-size">
+                    Espaçamento interno
+                </label>
+
+                <div class="editor-range-row">
+                    <input type="range" id="padding-size"
+                        min="0" max="60" value="10">
+                    <span id="padding-size-value">10 px</span>
+                </div>
+            </div>
+
+            <div class="editor-control-group">
+                <label class="editor-control-label" for="margin-size">
+                    Espaçamento externo
+                </label>
+
+                <div class="editor-range-row">
+                    <input type="range" id="margin-size"
+                        min="0" max="60" value="0">
+                    <span id="margin-size-value">0 px</span>
+                </div>
+            </div>
+
+            <div class="editor-control-group">
+                <label class="editor-control-label">
+                    Posicionamento do componente
+                </label>
+
+                <div class="editor-position-options">
+                    <button type="button"
+                        class="position-button"
+                        data-position="left">
+                        Esquerda
+                    </button>
+
+                    <button type="button"
+                        class="position-button"
+                        data-position="center">
+                        Centro
+                    </button>
+
+                    <button type="button"
+                        class="position-button"
+                        data-position="right">
+                        Direita
+                    </button>
+                </div>
+            </div>
+
+            
+            <!-- Fundo do componente -->
+            <div class="editor-control-group">
+                <label class="editor-control-label" for="background-color">
+                    Cor de fundo
+                </label>
+
+                <select id="background-color" class="editor-select">
+                    <option value="">Sem alteração</option>
+                </select>
+            </div>
+
+            <!-- Largura do componente -->
+            <div class="editor-control-group">
+                <label class="editor-control-label" for="component-width">
+                    Largura
+                </label>
+
+                <div class="editor-range-row">
+                    <input type="range" id="component-width"
+                        min="10" max="100" value="100">
+                    <span id="component-width-value">100%</span>
+                </div>
+            </div>
+
+            <!-- Altura do componente -->
+            <div class="editor-control-group">
+                <label class="editor-control-label" for="component-height">
+                    Altura
+                </label>
+
+                <div class="editor-range-row">
+                    <input type="range" id="component-height"
+                        min="0" max="600" value="0">
+                    <span id="component-height-value">Automática</span>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="js.js"></script>
+</body>
+</html>
