@@ -13,7 +13,6 @@
 
 </head>
 <body>
-
     <header class="STYcabecalho">
         <div class="brand">
             <img class="img-logo" src="img/img_header.png" alt="Elytra Tech">
@@ -26,11 +25,40 @@
             <li><a href="#Casos-Scroll">Casos</a></li>
         </ul>
         <a href="#QuemSomos-Scroll" class="nav-cta">Conheça mais sobre nós</a>
+
+        <!-- BOTÃO DE ACESSIBILIDADE -->
+        <div class="a11y">
+            <button
+                id="a11y-toggle"
+                class="a11y__btn"
+                type="button"
+                aria-label="Abrir opções de acessibilidade"
+                aria-expanded="false"
+                aria-controls="a11y-panel"
+            >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <circle cx="12" cy="4" r="2"/>
+                    <path d="M21 9H3v2h6v11h2v-5h2v5h2V11h6z"/>
+                </svg>
+            </button>
+
+            <div id="a11y-panel" class="a11y__panel" role="group" aria-label="Opções de acessibilidade" hidden>
+                <button type="button" data-action="font-up">A+ Aumentar fonte</button>
+                <button type="button" data-action="font-down">A− Diminuir fonte</button>
+                <button type="button" data-action="high-contrast" aria-pressed="false">Alto contraste</button>
+                <button type="button" data-action="grayscale" aria-pressed="false">Escala de cinza</button>
+                <button type="button" data-action="highlight-links" aria-pressed="false">Destacar links</button>
+                <button type="button" data-action="no-motion" aria-pressed="false">Pausar animações</button>
+                <button type="button" data-action="reset" class="a11y__reset">Restaurar padrão</button>
+            </div>
+        </div>
+
         <button class="Color-button-anim" aria-label="Abrir menu">☰</button>
     </header>
 
-    <section id="Home-Scroll" class="Prim-Sec">
 
+    <section id="Home-Scroll" class="Prim-Sec">
+        <canvas id="particles"></canvas>    
         <div class="hero-content">
 
             <span class="company-name">ELYTRA TECH</span>
@@ -57,8 +85,7 @@
 
         </div>
 
-
-        <!-- PAINEL DIREITO -->
+         <!-- PAINEL DIREITO -->
         <div class="hero-dashboard">
 
             <div class="dashboard-header">
@@ -163,26 +190,6 @@
 
             </div>
 
-
-            <div class="dashboard-footer">
-
-                <div>
-                    <span>Projetos entregues</span>
-                    <strong>+120</strong>
-                </div>
-
-                <div>
-                    <span>Performance</span>
-                    <strong>99.9%</strong>
-                </div>
-
-                <div>
-                    <span>Escalabilidade</span>
-                    <strong>100%</strong>
-                </div>
-
-            </div>
-
         </div>
 
     </section>
@@ -196,6 +203,8 @@
     <h2>A empresa por trás da Elytra Tech</h2>
     <p>Desenvolvemos ecossistemas digitais de alta performance, unindo design moderno e tecnologia escalável para impulsionar o seu negócio.</p>
 </div>
+
+
 
 <div class="mvv-grid">
 
@@ -215,8 +224,6 @@
     </div>
 
 </div>
-
-
 
     <div class="section-head">
         <p class="section-tag">Por que escolher a Elytra?</p>
@@ -354,34 +361,47 @@
                 <h2>Projetos que já entregamos</h2>
             </div>
 
-            <div class="cases-grid">
-
-                <div class="case-card">
-                    <div class="case-media">Imagem do projeto</div>
-                    <div class="case-body">
-                        <h3>Nome do Projeto</h3>
-                        <p>Resutado ou explicação do projeto</p>
-                    </div>
+        <div class="cases-grid">
+            <div class="case-card">
+                <div class="case-media">
+                    <img src="img/BarbeariaP1.png" alt="Barbearia">
                 </div>
-
-                <div class="case-card">
-                    <div class="case-media">Imagem do projeto</div>
-                    <div class="case-body">
-                        <h3>Nome do Projeto</h3>
-                        <p>Resutado ou explicação do projeto</p>
-                    </div>
+            <div class="case-body">
+                    <h3>Imperium Barbearia</h3>
+                    <p>Reformulação do site da barbearia Imperium</p>
+                    <a href="http://127.0.0.1:5500/index1.html" class="case-link" target="_blank" rel="noopener">
+                        Clique para saber mais →
+                    </a>
                 </div>
-
-                <div class="case-card">
-                    <div class="case-media">Imagem do projeto</div>
-                    <div class="case-body">
-                        <h3>Nome do Projeto</h3>
-                        <p>Resutado ou explicação do projeto</p>
-                    </div>
-                </div>
-
             </div>
 
+            <div class="case-card">
+                <div class="case-media">
+                    <img src="img/RP_Cadastro.png" alt="Cadastro RP">
+                </div>
+                <div class="case-body">
+                    <h3>Cadastro Jogo de RP</h3>
+                    <p>Criação do site para cadastrar usuários em jogos de RP</p>
+                    <a href="https://louisfacio01.github.io/PROJETO-S.P.E.A.R/" class="case-link" target="_blank" rel="noopener">
+                        Clique para saber mais →
+                    </a>
+                </div>
+            </div>
+
+            <div class="case-card">
+                <div class="case-media">
+                    <img src="img/Salão_Beauty.png" alt="Salão Beauty">
+                </div>
+                <div class="case-body">
+                    <h3>Salão Beauty</h3>
+                    <p>Criação de um site para um salão de beleza</p>
+                    <a href="https://officeembeleze-test.vercel.app/" class="case-link" target="_blank" rel="noopener">
+                        Clique para saber mais →
+                    </a>
+                </div>
+            </div>
+
+        </div>
         </div>
 
     </section>
@@ -404,19 +424,6 @@
             </div>
         </div>
     </footer>
-
-<script>
-    const menuBtn = document.querySelector('.Color-button-anim');
-    const navList = document.querySelector('.STYcabecalho ul');
-    menuBtn.addEventListener('click', function () {
-        navList.classList.toggle('open');
-    });
-    document.querySelectorAll('.STYcabecalho ul a').forEach(function (link) {
-        link.addEventListener('click', function () {
-            navList.classList.remove('open');
-        });
-    });
-</script>
-
+    <script src="js.js"></script>
 </body>
 </html>
