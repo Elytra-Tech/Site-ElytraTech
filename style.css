@@ -1766,6 +1766,17 @@ img {
     }
 }
 
+@media (max-width: 768px) {
+  /* Força o botão CTA do header a aparecer nos telemóveis */
+  header .nav-cta {
+    display: inline-block !important;
+    font-size: 11px !important; 
+    width: 100px;    /* Letra pequenininha para caber */
+    padding: 5px 15px !important;   /* Espaçamento compacto */
+    margin-right: 8px;              /* Espaço entre ele e o menu hambúrguer */
+  }
+}
+
 @media (max-width: 700px) {
     .editor-layout {
         grid-template-columns: 1fr;
