@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+    <link rel="stylesheet" href="PagLogin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+     <section class="login-section">
+        <div class="register-container">
+
+            <h1 class="register-title">Registrar</h1>
+
+            <form class="login-form" action="process_register.php" method="POST">
+                <input class="Inputs-In" id="DataLog" type="text" name="username" placeholder="Usuario" required>
+                <input class="Inputs-In" id="numero" type="text" name="numero" placeholder="Número de telefone" required>
+                <input class="Inputs-In" id="email" type="email" name="email" placeholder="Email" required>
+                <input class="Inputs-In" id="password" type="password" name="password" placeholder="Senha" required>
+                <button class="login-button" id="loginButton" type="submit">Registrar</button>
+                <p>Já tem uma conta?<a href="PagLogin.html" class="register-link"> Faça login</a></p>
+            </form>
+
+        </div>
+    </section>
+
+</body>
+</html>

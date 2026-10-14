@@ -1248,17 +1248,17 @@ img {
 
 /* Cores padrão */
 :root {
-    --acento-1: #a855f7;
-    --acento-2: #ff4fc3;
-    --acento-3: #00a6d6;
+    --acento-1: hsl(271, 91%, 65%);
+    --acento-2: hsl(320, 100%, 65%);
+    --acento-3: hsl(193, 100%, 42%);
 
-    --fundo-site: #0b0a0f;
-    --fundo-card: #15121a;
-    --texto-principal: #f5f3f7;
-    --texto-secundario: #c8c2ce;
-    --borda-card: #39303f;
+    --fundo-site: hsl(240, 15%, 5%);
+    --fundo-card: hsl(263, 20%, 8%);
+    --texto-principal: hsl(280, 21%, 95%);
+    --texto-secundario: hsl(268, 10%, 66%);
+    --borda-card: hsl(263, 20%, 8%);
 
-    --cor-foco: #ffffff;
+    --cor-foco: hsl(0, 0%, 100%);
 }
 
 /* Transições */
@@ -1468,25 +1468,27 @@ body.tema-claro .member-name {
    Paletas aproximadas para diferenciar elementos
 ========================================= */
 
+
+
 /* Protanopia */
 body.daltonismo-protanopia {
-    --acento-1: #0072b2;
-    --acento-2: #e69f00;
-    --acento-3: #56b4e9;
+    --acento-1: hsl(202, 100%, 35%);
+    --acento-2: hsl(40, 100%, 50%);
+    --acento-3: hsl(200, 100%, 50%);
 }
 
 /* Deuteranopia */
 body.daltonismo-deuteranopia {
-    --acento-1: #0072b2;
-    --acento-2: #f0c419;
-    --acento-3: #56b4e9;
+    --acento-1: hsl(202, 100%, 35%);
+    --acento-2: hsl(40, 100%, 50%);
+    --acento-3: hsl(200, 100%, 50%);
 }
 
 /* Tritanopia */
 body.daltonismo-tritanopia {
-    --acento-1: #b04a8b;
-    --acento-2: #d55e00;
-    --acento-3: #009e73;
+    --acento-1: hsl(271, 91%, 65%);
+    --acento-2: hsl(320, 100%, 65%);
+    --acento-3: hsl(193, 100%, 42%);
 }
 
 .team-member .member-photo {
@@ -1506,46 +1508,74 @@ body.daltonismo-tritanopia {
     color: transparent;
 }
 
-/* =========================================
-   ELEMENTOS COLORIDOS DO SITE
-   Usam as variáveis adaptáveis
-========================================= */
 
-/* Textos e títulos com cores de destaque */
-body .company-name,
-body .section-tag,
-body .dashboard-label,
-body .case-link,
-body .diff-number {
-    color: var(--acento-3);
+/*
+   ACESSIBILIDADE CORES ADAPTÁVEIS
+*/
+
+/* Somente altera as cores quando um modo
+   de daltonismo estiver ativado */
+
+body.daltonismo-protanopia .company-name,
+body.daltonismo-protanopia .section-tag,
+body.daltonismo-protanopia .dashboard-label,
+body.daltonismo-protanopia .case-link,
+body.daltonismo-protanopia .diff-number,
+body.daltonismo-deuteranopia .company-name,
+body.daltonismo-deuteranopia .section-tag,
+body.daltonismo-deuteranopia .dashboard-label,
+body.daltonismo-deuteranopia .case-link,
+body.daltonismo-deuteranopia .diff-number,
+body.daltonismo-tritanopia .company-name,
+body.daltonismo-tritanopia .section-tag,
+body.daltonismo-tritanopia .dashboard-label,
+body.daltonismo-tritanopia .case-link,
+body.daltonismo-tritanopia .diff-number {
+    color: var(--acento-2);
 }
 
-/* Botões principais */
-body .hero-button,
-body .nav-cta {
+/* Botões: preserva o gradiente original
+   e só adapta as cores nos modos especiais */
+
+body.daltonismo-protanopia .hero-button,
+body.daltonismo-protanopia .nav-cta,
+body.daltonismo-deuteranopia .hero-button,
+body.daltonismo-deuteranopia .nav-cta,
+body.daltonismo-tritanopia .hero-button,
+body.daltonismo-tritanopia .nav-cta {
     background: linear-gradient(
         110deg,
         var(--acento-1),
         var(--acento-2)
-    ) !important;
-
-    color: #ffffff !important;
+    );
+    color: #ffffff;
 }
 
-/* Destaque do título principal */
-body .hero-content h1 span {
+/* Título principal */
+
+body.daltonismo-protanopia .hero-content h1 span,
+body.daltonismo-deuteranopia .hero-content h1 span,
+body.daltonismo-tritanopia .hero-content h1 span {
     background: linear-gradient(
         110deg,
-        var(--acento-3),
+        var(--acento-1),
         var(--acento-2)
     );
-
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
-/* Links destacados */
+/* Gráfico */
+
+body.daltonismo-protanopia .chart-line,
+body.daltonismo-deuteranopia .chart-line,
+body.daltonismo-tritanopia .chart-line {
+    stroke: var(--acento-2);
+}
+
+/* Links destacados: somente quando ativados */
+
 body.links-destacados a {
     outline: 2px solid var(--acento-2);
     outline-offset: 3px;
@@ -1553,36 +1583,12 @@ body.links-destacados a {
     text-underline-offset: 4px;
 }
 
-/* Foco visível por teclado */
+/* Foco visível para navegação por teclado */
+
 body a:focus-visible,
-body button:focus-visible {
+body button:focus-visible,
+body select:focus-visible,
+body input:focus-visible {
     outline: 3px solid var(--cor-foco);
     outline-offset: 4px;
-}
-
-/* Gráfico do painel inicial */
-body .chart-line {
-    stroke: var(--acento-2) !important;
-}
-
-body .chart-area-fill {
-    fill: url(#areaGradient);
-}
-
-/* Indicador operacional: não depende só da cor */
-body .dashboard-status {
-    font-weight: 700;
-}
-
-/* Em telas menores */
-@media (max-width: 600px) {
-    .acessibilidade-container {
-        right: 16px;
-        bottom: 16px;
-    }
-
-    .painel-acessibilidade {
-        width: min(290px, calc(100vw - 32px));
-        max-height: 70vh;
-    }
 }

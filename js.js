@@ -7,10 +7,10 @@ const menuBtn = document.querySelector('.Color-button-anim');
 const navList = document.querySelector('.STYcabecalho ul');
 
 if (menuBtn && navList) {
-    menuBtn.addEventListener('click', () => {
-        navList.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
 
-        const menuAberto = navList.classList.contains('open');
+    menuBtn.addEventListener('click', () => {
+        const menuAberto = navList.classList.toggle('open');
 
         menuBtn.setAttribute('aria-expanded', String(menuAberto));
         menuBtn.setAttribute(
@@ -40,6 +40,14 @@ const aumentarTexto = document.querySelector('#aumentarTexto');
 const diminuirTexto = document.querySelector('#diminuirTexto');
 const restaurarAcessibilidade = document.querySelector('#restaurarAcessibilidade');
 
+const alternarContraste = document.querySelector('#alternarContraste');
+
+const btnTemas = document.querySelector('#btnTemas');
+const opcoesTemas = document.querySelector('#opcoesTemas');
+
+const tipoDaltonismo = document.querySelector('#tipoDaltonismo');
+const destacarLinks = document.querySelector('#destacarLinks');
+
 let escalaTexto = 1;
 
 const elementosTexto = [
@@ -55,6 +63,8 @@ const elementosTexto = [
 ========================================= */
 
 if (btnAcessibilidade && painelAcessibilidade) {
+    btnAcessibilidade.setAttribute('aria-expanded', 'false');
+
     btnAcessibilidade.addEventListener('click', () => {
         const vaiAbrir = painelAcessibilidade.hidden;
 
@@ -66,20 +76,23 @@ if (btnAcessibilidade && painelAcessibilidade) {
         );
     });
 
-    // Fechar com a tecla Escape
+    // Fechar com Escape
     document.addEventListener('keydown', evento => {
-        if (
-            evento.key === 'Escape' &&
-            !painelAcessibilidade.hidden
-        ) {
+        if (evento.key === 'Escape') {
             painelAcessibilidade.hidden = true;
 
             btnAcessibilidade.setAttribute('aria-expanded', 'false');
+
+            if (opcoesTemas && btnTemas) {
+                opcoesTemas.hidden = true;
+                btnTemas.setAttribute('aria-expanded', 'false');
+            }
+
             btnAcessibilidade.focus();
         }
     });
 
-    // Fechar ao clicar fora do painel
+    // Fechar ao clicar fora
     document.addEventListener('click', evento => {
         if (
             evento.target instanceof Element &&
@@ -100,12 +113,12 @@ if (btnAcessibilidade && painelAcessibilidade) {
 
 function aplicarEscalaTexto() {
     document.querySelectorAll(elementosTexto).forEach(elemento => {
-        // Não alterar os textos do próprio painel de acessibilidade
+        // Não modificar os textos do painel de acessibilidade
         if (elemento.closest('.acessibilidade-container')) {
             return;
         }
 
-        // Guardar o tamanho original apenas na primeira alteração
+        // Guardar os tamanhos originais uma única vez
         if (!elemento.dataset.tamanhoOriginal) {
             elemento.dataset.tamanhoOriginal =
                 getComputedStyle(elemento).fontSize;
@@ -151,18 +164,15 @@ if (diminuirTexto) {
 
 
 /* =========================================
-   TEMAS CLARO E ESCURO
+   TEMA CLARO E ESCURO
 ========================================= */
-
-const btnTemas = document.querySelector('#btnTemas');
-const opcoesTemas = document.querySelector('#opcoesTemas');
 
 const opcoesTema = document.querySelectorAll(
     'input[name="tema"]'
 );
 
 
-// Abrir e fechar as opções de tema
+// Abrir e fechar opções de tema
 if (btnTemas && opcoesTemas) {
     btnTemas.addEventListener('click', () => {
         const vaiAbrir = opcoesTemas.hidden;
@@ -177,7 +187,7 @@ if (btnTemas && opcoesTemas) {
 }
 
 
-// Aplicar o tema selecionado
+// Aplicar tema selecionado
 opcoesTema.forEach(opcao => {
     opcao.addEventListener('change', () => {
         if (!opcao.checked) return;
@@ -191,10 +201,26 @@ opcoesTema.forEach(opcao => {
 
 
 /* =========================================
-   ADAPTAÇÕES PARA DALTONISMO
+   ALTO CONTRASTE
 ========================================= */
 
-const tipoDaltonismo = document.querySelector('#tipoDaltonismo');
+if (alternarContraste) {
+    alternarContraste.setAttribute('aria-pressed', 'false');
+
+    alternarContraste.addEventListener('click', () => {
+        const ativo = document.body.classList.toggle('alto-contraste');
+
+        alternarContraste.setAttribute(
+            'aria-pressed',
+            String(ativo)
+        );
+    });
+}
+
+
+/* =========================================
+   ADAPTAÇÕES PARA DALTONISMO
+========================================= */
 
 const classesDaltonismo = [
     'daltonismo-protanopia',
@@ -202,24 +228,48 @@ const classesDaltonismo = [
     'daltonismo-tritanopia'
 ];
 
-
 function aplicarDaltonismo(tipo) {
-    // Remover a adaptação anterior
+    // Remover qualquer adaptação anterior
     document.body.classList.remove(...classesDaltonismo);
 
-    // Aplicar a nova opção, se houver
-    if (tipo !== 'nenhum') {
+    // Só adicionar uma classe quando houver seleção
+    if (
+        ['protanopia', 'deuteranopia', 'tritanopia'].includes(tipo)
+    ) {
         document.body.classList.add(`daltonismo-${tipo}`);
     }
-}
 
+    if (tipoDaltonismo) {
+        tipoDaltonismo.value = tipo;
+    }
+}
 
 if (tipoDaltonismo) {
     tipoDaltonismo.addEventListener('change', () => {
         aplicarDaltonismo(tipoDaltonismo.value);
     });
+
+    // Não ativar nenhuma adaptação automaticamente
+    aplicarDaltonismo('nenhum');
 }
 
+
+/* =========================================
+   DESTACAR LINKS
+========================================= */
+
+if (destacarLinks) {
+    destacarLinks.addEventListener('change', () => {
+        const ativo = destacarLinks.checked;
+
+        document.body.classList.toggle('links-destacados', ativo);
+
+        destacarLinks.setAttribute(
+            'aria-pressed',
+            String(ativo)
+        );
+    });
+}
 
 
 /* =========================================
@@ -229,18 +279,17 @@ if (tipoDaltonismo) {
 if (restaurarAcessibilidade) {
     restaurarAcessibilidade.addEventListener('click', () => {
 
-        // Restaurar escala do texto
+        // Restaurar tamanhos do texto
         escalaTexto = 1;
 
         document.querySelectorAll('[data-tamanho-original]')
             .forEach(elemento => {
                 elemento.style.fontSize =
-                    elemento.dataset.estiloOriginal;
+                    elemento.dataset.estiloOriginal || '';
 
                 delete elemento.dataset.tamanhoOriginal;
                 delete elemento.dataset.estiloOriginal;
             });
-
 
         // Restaurar tema escuro
         document.body.classList.remove('tema-claro');
@@ -253,20 +302,28 @@ if (restaurarAcessibilidade) {
             temaEscuro.checked = true;
         }
 
-
-        // Restaurar cores padrão
+        // Restaurar cores originais
         aplicarDaltonismo('nenhum');
 
-        if (tipoDaltonismo) {
-            tipoDaltonismo.value = 'nenhum';
-        }
+        // Desativar alto contraste
+        document.body.classList.remove('alto-contraste');
 
+        if (alternarContraste) {
+            alternarContraste.setAttribute('aria-pressed', 'false');
+        }
 
         // Desativar destaque dos links
         document.body.classList.remove('links-destacados');
 
         if (destacarLinks) {
+            destacarLinks.checked = false;
             destacarLinks.setAttribute('aria-pressed', 'false');
+        }
+
+        // Fechar opções de temas
+        if (opcoesTemas && btnTemas) {
+            opcoesTemas.hidden = true;
+            btnTemas.setAttribute('aria-expanded', 'false');
         }
     });
 }

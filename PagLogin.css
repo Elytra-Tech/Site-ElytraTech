@@ -1,0 +1,165 @@
+:root {
+    --deep: hsl(240, 15%, 5%);
+    --deep-2: hsl(263, 20%, 8%);
+    --pink: hsl(320, 100%, 65%);
+    --purple: hsl(271, 91%, 65%);
+    --ink: hsl(280, 21%, 95%);
+    --muted: hsl(268, 10%, 66%);
+    --line: hsla(340, 77%, 88%, 0.14);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+}
+
+body {
+    margin: 0;
+    background: var(--deep);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    background-image: url('img/img_header.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: fixed;
+    background-size: 500px
+}
+
+.login-section {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Removido o background-color: var(--deep) para a imagem do body aparecer atrás */
+}
+
+.login-container {
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    width: 500px;
+    border-radius: 10px;
+    border: 2px solid var(--line);
+    background-color: hsla(263, 20%, 8%, 0.8);
+    transition: all 0.2s ease-in-out;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.register-container {
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    width: 500px;
+    border-radius: 10px;
+    border: 2px solid var(--line);
+    background-color: var(--deep-2);
+    transition: all 0.2s ease-in-out;
+    animation: fadeIn 1s ease-in-out;
+    background-color: hsla(263, 20%, 8%, 0.8);
+
+}
+
+.login-title {
+    font-size: 60px;
+}
+
+.register-title {
+    font-size: 45px;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.login-container:hover {
+    border: 2px solid var(--pink);
+
+}
+
+.register-container:hover {
+    border: 2px solid var(--pink);
+
+}
+
+.login-container:hover input {
+    background-color: var(--deep-2);
+}
+
+.register-container:hover input {
+    background-color: var(--deep-2);
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.register-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.Inputs-In {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--line);
+    background-color: var(--deep);
+    color: var(--ink);
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+    border: 2px solid var(--line);
+}
+
+.Inputs-In:hover {
+    outline: none;
+    transform: scale(1.05);
+    background-color: var(--deep-2);
+}
+
+.login-button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--pink);
+    color: var(--ink);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.login-button:hover {
+    transform: scale(1.05);
+}
+
+.register-link{
+    text-decoration: none;
+    color: var(--pink);
+    transition: all 0.2s ease-in-out;
+}
+
+.register-link:hover{
+    text-decoration: underline;
+}

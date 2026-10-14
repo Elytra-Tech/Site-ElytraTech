@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Registrar</title>
+    <link rel="stylesheet" href="PagLogin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-fundo"></div>
+
+    <section class="login-section">
+        <div class="login-container">
+
+            <h1 class="login-title">Login</h1>
+
+            <form class="login-form" action="process_login.php" method="POST">
+                <input class="Inputs-In" id="DataLog" type="text" name="username" placeholder="Usuario" required>
+                <input class="Inputs-In" id="password" type="password" name="password" placeholder="Senha" required>
+                <button class="login-button" id="loginButton" type="submit">Entrar</button>
+            </form>
+
+            <p class="login-text">Não tem uma conta? <a href="PagRegistrar.html" class="register-link">Registrar</a></p>
+
+        </div>
+    </section>
+
+    <script>
+        const inputSenha = document.getElementById('password');
+        const inputUsuario = document.getElementById('DataLog');
+        const botaoLogin = document.getElementById('loginButton');
+
+        inputUsuario.addEventListener('input', function(event) { 
+    if (inputUsuario.value.length < 8) { 
+        inputUsuario.setCustomValidity('O nome de usuário deve ter pelo menos 8 caracteres.'); 
+        inputUsuario.reportValidity(); 
+    } else { 
+        inputUsuario.setCustomValidity(''); 
+    }
+}); 
+
+inputSenha.addEventListener('input', function() { 
+    if (inputSenha.value.length < 8) { 
+        inputSenha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.'); 
+        inputSenha.reportValidity(); 
+    } else { 
+        inputSenha.setCustomValidity(''); 
+    }
+});
+
+        botaoLogin.addEventListener('click', function(event) {
+            if (inputUsuario === null && inputSenha === null) {
+                event.preventDefault();
+                alert('Por favor, preencha todos os campos.');
+            }
+            else{
+                alert('Login realizado com sucesso!');
+            }
+        })
+
+    </script>
+    
+</body>
+</html>
