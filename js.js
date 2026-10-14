@@ -186,8 +186,7 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
     function isPaused() {
         return document.hidden ||
             reduceMotion.matches ||
-            root.classList.contains('a11y-nomotion') ||
-            document.body.classList.contains('alto-contraste');
+            root.classList.contains('a11y-nomotion');
     }
 
     function frame() {
@@ -220,7 +219,6 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
     requestAnimationFrame(frame);
 })();
 
-
 /* ========================================
    EDITOR VISUAL - ELYTRA TECH
    Tudo do editor fica dentro deste bloco,
@@ -235,7 +233,7 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
 
     /* ---------- Referências ---------- */
 
-    const emptyMessage = $('#editor-empty');
+     const emptyMessage = $('#editor-empty');
     const fields = $('#editor-fields');
     const hint = $('#editor-hint');
 
@@ -251,15 +249,7 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
         background: $('#background-color')
     };
 
-    // Textos que mostram o valor atual dos controles deslizantes.
-    const valueLabel = {
-        fontSize: $('#font-size-value'),
-        padding: $('#padding-size-value'),
-        margin: $('#margin-size-value')
-    };
-
     const alignButtons = $$('.alignment-button');
-    const positionButtons = $$('.position-button');
     const defaultColor = '#f2edf5';
 
     let selected = null;
@@ -284,7 +274,6 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
         emptyMessage.hidden = allComponents().length > 0;
     }
 
-    // Converte cores RGB para hexadecimal.
     function rgbToHex(color) {
         if (color.startsWith('#')) return color;
 
@@ -301,29 +290,6 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
     function onSelected(element, eventName, callback) {
         element.addEventListener(eventName, function (event) {
             if (selected) callback(selected, event);
-        });
-    }
-
-    function requireSelected() {
-        if (!selected) {
-            alert('Selecione um componente da prévia primeiro.');
-            return false;
-        }
-
-        return true;
-    }
-
-    function setLabel(name, value) {
-        if (valueLabel[name]) valueLabel[name].textContent = value + ' px';
-    }
-
-    // Marca apenas o botão ativo de um grupo.
-    function markActive(buttons, activeButton) {
-        buttons.forEach(function (button) {
-            const active = button === activeButton;
-
-            button.classList.toggle('is-active', active);
-            button.classList.toggle('active', active);
         });
     }
 
@@ -397,7 +363,7 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
 
     /* ---------- Seleção ---------- */
 
-    function selectComponent(component) {
+      function selectComponent(component) {
         if (selected) selected.classList.remove('is-selected');
 
         selected = component;
@@ -407,35 +373,25 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
         const styles = getComputedStyle(component);
         const contentStyles = getComputedStyle(content);
 
-        const fontSize = parseInt(styles.fontSize, 10) || 24;
-        const padding = parseInt(styles.paddingTop, 10) || 0;
-        const margin = parseInt(styles.marginBottom, 10) || 0;
-
         input.content.value = content.textContent;
         input.color.value = rgbToHex(contentStyles.color);
-        input.fontSize.value = fontSize;
+        input.fontSize.value = parseInt(styles.fontSize, 10) || 24;
         input.bold.checked = Number(contentStyles.fontWeight) >= 600;
-        input.padding.value = padding;
-        input.margin.value = margin;
-
-        // A largura pode estar em "fit-content" (posicionamento); nesse caso volta a 100.
-        input.width.value = component.style.width.endsWith('%')
+        input.padding.value = parseInt(styles.paddingTop, 10) || 0;
+        input.margin.value = parseInt(styles.marginBottom, 10) || 0;
+        input.width.value = component.style.width
             ? parseInt(component.style.width, 10)
             : 100;
         input.height.value = component.style.height
             ? parseInt(component.style.height, 10)
             : 0;
 
-        setLabel('fontSize', fontSize);
-        setLabel('padding', padding);
-        setLabel('margin', margin);
-
-        markActive(
-            alignButtons,
-            alignButtons.find(function (button) {
-                return button.dataset.align === component.style.textAlign;
-            })
-        );
+        alignButtons.forEach(function (button) {
+            button.classList.toggle(
+                'is-active',
+                button.dataset.align === component.style.textAlign
+            );
+        });
 
         fields.hidden = false;
         hint.hidden = true;
@@ -497,45 +453,23 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
         });
     });
 
-    // Alinhamento do texto
     alignButtons.forEach(function (button) {
         button.addEventListener('click', function () {
-            if (!requireSelected()) return;
-
-            selected.style.textAlign = button.dataset.align;
-            markActive(alignButtons, button);
-        });
-    });
-
-    // Posição do componente (esquerda, centro, direita)
-    positionButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            if (!requireSelected()) return;
-
-            const position = button.dataset.position;
-
-            selected.style.display = 'block';
-            selected.style.width = 'fit-content';
-            selected.style.maxWidth = '100%';
-
-            if (position === 'left') {
-                selected.style.marginLeft = '0';
-                selected.style.marginRight = 'auto';
-            } else if (position === 'center') {
-                selected.style.marginLeft = 'auto';
-                selected.style.marginRight = 'auto';
-            } else {
-                selected.style.marginLeft = 'auto';
-                selected.style.marginRight = '0';
+            if (!selected) {
+                alert('Selecione um componente da prévia primeiro.');
+                return;
             }
 
-            markActive(positionButtons, button);
+            selected.style.textAlign = button.dataset.align;
+
+            alignButtons.forEach(function (item) {
+                item.classList.toggle('is-active', item === button);
+            });
         });
     });
 
     onSelected(input.fontSize, 'input', function (component) {
         component.style.fontSize = input.fontSize.value + 'px';
-        setLabel('fontSize', input.fontSize.value);
     });
 
     onSelected(input.bold, 'change', function (component) {
@@ -548,12 +482,10 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
 
     onSelected(input.padding, 'input', function (component) {
         component.style.padding = input.padding.value + 'px';
-        setLabel('padding', input.padding.value);
     });
 
     onSelected(input.margin, 'input', function (component) {
         component.style.margin = input.margin.value + 'px';
-        setLabel('margin', input.margin.value);
     });
 
     onSelected(input.width, 'input', function (component) {
@@ -574,10 +506,6 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
         component.style.boxSizing = 'border-box';
     });
 
-    // Os rótulos dos controles começam com o valor inicial.
-    setLabel('fontSize', input.fontSize.value);
-    setLabel('padding', input.padding.value);
-    setLabel('margin', input.margin.value);
 
 
     /* ---------- Tema: cores e tipografia ---------- */
