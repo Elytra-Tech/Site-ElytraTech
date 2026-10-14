@@ -20,7 +20,11 @@
             <form class="login-form" action="process_login.php" method="POST">
                 <input class="Inputs-In" id="DataLog" type="text" name="username" placeholder="Usuario" required>
                 <input class="Inputs-In" id="password" type="password" name="password" placeholder="Senha" required>
+
+                <p id="ErrorMessage">Login ou Senha incorretos.</p>
+
                 <button class="login-button" id="loginButton" type="submit">Entrar</button>
+                <button class="return-btn" type="button" onclick="window.location.href='index.html'">Voltar</button>
             </form>
 
             <p class="login-text">Não tem uma conta? <a href="PagRegistrar.html" class="register-link">Registrar</a></p>
@@ -28,40 +32,73 @@
         </div>
     </section>
 
-    <script>
-        const inputSenha = document.getElementById('password');
-        const inputUsuario = document.getElementById('DataLog');
-        const botaoLogin = document.getElementById('loginButton');
+<script>
+    const inputUsuario = document.getElementById('DataLog');
+    const inputSenha = document.getElementById('password');
+    const botaoLogin = document.getElementById('loginButton');
+    const msgErro = document.getElementById('ErrorMessage'); // O <p> de erro no HTML de login
 
-        inputUsuario.addEventListener('input', function(event) { 
-    if (inputUsuario.value.length < 8) { 
-        inputUsuario.setCustomValidity('O nome de usuário deve ter pelo menos 8 caracteres.'); 
-        inputUsuario.reportValidity(); 
-    } else { 
-        inputUsuario.setCustomValidity(''); 
-    }
-}); 
+    botaoLogin.addEventListener('click', async function(event) {
+        event.preventDefault();
 
-inputSenha.addEventListener('input', function() { 
-    if (inputSenha.value.length < 8) { 
-        inputSenha.setCustomValidity('A senha deve ter pelo menos 8 caracteres.'); 
-        inputSenha.reportValidity(); 
-    } else { 
-        inputSenha.setCustomValidity(''); 
-    }
-});
+        const usuario = inputUsuario.value;
+        const senha = inputSenha.value;
 
-        botaoLogin.addEventListener('click', function(event) {
-            if (inputUsuario === null && inputSenha === null) {
-                event.preventDefault();
-                alert('Por favor, preencha todos os campos.');
+        // Validação se há campos vazios
+        if (usuario === "" || senha === "") {
+            botaoLogin.style.borderColor = 'red';
+            msgErro.style.color = 'red';
+            msgErro.textContent = 'Por favor, preencha todos os campos.';
+            msgErro.style.display = 'block';
+            return;
+        }
+
+        try {
+            const resposta = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario, senha })
+            });
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                botaoLogin.style.borderColor = '';
+                msgErro.style.color = 'green';
+                msgErro.textContent = 'Login efetuado com sucesso!';
+                msgErro.style.display = 'block';
+
+                setTimeout(() => {
+                    // Substitui 'dashboard.html' pela página para onde queres ir após entrar
+                    window.location.href = 'dashboard.html'; 
+                }, 1000);
+            } else {
+                botaoLogin.style.borderColor = 'red';
+                msgErro.style.color = 'red';
+                msgErro.textContent = resultado.mensagem; // Ex: "Usuário/Email ou senha incorretos."
+                msgErro.style.display = 'block';
             }
-            else{
-                alert('Login realizado com sucesso!');
-            }
-        })
 
-    </script>
+        } catch (erro) {
+            console.error('Erro ao conectar com o servidor:', erro);
+            botaoLogin.style.borderColor = 'red';
+            msgErro.style.color = 'red';
+            msgErro.textContent = 'Erro de conexão com o servidor.';
+            msgErro.style.display = 'block';
+        }
+    });
+
+    // Limpa o erro ao começar a digitar
+    inputUsuario.addEventListener('input', () => {
+        botaoLogin.style.borderColor = '';
+        msgErro.style.display = 'none';
+    });
+
+    inputSenha.addEventListener('input', () => {
+        botaoLogin.style.borderColor = '';
+        msgErro.style.display = 'none';
+    });
+</script>
     
 </body>
 </html>
