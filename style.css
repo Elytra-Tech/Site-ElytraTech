@@ -1809,3 +1809,886 @@ img {
     color: var(--ink);
 }
 
+
+/* ========================================
+   PERSONALIZAÇÃO VISUAL - RGB E TIPOGRAFIA
+   ======================================== */
+
+.editor-visual-settings {
+    max-width: 100%;
+    padding: 20px;
+    border: 1px solid var(--editor-border);
+    border-radius: 14px;
+    background: linear-gradient(
+        145deg,
+        rgba(168, 85, 247, 0.08),
+        rgba(255, 77, 196, 0.025)
+    );
+}
+
+.editor-settings-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.editor-settings-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--editor-border);
+    border-radius: 12px;
+    background: var(--editor-card);
+    color: var(--pink);
+    font-size: 23px;
+}
+
+.editor-settings-heading h2 {
+    font-size: 17px;
+}
+
+.editor-settings-heading p,
+.editor-settings-description {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.editor-settings-card {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid var(--editor-border);
+    border-radius: 11px;
+    background: rgba(13, 9, 20, 0.8);
+}
+
+.editor-settings-card h3 {
+    font-size: 14px;
+}
+
+.editor-settings-card > label {
+    display: block;
+    margin: 16px 0 7px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.rgb-preview {
+    width: 100%;
+    height: 54px;
+    margin-top: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9px;
+    background: rgb(168, 85, 247);
+    transition: background-color 0.15s ease;
+}
+
+.rgb-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.rgb-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.rgb-field input,
+.editor-text-input {
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--editor-border);
+    border-radius: 8px;
+    outline: none;
+    background: var(--editor-card);
+    color: var(--ink);
+    font: inherit;
+    font-size: 12px;
+}
+
+.rgb-field input:focus,
+.editor-text-input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+}
+
+.rgb-value {
+    margin-top: 12px;
+    color: var(--muted);
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.editor-apply-button,
+.editor-secondary-button {
+    width: 100%;
+    margin-top: 14px;
+    padding: 11px 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.editor-apply-button {
+    background: linear-gradient(90deg, #7b2cbf, #e01e5a);
+    color: #ffffff;
+}
+
+.editor-secondary-button {
+    border-color: var(--editor-border);
+    background: var(--editor-card);
+    color: var(--ink);
+}
+
+.editor-apply-button:hover,
+.editor-secondary-button:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+.editor-file-input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.editor-file-input::file-selector-button {
+    margin-right: 8px;
+    padding: 8px;
+    border: 1px solid var(--editor-border);
+    border-radius: 6px;
+    background: var(--editor-card);
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.font-preview {
+    margin-top: 18px;
+    padding: 16px;
+    overflow-wrap: anywhere;
+    border: 1px solid var(--editor-border);
+    border-radius: 9px;
+    background: var(--deep-2);
+}
+
+.font-preview > span {
+    color: var(--pink);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.font-preview p {
+    margin-top: 12px;
+    color: var(--ink);
+    font-size: 23px;
+    line-height: 1.35;
+}
+
+.editor-visual-settings .editor-control-label {
+    margin-top: 18px;
+}
+
+@media (max-width: 480px) {
+    .editor-visual-settings {
+        padding: 14px;
+    }
+
+    .editor-settings-card {
+        padding: 12px;
+    }
+
+    .font-preview p {
+        font-size: 20px;
+    }
+}
+
+
+/* ========================================
+   EDITOR ELYTRA TECH — INTERFACE EM ABAS
+   Todo o CSS do editor fica neste arquivo.
+   ======================================== */
+
+.editor-layout {
+    display: grid;
+    grid-template-columns: 100px 290px minmax(0, 1fr);
+    min-height: 80vh;
+    background: var(--deep);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.editor-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 10px;
+    background: var(--deep-2);
+    border-right: 1px solid var(--line);
+}
+
+.editor-tool {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 78px;
+    padding: 12px 5px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background .2s, color .2s, border-color .2s;
+}
+
+.editor-tool i {
+    font-size: 23px;
+}
+
+.editor-tool span {
+    font-size: 11px;
+    text-align: center;
+}
+
+.editor-tool:hover,
+.editor-tool.is-active {
+    color: var(--pink);
+    background: rgba(255, 77, 196, .08);
+    border-color: var(--line);
+}
+
+.editor-sidebar {
+    min-width: 0;
+    padding: 20px;
+    background: var(--deep-2);
+    border-right: 1px solid var(--line);
+}
+
+.editor-panel[hidden],
+.editor-preview-area[hidden],
+.editor-workspace-welcome[hidden] {
+    display: none !important;
+}
+
+.editor-panel-heading {
+    margin-bottom: 22px;
+}
+
+.editor-panel-heading h2 {
+    margin: 0 0 8px;
+    font-size: 19px;
+    color: var(--ink);
+}
+
+.editor-panel-heading p,
+.editor-panel-tip {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.editor-component-list {
+    display: grid;
+    gap: 10px;
+}
+
+.editor-component-list button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--deep);
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+}
+
+.editor-component-list button i {
+    color: var(--purple);
+    font-size: 20px;
+}
+
+.editor-component-list button:hover {
+    border-color: var(--purple);
+    background: rgba(168, 85, 247, .08);
+}
+
+.editor-panel-tip {
+    margin-top: 22px;
+    padding: 12px;
+    border-left: 2px solid var(--purple);
+    background: rgba(168, 85, 247, .06);
+    border-radius: 0 8px 8px 0;
+}
+
+.editor-workspace {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 650px;
+    background: var(--deep);
+}
+
+.editor-workspace-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+}
+
+.editor-workspace-bar > div {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.editor-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pink);
+    box-shadow: 0 0 12px rgba(255, 77, 196, .45);
+}
+
+.editor-preview-button,
+.editor-primary-button,
+.editor-secondary-button,
+.editor-danger-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: .2s;
+}
+
+.editor-preview-button {
+    width: auto;
+    background: rgba(168, 85, 247, .12);
+    border-color: var(--purple);
+}
+
+.editor-preview-button:hover,
+.editor-secondary-button:hover {
+    background: rgba(168, 85, 247, .2);
+}
+
+.editor-primary-button {
+    margin-top: 12px;
+    background: linear-gradient(110deg, #7b2cbf, #e01e5a);
+    border: none;
+    color: white;
+}
+
+.editor-primary-button:hover {
+    filter: brightness(1.1);
+}
+
+.editor-secondary-button {
+    margin-top: 8px;
+    background: var(--deep);
+}
+
+.editor-danger-button {
+    margin-top: 18px;
+    background: rgba(255, 77, 196, .06);
+    border-color: rgba(255, 77, 196, .35);
+    color: var(--pink);
+}
+
+.editor-danger-button:hover {
+    background: rgba(255, 77, 196, .12);
+}
+
+.editor-workspace-welcome {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 35px;
+    text-align: center;
+}
+
+.editor-welcome-icon {
+    display: grid;
+    place-items: center;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 20px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(168, 85, 247, .1);
+    color: var(--pink);
+    font-size: 30px;
+}
+
+.editor-workspace-welcome h2 {
+    margin: 0 0 10px;
+    font-size: 22px;
+}
+
+.editor-workspace-welcome p {
+    max-width: 330px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.editor-preview-area {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 25px 16px 35px;
+    overflow: auto;
+}
+
+.editor-preview-caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1.2px;
+}
+
+.editor-preview-indicator {
+    color: var(--pink);
+}
+
+.editor-phone {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 340px);
+    min-height: 480px;
+    padding: 9px;
+    border: 2px solid #7b2cbf;
+    border-radius: 35px;
+    background: #100d17;
+    box-shadow: 0 0 35px rgba(168, 85, 247, .13);
+}
+
+.editor-phone-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 23px;
+}
+
+.editor-phone-camera {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--purple);
+}
+
+.editor-phone-speaker {
+    width: 42px;
+    height: 5px;
+    border-radius: 5px;
+    background: var(--line);
+}
+
+.editor-phone-screen {
+    flex: 1;
+    min-height: 420px;
+    overflow: auto;
+    border-radius: 23px;
+    background: var(--deep-2);
+}
+
+.editor-phone-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+}
+
+.editor-phone-bottom span {
+    width: 45px;
+    height: 4px;
+    border-radius: 5px;
+    background: var(--line);
+}
+
+.editor-canvas {
+    min-height: 420px;
+    padding: 16px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.editor-empty {
+    padding: 35px 10px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+.editor-fields {
+    display: grid;
+    gap: 18px;
+}
+
+.editor-control {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.editor-control label,
+.editor-subheading {
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.editor-control input:not([type="checkbox"]):not([type="range"]):not([type="color"]),
+.editor-control textarea,
+.editor-control select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: none;
+    background: var(--deep);
+    color: var(--ink);
+    font: inherit;
+    font-size: 13px;
+}
+
+.editor-control input:focus,
+.editor-control textarea:focus,
+.editor-control select:focus {
+    border-color: var(--purple);
+}
+
+.editor-control input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--deep);
+    cursor: pointer;
+}
+
+.editor-control input[type="range"] {
+    width: 100%;
+    accent-color: var(--purple);
+}
+
+.editor-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.editor-checkbox-label input {
+    accent-color: var(--purple);
+}
+
+.editor-button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.editor-button-row button {
+    flex: 1;
+    padding: 9px 6px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--deep);
+    color: var(--ink);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.editor-button-row button:hover,
+.editor-button-row button.is-active {
+    border-color: var(--purple);
+    color: var(--pink);
+}
+
+.editor-rgb-preview {
+    height: 42px;
+    margin: 12px 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--purple);
+}
+
+.editor-rgb-value {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.editor-divider {
+    height: 1px;
+    margin: 24px 0;
+    background: var(--line);
+}
+
+.editor-subheading {
+    margin: 0 0 16px;
+}
+
+.editor-font-preview {
+    padding: 15px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.editor-layers-list {
+    display: grid;
+    gap: 8px;
+}
+
+.editor-layer-item {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--deep);
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+}
+
+.editor-layer-item:hover,
+.editor-layer-item.is-active {
+    border-color: var(--purple);
+    color: var(--pink);
+}
+
+.editor-empty-layers {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.editor-component.is-selected {
+    outline: 2px solid var(--pink);
+    outline-offset: 3px;
+}
+
+@media (max-width: 950px) {
+    .editor-layout {
+        grid-template-columns: 78px minmax(220px, 260px) minmax(0, 1fr);
+    }
+
+    .editor-sidebar {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 700px) {
+    .editor-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .editor-tools {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 8px;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .editor-tool {
+        flex: 0 0 75px;
+        min-height: 65px;
+    }
+
+    .editor-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .editor-workspace {
+        min-height: 550px;
+    }
+
+    .editor-workspace-bar {
+        padding: 12px;
+    }
+
+    .editor-preview-button {
+        padding: 9px;
+        font-size: 12px;
+    }
+}
+
+
+/* TEMAS PRONTOS DO EDITOR */
+
+.editor-theme-presets {
+    margin-bottom: 22px;
+}
+
+.editor-theme-preview {
+    display: flex;
+    gap: 7px;
+    padding: 12px;
+    margin: 12px 0;
+    min-height: 48px;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #0d0b12;
+}
+
+.editor-theme-preview span {
+    flex: 1;
+    height: 28px;
+    border-radius: 6px;
+    background: #7b2cbf;
+}
+
+.editor-theme-preview span:nth-child(2) {
+    background: #ff4fc3;
+}
+
+.editor-theme-preview span:nth-child(3) {
+    background: #f2edf5;
+}
+
+.editor-theme-preview[data-theme="elytra"] {
+    background: #0d0b12;
+}
+
+.editor-theme-preview[data-theme="purple"] {
+    background: #171020;
+}
+
+.editor-theme-preview[data-theme="purple"] span {
+    background: #7b2cbf;
+}
+
+.editor-theme-preview[data-theme="purple"] span:nth-child(2) {
+    background: #a855f7;
+}
+
+.editor-theme-preview[data-theme="purple"] span:nth-child(3) {
+    background: #f2edf5;
+}
+
+.editor-theme-preview[data-theme="pink"] {
+    background: #1b101b;
+}
+
+.editor-theme-preview[data-theme="pink"] span {
+    background: #e01e5a;
+}
+
+.editor-theme-preview[data-theme="pink"] span:nth-child(2) {
+    background: #ff4fc3;
+}
+
+.editor-theme-preview[data-theme="pink"] span:nth-child(3) {
+    background: #f2edf5;
+}
+
+.editor-theme-preview[data-theme="minimal"] {
+    background: #08080c;
+}
+
+.editor-theme-preview[data-theme="minimal"] span {
+    background: #272333;
+}
+
+.editor-theme-preview[data-theme="minimal"] span:nth-child(2) {
+    background: #7b2cbf;
+}
+
+.editor-theme-preview[data-theme="minimal"] span:nth-child(3) {
+    background: #f2edf5;
+}
+
+
+/* HISTÓRICO DE ALTERAÇÕES */
+
+.editor-history-controls {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.editor-history-controls button {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--deep-2);
+    color: var(--ink);
+    font-size: 19px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.editor-history-controls button:hover:not(:disabled) {
+    border-color: var(--purple);
+    color: var(--pink);
+}
+
+.editor-history-controls button:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+    .editor-history-controls {
+        margin-left: 0;
+    }
+
+    .editor-workspace-bar {
+        flex-wrap: wrap;
+    }
+}
+
+

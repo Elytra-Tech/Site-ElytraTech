@@ -28,236 +28,354 @@
         <a href="index.html" class="editor-back">Voltar ao site</a>
     </header>
 
+    
     <main class="editor-layout">
 
-        <aside class="editor-sidebar">
-            <div class="editor-heading">
-                <span class="editor-tag">AMBIENTE DE CRIAÇÃO</span>
-                <h1>Editor visual</h1>
-                <p>Adicione componentes e monte sua página.</p>
-            </div>
+        <!-- BARRA LATERAL DE ABAS -->
+        <nav class="editor-tools" aria-label="Ferramentas do editor">
+            <button class="editor-tool is-active" data-editor-tab="components" type="button">
+                <i class="ph ph-squares-four"></i>
+                <span>Componentes</span>
+            </button>
 
-            <section class="editor-group">
-                <h2>Adicionar componentes</h2>
+            <button class="editor-tool" data-editor-tab="layers" type="button">
+                <i class="ph ph-stack"></i>
+                <span>Camadas</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="properties" type="button">
+                <i class="ph ph-sliders-horizontal"></i>
+                <span>Propriedades</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="themes" type="button">
+                <i class="ph ph-palette"></i>
+                <span>Tema</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="preview" type="button">
+                <i class="ph ph-device-mobile"></i>
+                <span>Prévia</span>
+            </button>
+        </nav>
+
+        <!-- PAINEL DE CONTROLES -->
+        <aside class="editor-sidebar">
+
+            <section class="editor-panel" data-editor-panel="components">
+                <div class="editor-panel-heading">
+                    <h2>Componentes</h2>
+                    <p>Adicione elementos ao seu site.</p>
+                </div>
 
                 <div class="editor-component-list">
                     <button type="button" data-add="header">
-                        <span>▤</span>
-                        Cabeçalho
-                        <span class="editor-plus">+</span>
+                        <i class="ph ph-layout"></i> Cabeçalho
                     </button>
 
                     <button type="button" data-add="title">
-                        <span>T</span>
-                        Título
-                        <span class="editor-plus">+</span>
+                        <i class="ph ph-text-t"></i> Título
                     </button>
 
                     <button type="button" data-add="text">
-                        <span>¶</span>
-                        Texto
-                        <span class="editor-plus">+</span>
+                        <i class="ph ph-text-align-left"></i> Texto
                     </button>
 
                     <button type="button" data-add="button">
-                        <span>▱</span>
-                        Botão
-                        <span class="editor-plus">+</span>
+                        <i class="ph ph-cursor-click"></i> Botão
                     </button>
 
                     <button type="button" data-add="section">
-                        <span>▦</span>
-                        Seção
-                        <span class="editor-plus">+</span>
+                        <i class="ph ph-columns"></i> Seção
+                    </button>
+                </div>
+
+                <div class="editor-panel-tip">
+                    Selecione um componente para adicioná-lo à prévia.
+                </div>
+            </section>
+
+            <section class="editor-panel" data-editor-panel="layers" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Camadas</h2>
+                    <p>Selecione um elemento para editá-lo.</p>
+                </div>
+
+                <div id="editor-layers-list" class="editor-layers-list">
+                    <p class="editor-empty-layers">Nenhum componente adicionado.</p>
+                </div>
+
+                <button type="button" id="clear-preview" class="editor-danger-button">
+                    <i class="ph ph-trash"></i> Limpar prévia
+                </button>
+            </section>
+
+            <section class="editor-panel" data-editor-panel="properties" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Propriedades</h2>
+                    <p>Personalize o componente selecionado.</p>
+                </div>
+
+                <div id="editor-fields" class="editor-fields">
+
+                    <div class="editor-control">
+                        <label for="component-content">Texto do componente</label>
+                        <textarea id="component-content" rows="3"
+                            placeholder="Digite o conteúdo"></textarea>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="component-color">Cor do texto</label>
+                        <input type="color" id="component-color" value="#f2edf5">
+                    </div>
+
+                    <div class="editor-control">
+                        <label>Alinhamento</label>
+                        <div class="editor-button-row">
+                            <button type="button" class="alignment-button" data-align="left">Esquerda</button>
+                            <button type="button" class="alignment-button" data-align="center">Centro</button>
+                            <button type="button" class="alignment-button" data-align="right">Direita</button>
+                        </div>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="font-size">Tamanho da fonte</label>
+                        <input type="range" id="font-size" min="10" max="72" value="24">
+                    </div>
+
+                    <div class="editor-control">
+                        <label class="editor-checkbox-label" for="bold-toggle">
+                            <input type="checkbox" id="bold-toggle">
+                            Texto em negrito
+                        </label>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="padding-size">Espaçamento interno</label>
+                        <input type="range" id="padding-size" min="0" max="60" value="12">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="margin-size">Espaçamento externo</label>
+                        <input type="range" id="margin-size" min="0" max="60" value="8">
+                    </div>
+
+                    <div class="editor-control">
+                        <label>Posição do texto</label>
+                        <div class="editor-button-row">
+                            <button type="button" class="position-button" data-position="left">Esquerda</button>
+                            <button type="button" class="position-button" data-position="center">Centro</button>
+                        </div>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="component-width">Largura</label>
+                        <input type="range" id="component-width" min="20" max="100" value="100">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="component-height">Altura</label>
+                        <input type="range" id="component-height" min="20" max="400" value="80">
+                    </div>
+
+                    <button type="button" id="remove-component" class="editor-danger-button">
+                        <i class="ph ph-trash"></i> Remover componente
                     </button>
                 </div>
             </section>
 
-            <section class="editor-group editor-properties">
-                <h2>Propriedades</h2>
-                <p class="editor-hint" id="editor-hint">
-                    Selecione um componente na prévia para editá-lo.
+            <section class="editor-panel" data-editor-panel="themes" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Personalização</h2>
+                    <p>Ajuste as cores e a tipografia.</p>
+                </div>
+
+                <div class="editor-control">
+                    <label for="visual-scope">Aplicar alteração em</label>
+                    <select id="visual-scope">
+                        <option value="selected">Componente selecionado</option>
+                        <option value="all">Todos os componentes</option>
+                    </select>
+                </div>
+
+                <div class="editor-control">
+                    <label for="rgb-target">Alterar</label>
+                    <select id="rgb-target">
+                        <option value="text">Cor do texto</option>
+                        <option value="background">Cor de fundo</option>
+                    </select>
+                </div>
+
+                <div class="editor-rgb-controls">
+                    <div class="editor-control">
+                        <label for="rgb-red">Vermelho (R)</label>
+                        <input type="range" id="rgb-red" min="0" max="255" value="168">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="rgb-green">Verde (G)</label>
+                        <input type="range" id="rgb-green" min="0" max="255" value="85">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="rgb-blue">Azul (B)</label>
+                        <input type="range" id="rgb-blue" min="0" max="255" value="247">
+                    </div>
+                </div>
+
+                <div id="rgb-preview" class="editor-rgb-preview"></div>
+                <p id="rgb-value" class="editor-rgb-value">RGB(168, 85, 247)</p>
+
+                <button type="button" id="apply-rgb" class="editor-primary-button">
+                    Aplicar cor
+                </button>
+
+                <div class="editor-control">
+                    <label for="background-color">Cor de fundo</label>
+                    <input type="color" id="background-color" value="#17131f">
+                </div>
+
+                <div class="editor-divider"></div>
+
+                <h3 class="editor-subheading">Tipografia</h3>
+
+                <div class="editor-control">
+                    <label for="font-family-input">Nome da fonte</label>
+                    <input type="text" id="font-family-input" placeholder="Ex.: Inter">
+                </div>
+
+                <div class="editor-control">
+                    <label for="font-url-input">URL da fonte CSS</label>
+                    <input type="url" id="font-url-input" placeholder="https://...">
+                </div>
+
+                <button type="button" id="load-font-url" class="editor-secondary-button">
+                    Carregar fonte pela URL
+                </button>
+
+                <div class="editor-control">
+                    <label for="font-file-input">Ou selecione um arquivo de fonte</label>
+                    <input type="file" id="font-file-input"
+                        accept=".woff,.woff2,.ttf,.otf">
+                </div>
+
+                <p id="font-preview" class="editor-font-preview">
+                    Prévia da tipografia
                 </p>
 
-                <div id="editor-fields" hidden>
-                    <label for="component-content">Conteúdo</label>
-                    <textarea id="component-content" rows="3"></textarea>
-
-                    <label for="component-color">Cor do texto</label>
-                    <input id="component-color" type="color" value="#f2edf5">
-
-                    <button type="button" id="remove-component" class="editor-remove">
-                        Remover componente
-                    </button>
-                </div>
+                <button type="button" id="apply-font" class="editor-primary-button">
+                    Aplicar fonte
+                </button>
             </section>
 
-            <button type="button" id="clear-preview" class="editor-clear">
-                Limpar prévia
-            </button>
+            <section class="editor-panel" data-editor-panel="preview" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Prévia do site</h2>
+                    <p>Visualize os componentes no espaço ao lado.</p>
+                </div>
+
+                <p class="editor-panel-tip">
+                    Para editar um elemento, selecione-o na prévia ou na aba Camadas.
+                </p>
+            </section>
+
         </aside>
 
+        <!-- ÁREA PRINCIPAL -->
         <section class="editor-workspace">
             <div class="editor-workspace-bar">
                 <div>
-                    <strong>Minha página</strong>
-                    <span>Área de visualização</span>
+                    <span class="editor-status-dot"></span>
+                    <span id="editor-workspace-title">Componentes</span>
+                </div>
+                
+                <div class="editor-history-controls">
+                    <button id="editor-undo" class="editor-history-button"
+                            type="button" title="Desfazer (Ctrl + Z)"
+                            aria-label="Desfazer">
+                        ↶
+                    </button>
+
+                    <button id="editor-redo" class="editor-history-button"
+                            type="button" title="Refazer (Ctrl + Y)"
+                            aria-label="Refazer">
+                        ↷
+                    </button>
                 </div>
 
-                <span class="editor-preview-label">
-                    <span></span> PRÉVIA
-                </span>
+                <button type="button" id="open-editor-preview" class="editor-preview-button">
+                    <i class="ph ph-device-mobile"></i>
+                    Abrir prévia
+                </button>
             </div>
 
-            <div class="editor-canvas-wrapper">
-                <div id="preview-canvas" class="editor-canvas">
-                    <div class="editor-empty" id="editor-empty">
-                        <div class="editor-empty-icon">✦</div>
-                        <h2>Sua página começa aqui</h2>
-                        <p>Escolha um componente no painel lateral para começar.</p>
+            <div id="editor-workspace-welcome" class="editor-workspace-welcome">
+                <div class="editor-welcome-icon">
+                    <i class="ph ph-magic-wand"></i>
+                </div>
+
+                <h2>Seu espaço de criação</h2>
+                <p>Escolha uma ferramenta na lateral para começar a editar.</p>
+            </div>
+
+            <div id="editor-preview-area" class="editor-preview-area">
+                <div class="editor-preview-caption">
+                    <span>VISUALIZAÇÃO MOBILE</span>
+                    <span class="editor-preview-indicator">Prévia interativa</span>
+                </div>
+
+                <div class="editor-phone">
+                    <div class="editor-phone-top">
+                        <span class="editor-phone-camera"></span>
+                        <span class="editor-phone-speaker"></span>
+                    </div>
+
+                    <div class="editor-phone-screen">
+                        <div id="preview-canvas" class="editor-canvas">
+                            <p id="editor-empty" class="editor-empty">
+                                Adicione um componente para começar.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="editor-phone-bottom">
+                        <span></span>
                     </div>
                 </div>
             </div>
 
-            <p class="editor-footer-note">
-                As alterações desta versão existem apenas nesta prévia.
-            </p>
 
             
-            <div class="editor-control-group">
-                <label class="editor-control-label">Alinhamento do texto</label>
+            <div class="editor-theme-presets">
+                <h3 class="editor-subheading">Temas profissionais</h3>
 
-                <div class="editor-alignment-options">
-                    <button type="button" class="alignment-button" data-align="left" title="Alinhar à esquerda">
-                        <span>☰</span>
-                        <small>Esquerda</small>
-                    </button>
-
-                    <button type="button" class="alignment-button" data-align="center" title="Centralizar texto">
-                        <span>☷</span>
-                        <small>Centro</small>
-                    </button>
-
-                    <button type="button" class="alignment-button" data-align="right" title="Alinhar à direita">
-                        <span>☰</span>
-                        <small>Direita</small>
-                    </button>
+                <div class="editor-control">
+                    <label for="editor-theme-select">Escolha um tema</label>
+                    <select id="editor-theme-select">
+                        <option value="elytra">Elytra Tech</option>
+                        <option value="purple">Roxo profissional</option>
+                        <option value="pink">Rosa tecnológico</option>
+                        <option value="minimal">Minimalista escuro</option>
+                    </select>
                 </div>
-            </div>
 
-
-            
-            <!-- Personalização avançada -->
-            <div class="editor-control-group">
-                <label class="editor-control-label" for="font-size">
-                    Tamanho da fonte
-                </label>
-
-                <div class="editor-range-row">
-                    <input type="range" id="font-size"
-                        min="10" max="72" value="16">
-                    <span id="font-size-value">16 px</span>
+                <div id="editor-theme-preview" class="editor-theme-preview">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-            </div>
 
-            <div class="editor-control-group">
-                <label class="editor-control-label">
-                    Estilo do texto
-                </label>
-
-                <button type="button" id="bold-toggle"
-                    class="editor-option-button">
-                    <strong>B</strong> Negrito
+                <button type="button" id="apply-editor-theme" class="editor-primary-button">
+                    Aplicar tema
                 </button>
+
+                <p class="editor-panel-tip">
+                    Os temas usam somente cores da identidade visual da Elytra Tech.
+                    Você também pode personalizar as cores manualmente abaixo.
+                </p>
             </div>
 
-            <div class="editor-control-group">
-                <label class="editor-control-label" for="padding-size">
-                    Espaçamento interno
-                </label>
-
-                <div class="editor-range-row">
-                    <input type="range" id="padding-size"
-                        min="0" max="60" value="10">
-                    <span id="padding-size-value">10 px</span>
-                </div>
-            </div>
-
-            <div class="editor-control-group">
-                <label class="editor-control-label" for="margin-size">
-                    Espaçamento externo
-                </label>
-
-                <div class="editor-range-row">
-                    <input type="range" id="margin-size"
-                        min="0" max="60" value="0">
-                    <span id="margin-size-value">0 px</span>
-                </div>
-            </div>
-
-            <div class="editor-control-group">
-                <label class="editor-control-label">
-                    Posicionamento do componente
-                </label>
-
-                <div class="editor-position-options">
-                    <button type="button"
-                        class="position-button"
-                        data-position="left">
-                        Esquerda
-                    </button>
-
-                    <button type="button"
-                        class="position-button"
-                        data-position="center">
-                        Centro
-                    </button>
-
-                    <button type="button"
-                        class="position-button"
-                        data-position="right">
-                        Direita
-                    </button>
-                </div>
-            </div>
-
-            
-            <!-- Fundo do componente -->
-            <div class="editor-control-group">
-                <label class="editor-control-label" for="background-color">
-                    Cor de fundo
-                </label>
-
-                <select id="background-color" class="editor-select">
-                    <option value="">Sem alteração</option>
-                </select>
-            </div>
-
-            <!-- Largura do componente -->
-            <div class="editor-control-group">
-                <label class="editor-control-label" for="component-width">
-                    Largura
-                </label>
-
-                <div class="editor-range-row">
-                    <input type="range" id="component-width"
-                        min="10" max="100" value="100">
-                    <span id="component-width-value">100%</span>
-                </div>
-            </div>
-
-            <!-- Altura do componente -->
-            <div class="editor-control-group">
-                <label class="editor-control-label" for="component-height">
-                    Altura
-                </label>
-
-                <div class="editor-range-row">
-                    <input type="range" id="component-height"
-                        min="0" max="600" value="0">
-                    <span id="component-height-value">Automática</span>
-                </div>
-            </div>
+            <div class="editor-divider"></div>
 
         </section>
 
