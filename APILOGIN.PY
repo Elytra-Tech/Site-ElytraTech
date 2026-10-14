@@ -6,12 +6,11 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+import psycopg2
+
 def conectar_banco():
-    return pymssql.connect(
-        server='127.0.0.1:1433',     # Força o IP local com a porta 1433
-        user='sa',
-        password='28122009Lf',
-        database='db_elytratech'
+    return psycopg2.connect(
+        "postgresql://postgres:[YOUR-PASSWORD]@db.ffzntduztrjwjgbpcczs.supabase.co:5432/postgres"
     )
 
 @app.route('/api/registrar', methods=['POST'])
