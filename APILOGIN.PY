@@ -10,7 +10,7 @@ import psycopg2
 
 def conectar_banco():
     return psycopg2.connect(
-        "postgresql://postgres:[YOUR-PASSWORD]@db.ffzntduztrjwjgbpcczs.supabase.co:5432/postgres"
+        "postgresql://postgres.ffzntduztrjwjgbpcczs:BlaCKe_2812xXx!@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
     )
 
 @app.route('/api/registrar', methods=['POST'])
@@ -29,7 +29,7 @@ def registrar_usuario():
 
     try:
         conexao = conectar_banco()
-        cursor = conexao.cursor(as_dict=True)
+        cursor = conexao.cursor()
         
         # Verifica se o email ou o usuário já existem antes de cadastrar
         sql_verifica = "SELECT * FROM cliente WHERE Email = %s OR Usuario = %s"
@@ -80,7 +80,8 @@ def login_usuario():
 
     try:
         conexao = conectar_banco()
-        cursor = conexao.cursor(as_dict=True)
+        import psycopg2.extras
+        cursor = conexao.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
         # Procura tanto pelo email quanto pelo nome de usuário
         SQL = "SELECT * FROM cliente WHERE Email = %s OR Usuario = %s"
@@ -91,7 +92,7 @@ def login_usuario():
         conexao.close()
 
         if cliente_db:
-            senha_armazenada = cliente_db['Senha'].encode('utf-8')
+            senha_armazenada = cliente_db['senha'].encode('utf-8')
             if bcrypt.checkpw(senha.encode('utf-8'), senha_armazenada):
                 return jsonify({"sucesso": True, "mensagem": "Login efetuado com sucesso!"}), 200
                 
