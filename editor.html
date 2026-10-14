@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elytra Tech | Editor de Prévia</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="editor-page">
+
+    <header class="editor-topbar">
+        <a href="index.html" class="editor-brand">
+            <img src="img/img_header.png" alt="Elytra Tech">
+            <span>ELYTRA TECH</span>
+        </a>
+
+        <div class="editor-topbar-info">
+            <span class="editor-status"></span>
+            Editor de prévia
+        </div>
+
+        <a href="index.html" class="editor-back">Voltar ao site</a>
+    </header>
+
+    
+    <main class="editor-layout">
+
+        <!-- BARRA LATERAL DE ABAS -->
+        <nav class="editor-tools" aria-label="Ferramentas do editor">
+            <button class="editor-tool is-active" data-editor-tab="components" type="button">
+                <i class="ph ph-squares-four"></i>
+                <span>Componentes</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="layers" type="button">
+                <i class="ph ph-stack"></i>
+                <span>Camadas</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="properties" type="button">
+                <i class="ph ph-sliders-horizontal"></i>
+                <span>Propriedades</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="themes" type="button">
+                <i class="ph ph-palette"></i>
+                <span>Tema</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="preview" type="button">
+                <i class="ph ph-device-mobile"></i>
+                <span>Prévia</span>
+            </button>
+        </nav>
+
+        <!-- PAINEL DE CONTROLES -->
+        <aside class="editor-sidebar">
+
+            <section class="editor-panel" data-editor-panel="components">
+                <div class="editor-panel-heading">
+                    <h2>Componentes</h2>
+                    <p>Adicione elementos ao seu site.</p>
+                </div>
+
+                <div class="editor-component-list">
+                    <button type="button" data-add="header">
+                        <i class="ph ph-layout"></i> Cabeçalho
+                    </button>
+
+                    <button type="button" data-add="title">
+                        <i class="ph ph-text-t"></i> Título
+                    </button>
+
+                    <button type="button" data-add="text">
+                        <i class="ph ph-text-align-left"></i> Texto
+                    </button>
+
+                    <button type="button" data-add="button">
+                        <i class="ph ph-cursor-click"></i> Botão
+                    </button>
+
+                    <button type="button" data-add="section">
+                        <i class="ph ph-columns"></i> Seção
+                    </button>
+                </div>
+
+                <div class="editor-panel-tip">
+                    Selecione um componente para adicioná-lo à prévia.
+                </div>
+            </section>
+
+            <section class="editor-panel" data-editor-panel="layers" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Camadas</h2>
+                    <p>Selecione um elemento para editá-lo.</p>
+                </div>
+
+                <div id="editor-layers-list" class="editor-layers-list">
+                    <p class="editor-empty-layers">Nenhum componente adicionado.</p>
+                </div>
+
+                <button type="button" id="clear-preview" class="editor-danger-button">
+                    <i class="ph ph-trash"></i> Limpar prévia
+                </button>
+            </section>
+
+            <section class="editor-panel" data-editor-panel="properties" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Propriedades</h2>
+                    <p>Personalize o componente selecionado.</p>
+                </div>
+
+                <div id="editor-fields" class="editor-fields">
+
+                    <div class="editor-control">
+                        <label for="component-content">Texto do componente</label>
+                        <textarea id="component-content" rows="3"
+                            placeholder="Digite o conteúdo"></textarea>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="component-color">Cor do texto</label>
+                        <input type="color" id="component-color" value="#f2edf5">
+                    </div>
+
+                    <div class="editor-control">
+                        <label>Alinhamento</label>
+                        <div class="editor-button-row">
+                            <button type="button" class="alignment-button" data-align="left">Esquerda</button>
+                            <button type="button" class="alignment-button" data-align="center">Centro</button>
+                            <button type="button" class="alignment-button" data-align="right">Direita</button>
+                        </div>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="font-size">Tamanho da fonte</label>
+                        <input type="range" id="font-size" min="10" max="72" value="24">
+                    </div>
+
+                    <div class="editor-control">
+                        <label class="editor-checkbox-label" for="bold-toggle">
+                            <input type="checkbox" id="bold-toggle">
+                            Texto em negrito
+                        </label>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="padding-size">Espaçamento interno</label>
+                        <input type="range" id="padding-size" min="0" max="60" value="12">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="margin-size">Espaçamento externo</label>
+                        <input type="range" id="margin-size" min="0" max="60" value="8">
+                    </div>
+
+                    <div class="editor-control">
+                        <label>Posição do texto</label>
+                        <div class="editor-button-row">
+                            <button type="button" class="position-button" data-position="left">Esquerda</button>
+                            <button type="button" class="position-button" data-position="center">Centro</button>
+                        </div>
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="component-width">Largura</label>
+                        <input type="range" id="component-width" min="20" max="100" value="100">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="component-height">Altura</label>
+                        <input type="range" id="component-height" min="20" max="400" value="80">
+                    </div>
+
+                    <button type="button" id="remove-component" class="editor-danger-button">
+                        <i class="ph ph-trash"></i> Remover componente
+                    </button>
+                </div>
+            </section>
+
+            <section class="editor-panel" data-editor-panel="themes" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Personalização</h2>
+                    <p>Ajuste as cores e a tipografia.</p>
+                </div>
+
+                <div class="editor-control">
+                    <label for="visual-scope">Aplicar alteração em</label>
+                    <select id="visual-scope">
+                        <option value="selected">Componente selecionado</option>
+                        <option value="all">Todos os componentes</option>
+                    </select>
+                </div>
+
+                <div class="editor-control">
+                    <label for="rgb-target">Alterar</label>
+                    <select id="rgb-target">
+                        <option value="text">Cor do texto</option>
+                        <option value="background">Cor de fundo</option>
+                    </select>
+                </div>
+
+                <div class="editor-rgb-controls">
+                    <div class="editor-control">
+                        <label for="rgb-red">Vermelho (R)</label>
+                        <input type="range" id="rgb-red" min="0" max="255" value="168">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="rgb-green">Verde (G)</label>
+                        <input type="range" id="rgb-green" min="0" max="255" value="85">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="rgb-blue">Azul (B)</label>
+                        <input type="range" id="rgb-blue" min="0" max="255" value="247">
+                    </div>
+                </div>
+
+                <div id="rgb-preview" class="editor-rgb-preview"></div>
+                <p id="rgb-value" class="editor-rgb-value">RGB(168, 85, 247)</p>
+
+                <button type="button" id="apply-rgb" class="editor-primary-button">
+                    Aplicar cor
+                </button>
+
+                <div class="editor-control">
+                    <label for="background-color">Cor de fundo</label>
+                    <input type="color" id="background-color" value="#17131f">
+                </div>
+
+                <div class="editor-divider"></div>
+
+                <h3 class="editor-subheading">Tipografia</h3>
+
+                <div class="editor-control">
+                    <label for="font-family-input">Nome da fonte</label>
+                    <input type="text" id="font-family-input" placeholder="Ex.: Inter">
+                </div>
+
+                <div class="editor-control">
+                    <label for="font-url-input">URL da fonte CSS</label>
+                    <input type="url" id="font-url-input" placeholder="https://...">
+                </div>
+
+                <button type="button" id="load-font-url" class="editor-secondary-button">
+                    Carregar fonte pela URL
+                </button>
+
+                <div class="editor-control">
+                    <label for="font-file-input">Ou selecione um arquivo de fonte</label>
+                    <input type="file" id="font-file-input"
+                        accept=".woff,.woff2,.ttf,.otf">
+                </div>
+
+                <p id="font-preview" class="editor-font-preview">
+                    Prévia da tipografia
+                </p>
+
+                <button type="button" id="apply-font" class="editor-primary-button">
+                    Aplicar fonte
+                </button>
+            </section>
+
+            <section class="editor-panel" data-editor-panel="preview" hidden>
+                <div class="editor-panel-heading">
+                    <h2>Prévia do site</h2>
+                    <p>Visualize os componentes no espaço ao lado.</p>
+                </div>
+
+                <p class="editor-panel-tip">
+                    Para editar um elemento, selecione-o na prévia ou na aba Camadas.
+                </p>
+            </section>
+
+        </aside>
+
+        <!-- ÁREA PRINCIPAL -->
+        <section class="editor-workspace">
+            <div class="editor-workspace-bar">
+                <div>
+                    <span class="editor-status-dot"></span>
+                    <span id="editor-workspace-title">Componentes</span>
+                </div>
+                
+                <div class="editor-history-controls">
+                    <button id="editor-undo" class="editor-history-button"
+                            type="button" title="Desfazer (Ctrl + Z)"
+                            aria-label="Desfazer">
+                        ↶
+                    </button>
+
+                    <button id="editor-redo" class="editor-history-button"
+                            type="button" title="Refazer (Ctrl + Y)"
+                            aria-label="Refazer">
+                        ↷
+                    </button>
+                </div>
+
+                <button type="button" id="open-editor-preview" class="editor-preview-button">
+                    <i class="ph ph-device-mobile"></i>
+                    Abrir prévia
+                </button>
+            </div>
+
+            <div id="editor-workspace-welcome" class="editor-workspace-welcome">
+                <div class="editor-welcome-icon">
+                    <i class="ph ph-magic-wand"></i>
+                </div>
+
+                <h2>Seu espaço de criação</h2>
+                <p>Escolha uma ferramenta na lateral para começar a editar.</p>
+            </div>
+
+            <div id="editor-preview-area" class="editor-preview-area">
+                <div class="editor-preview-caption">
+                    <span>VISUALIZAÇÃO MOBILE</span>
+                    <span class="editor-preview-indicator">Prévia interativa</span>
+                </div>
+
+                <div class="editor-phone">
+                    <div class="editor-phone-top">
+                        <span class="editor-phone-camera"></span>
+                        <span class="editor-phone-speaker"></span>
+                    </div>
+
+                    <div class="editor-phone-screen">
+                        <div id="preview-canvas" class="editor-canvas">
+                            <p id="editor-empty" class="editor-empty">
+                                Adicione um componente para começar.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="editor-phone-bottom">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+
+            
+            <div class="editor-theme-presets">
+                <h3 class="editor-subheading">Temas profissionais</h3>
+
+                <div class="editor-control">
+                    <label for="editor-theme-select">Escolha um tema</label>
+                    <select id="editor-theme-select">
+                        <option value="elytra">Elytra Tech</option>
+                        <option value="purple">Roxo profissional</option>
+                        <option value="pink">Rosa tecnológico</option>
+                        <option value="minimal">Minimalista escuro</option>
+                    </select>
+                </div>
+
+                <div id="editor-theme-preview" class="editor-theme-preview">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <button type="button" id="apply-editor-theme" class="editor-primary-button">
+                    Aplicar tema
+                </button>
+
+                <p class="editor-panel-tip">
+                    Os temas usam somente cores da identidade visual da Elytra Tech.
+                    Você também pode personalizar as cores manualmente abaixo.
+                </p>
+            </div>
+
+            <div class="editor-divider"></div>
+
+        </section>
+
+    </main>
+
+    <script src="js.js"></script>
+</body>
+</html>
