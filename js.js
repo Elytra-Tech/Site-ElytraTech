@@ -1,89 +1,345 @@
-
 /* ========================================
-   MENU RESPONSIVO DO SITE ORIGINAL
+   UTILITÁRIOS
    ======================================== */
 
-const menuBtn = document.querySelector('.Color-button-anim');
-const navList = document.querySelector('.STYcabecalho ul');
+const $ = (selector, scope = document) => scope.querySelector(selector);
+const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 
-if (menuBtn && navList) {
+
+/* ========================================
+   MENU RESPONSIVO DO SITE
+   ======================================== */
+
+(function initMenu() {
+    const menuBtn = $('.Color-button-anim');
+    const navList = $('.STYcabecalho ul');
+
+    if (!menuBtn || !navList) return;
+
     menuBtn.addEventListener('click', function () {
         navList.classList.toggle('open');
     });
 
-    navList.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function () {
-            navList.classList.remove('open');
-        });
+    navList.addEventListener('click', function (event) {
+        if (event.target.closest('a')) navList.classList.remove('open');
     });
-}
+})();
+
+
+/* ========================================
+   ACESSIBILIDADE
+   ======================================== */
+
+(function initA11y() {
+    const toggle = $('#a11y-toggle');
+    const panel = $('#a11y-panel');
+
+    if (!toggle || !panel) return;
+
+    const root = document.documentElement;
+    const classes = {
+        'high-contrast': 'a11y-contrast',
+        'grayscale': 'a11y-gray',
+        'highlight-links': 'a11y-links',
+        'no-motion': 'a11y-nomotion'
+    };
+
+    let zoom = 1;
+
+    function setOpen(open) {
+        panel.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+    }
+
+    function applyZoom() {
+        zoom = Math.min(1.4, Math.max(0.8, zoom));
+        document.body.style.zoom = zoom === 1 ? '' : zoom;
+    }
+
+    toggle.addEventListener('click', function () {
+        setOpen(panel.hidden);
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!panel.hidden && !event.target.closest('.a11y')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !panel.hidden) {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
+
+    panel.addEventListener('click', function (event) {
+        const button = event.target.closest('button[data-action]');
+
+        if (!button) return;
+
+        const action = button.dataset.action;
+
+        if (action === 'font-up') {
+            zoom += 0.1;
+            applyZoom();
+        } else if (action === 'font-down') {
+            zoom -= 0.1;
+            applyZoom();
+        } else if (action === 'reset') {
+            zoom = 1;
+            applyZoom();
+
+            Object.values(classes).forEach(function (name) {
+                root.classList.remove(name);
+            });
+
+            $$('[aria-pressed]', panel).forEach(function (item) {
+                item.setAttribute('aria-pressed', 'false');
+            });
+        } else if (classes[action]) {
+            const active = root.classList.toggle(classes[action]);
+            button.setAttribute('aria-pressed', String(active));
+        }
+    });
+})();
+
+
+/* ========================================
+   PARTÍCULAS DO FUNDO (leve e pausável)
+   ======================================== */
+
+(function initParticles() {
+    const cv = $('#particles');
+
+    if (!cv) return;
+
+    const ctx = cv.getContext('2d');
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const count = window.innerWidth < 700 ? 25 : 50;
+    const maxDistance = 120;
+
+    let width = 0;
+    let height = 0;
+    let dots = [];
+
+    function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        width = window.innerWidth;
+        height = window.innerHeight;
+        cv.width = width * dpr;
+        cv.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function createDots() {
+        dots = Array.from({ length: count }, function () {
+            return {
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                r: Math.random() * 1.5 + 0.5
+            };
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < dots.length; i++) {
+            const a = dots[i];
+
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.7)';
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+            ctx.fill();
+
+            for (let j = i + 1; j < dots.length; j++) {
+                const b = dots[j];
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist < maxDistance) {
+                    ctx.strokeStyle =
+                        'rgba(255, 79, 195, ' + (0.15 * (1 - dist / maxDistance)) + ')';
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function update() {
+        dots.forEach(function (dot) {
+            dot.x += dot.vx;
+            dot.y += dot.vy;
+
+            if (dot.x < 0 || dot.x > width) dot.vx *= -1;
+            if (dot.y < 0 || dot.y > height) dot.vy *= -1;
+        });
+    }
+
+    function isPaused() {
+        return document.hidden ||
+            reduceMotion.matches ||
+            root.classList.contains('a11y-nomotion');
+    }
+
+    function frame() {
+        if (isPaused()) {
+            // Quando pausado, verifica de novo só a cada meio segundo.
+            setTimeout(function () {
+                requestAnimationFrame(frame);
+            }, 500);
+            return;
+        }
+
+        update();
+        draw();
+        requestAnimationFrame(frame);
+    }
+
+    let resizeTimer;
+
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            resize();
+            createDots();
+        }, 150);
+    });
+
+    resize();
+    createDots();
+    draw();
+    requestAnimationFrame(frame);
+})();
 
 
 /* ========================================
    EDITOR VISUAL - ELYTRA TECH
+   Tudo do editor fica dentro deste bloco,
+   compartilhando o mesmo estado.
    ======================================== */
 
-const canvas = document.querySelector('#preview-canvas');
+(function initEditor() {
+    const canvas = $('#preview-canvas');
 
-if (canvas) {
-    const emptyMessage = document.querySelector('#editor-empty');
-    const fields = document.querySelector('#editor-fields');
-    const hint = document.querySelector('#editor-hint');
-    const contentInput = document.querySelector('#component-content');
-    const colorInput = document.querySelector('#component-color');
-    const removeButton = document.querySelector('#remove-component');
-    const clearButton = document.querySelector('#clear-preview');
+    // Só executa na página do editor.
+    if (!canvas) return;
 
-    let selectedComponent = null;
+    /* ---------- Referências ---------- */
 
+    const emptyMessage = $('#editor-empty');
+    const fields = $('#editor-fields');
+    const hint = $('#editor-hint');
+
+    const input = {
+        content: $('#component-content'),
+        color: $('#component-color'),
+        fontSize: $('#font-size'),
+        bold: $('#bold-toggle'),
+        padding: $('#padding-size'),
+        margin: $('#margin-size'),
+        width: $('#component-width'),
+        height: $('#component-height'),
+        background: $('#background-color')
+    };
+
+    const alignButtons = $$('.alignment-button');
     const defaultColor = '#f2edf5';
+
+    let selected = null;
+
+
+    /* ---------- Funções auxiliares ---------- */
+
+    function contentOf(component) {
+        return $('[data-content]', component);
+    }
+
+    // O componente e todos os elementos dentro dele.
+    function treeOf(component) {
+        return [component].concat($$('*', component));
+    }
+
+    function allComponents() {
+        return $$(':scope > .editor-component', canvas);
+    }
+
+    function refreshEmpty() {
+        emptyMessage.hidden = allComponents().length > 0;
+    }
+
+    function rgbToHex(color) {
+        if (color.startsWith('#')) return color;
+
+        const values = color.match(/\d+/g);
+
+        if (!values || values.length < 3) return defaultColor;
+
+        return '#' + values.slice(0, 3).map(function (value) {
+            return Number(value).toString(16).padStart(2, '0');
+        }).join('');
+    }
+
+    // Executa uma ação no componente selecionado (se houver).
+    function onSelected(element, eventName, callback) {
+        element.addEventListener(eventName, function (event) {
+            if (selected) callback(selected, event);
+        });
+    }
+
+
+    /* ---------- Criação de componentes ---------- */
 
     // Cria um componente sem interpretar o texto como HTML.
     function createComponent(type) {
         const component = document.createElement('div');
+        let content;
 
-        component.classList.add('editor-component');
+        component.className = 'editor-component';
         component.dataset.type = type;
-
-        let content = document.createElement('div');
-        content.dataset.content = '';
 
         switch (type) {
             case 'header':
                 component.classList.add('editor-preview-header');
+                content = document.createElement('div');
                 content.textContent = 'Minha marca';
                 break;
 
             case 'title':
                 content = document.createElement('h2');
-                content.dataset.content = '';
                 content.textContent = 'Meu novo título';
                 break;
 
             case 'text':
                 content = document.createElement('p');
-                content.dataset.content = '';
                 content.textContent = 'Escreva seu texto aqui.';
                 break;
 
             case 'button':
                 content = document.createElement('button');
                 content.type = 'button';
-                content.classList.add('editor-preview-button');
+                content.className = 'editor-preview-cta';
                 content.textContent = 'Clique aqui';
                 break;
 
-            case 'section':
+            case 'section': {
                 component.classList.add('editor-preview-section');
 
                 const sectionTitle = document.createElement('h2');
                 sectionTitle.textContent = 'Minha seção';
+                component.appendChild(sectionTitle);
 
                 content = document.createElement('p');
                 content.textContent = 'Adicione uma descrição para esta seção.';
-
-                component.appendChild(sectionTitle);
                 break;
+            }
 
             default:
                 return null;
@@ -95,63 +351,65 @@ if (canvas) {
         return component;
     }
 
-    // Adiciona o componente à área de prévia.
     function addComponent(type) {
         const component = createComponent(type);
 
         if (!component) return;
 
         canvas.appendChild(component);
-        emptyMessage.hidden = true;
-
+        refreshEmpty();
         selectComponent(component);
     }
 
-    // Seleciona um componente e carrega suas propriedades.
+
+    /* ---------- Seleção ---------- */
+
     function selectComponent(component) {
-        if (selectedComponent) {
-            selectedComponent.classList.remove('is-selected');
-        }
+        if (selected) selected.classList.remove('is-selected');
 
-        selectedComponent = component;
-        selectedComponent.classList.add('is-selected');
+        selected = component;
+        selected.classList.add('is-selected');
 
-        const editableContent = selectedComponent.querySelector(
-            '[data-content]'
-        );
+        const content = contentOf(component);
+        const styles = getComputedStyle(component);
+        const contentStyles = getComputedStyle(content);
 
-        contentInput.value = editableContent.textContent;
-        colorInput.value = rgbToHex(
-            getComputedStyle(editableContent).color
-        );
+        input.content.value = content.textContent;
+        input.color.value = rgbToHex(contentStyles.color);
+        input.fontSize.value = parseInt(styles.fontSize, 10) || 24;
+        input.bold.checked = Number(contentStyles.fontWeight) >= 600;
+        input.padding.value = parseInt(styles.paddingTop, 10) || 0;
+        input.margin.value = parseInt(styles.marginBottom, 10) || 0;
+        input.width.value = component.style.width
+            ? parseInt(component.style.width, 10)
+            : 100;
+        input.height.value = component.style.height
+            ? parseInt(component.style.height, 10)
+            : 0;
+
+        alignButtons.forEach(function (button) {
+            button.classList.toggle(
+                'is-active',
+                button.dataset.align === component.style.textAlign
+            );
+        });
 
         fields.hidden = false;
         hint.hidden = true;
+
+        updateLayers();
     }
 
-    // Atualiza o conteúdo enquanto você digita.
-    contentInput.addEventListener('input', function () {
-        if (!selectedComponent) return;
+    function deselect() {
+        if (selected) selected.classList.remove('is-selected');
 
-        const editableContent = selectedComponent.querySelector(
-            '[data-content]'
-        );
+        selected = null;
+        fields.hidden = true;
+        hint.hidden = false;
 
-        editableContent.textContent = contentInput.value;
-    });
+        updateLayers();
+    }
 
-    // Atualiza a cor do texto selecionado.
-    colorInput.addEventListener('input', function () {
-        if (!selectedComponent) return;
-
-        const editableContent = selectedComponent.querySelector(
-            '[data-content]'
-        );
-
-        editableContent.style.color = colorInput.value;
-    });
-
-    // Seleciona componentes clicados na prévia.
     canvas.addEventListener('click', function (event) {
         const component = event.target.closest('.editor-component');
 
@@ -160,428 +418,150 @@ if (canvas) {
         }
     });
 
-    // Botões para adicionar os componentes.
-    document.querySelectorAll('[data-add]').forEach(function (button) {
+    $$('[data-add]').forEach(function (button) {
         button.addEventListener('click', function () {
             addComponent(button.dataset.add);
         });
     });
 
-    // Remove somente o componente selecionado.
-    removeButton.addEventListener('click', function () {
-        if (!selectedComponent) return;
+    $('#remove-component').addEventListener('click', function () {
+        if (!selected) return;
 
-        selectedComponent.remove();
-        selectedComponent = null;
-
-        fields.hidden = true;
-        hint.hidden = false;
-        emptyMessage.hidden = canvas.querySelector(
-            '.editor-component'
-        ) !== null;
+        selected.remove();
+        deselect();
+        refreshEmpty();
     });
 
-    // Limpa toda a área de prévia.
-    clearButton.addEventListener('click', function () {
-        canvas.querySelectorAll('.editor-component').forEach(
-            function (component) {
-                component.remove();
+    $('#clear-preview').addEventListener('click', function () {
+        allComponents().forEach(function (component) {
+            component.remove();
+        });
+
+        deselect();
+        refreshEmpty();
+    });
+
+
+    /* ---------- Propriedades do componente ---------- */
+
+    onSelected(input.content, 'input', function (component) {
+        contentOf(component).textContent = input.content.value;
+    });
+
+    onSelected(input.color, 'input', function (component) {
+        treeOf(component).forEach(function (element) {
+            element.style.color = input.color.value;
+        });
+    });
+
+    alignButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            if (!selected) {
+                alert('Selecione um componente da prévia primeiro.');
+                return;
             }
-        );
 
-        selectedComponent = null;
-        fields.hidden = true;
-        hint.hidden = false;
-        emptyMessage.hidden = false;
-    });
+            selected.style.textAlign = button.dataset.align;
 
-    // Converte cores RGB para hexadecimal.
-    function rgbToHex(color) {
-        if (color.startsWith('#')) return color;
-
-        const values = color.match(/\d+/g);
-
-        if (!values || values.length < 3) {
-            return defaultColor;
-        }
-
-        return '#' + values.slice(0, 3).map(function (value) {
-            return Number(value).toString(16).padStart(2, '0');
-        }).join('');
-    }
-}
-
-
-/* Alinhamento do texto no editor */
-const alignmentButtons = document.querySelectorAll(".alignment-button");
-
-alignmentButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-        const selectedComponent = document.querySelector(
-            "#preview-canvas .editor-component.is-selected"
-        );
-
-        if (!selectedComponent) {
-            alert("Selecione um componente da prévia primeiro.");
-            return;
-        }
-
-        const alignment = button.dataset.align;
-
-        selectedComponent.style.textAlign = alignment;
-
-        alignmentButtons.forEach(function (item) {
-            item.classList.remove("active");
-        });
-
-        button.classList.add("active");
-    });
-});
-
-
-/* Personalização avançada dos componentes */
-const fontSizeInput = document.querySelector("#font-size");
-const fontSizeValue = document.querySelector("#font-size-value");
-
-const paddingInput = document.querySelector("#padding-size");
-const paddingValue = document.querySelector("#padding-size-value");
-
-const marginInput = document.querySelector("#margin-size");
-const marginValue = document.querySelector("#margin-size-value");
-
-const boldToggle = document.querySelector("#bold-toggle");
-const positionButtons = document.querySelectorAll(".position-button");
-
-function getSelectedComponent() {
-    return document.querySelector(
-        "#preview-canvas .editor-component.is-selected"
-    );
-}
-
-/* Atualiza o tamanho da fonte */
-fontSizeInput.addEventListener("input", function () {
-    const component = getSelectedComponent();
-
-    fontSizeValue.textContent = `${fontSizeInput.value} px`;
-
-    if (component) {
-        component.style.fontSize = `${fontSizeInput.value}px`;
-    }
-});
-
-
-/* Ativa ou desativa o negrito */
-boldToggle.addEventListener("click", function () {
-    const component = getSelectedComponent();
-
-    if (!component) {
-        alert("Selecione um componente da prévia primeiro.");
-        return;
-    }
-
-    const currentWeight = window.getComputedStyle(component).fontWeight;
-    const isBold = Number(currentWeight) >= 600;
-
-    component.style.setProperty(
-        "font-weight",
-        isBold ? "400" : "700",
-        "important"
-    );
-
-    boldToggle.classList.toggle("active", !isBold);
-});
-
-
-/* Controla o espaçamento interno */
-paddingInput.addEventListener("input", function () {
-    const component = getSelectedComponent();
-
-    paddingValue.textContent = `${paddingInput.value} px`;
-
-    if (component) {
-        component.style.padding = `${paddingInput.value}px`;
-    }
-});
-
-/* Controla o espaçamento externo */
-marginInput.addEventListener("input", function () {
-    const component = getSelectedComponent();
-
-    marginValue.textContent = `${marginInput.value} px`;
-
-    if (component) {
-        component.style.margin = `${marginInput.value}px`;
-    }
-});
-
-/* Posiciona o componente */
-positionButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-        const component = getSelectedComponent();
-
-        if (!component) {
-            alert("Selecione um componente da prévia primeiro.");
-            return;
-        }
-
-        const position = button.dataset.position;
-
-        component.style.display = "block";
-        component.style.width = "fit-content";
-        component.style.maxWidth = "100%";
-
-        if (position === "left") {
-            component.style.marginLeft = "0";
-            component.style.marginRight = "auto";
-        } else if (position === "center") {
-            component.style.marginLeft = "auto";
-            component.style.marginRight = "auto";
-        } else {
-            component.style.marginLeft = "auto";
-            component.style.marginRight = "0";
-        }
-
-        positionButtons.forEach(function (item) {
-            item.classList.toggle("active", item === button);
+            alignButtons.forEach(function (item) {
+                item.classList.toggle('is-active', item === button);
+            });
         });
     });
-});
 
-
-/* ========================================
-   FUNDO, LARGURA E ALTURA DOS COMPONENTES
-   ======================================== */
-
-const backgroundSelect = document.querySelector("#background-color");
-const widthInput = document.querySelector("#component-width");
-const widthValue = document.querySelector("#component-width-value");
-const heightInput = document.querySelector("#component-height");
-const heightValue = document.querySelector("#component-height-value");
-
-const dimensionCanvas = document.querySelector("#preview-canvas");
-
-/* Retorna o componente atualmente selecionado */
-function getDimensionComponent() {
-    return document.querySelector(
-        "#preview-canvas .editor-component.is-selected"
-    );
-}
-
-/* Preenche o seletor usando as cores do tema existente */
-if (backgroundSelect) {
-    const rootStyles = getComputedStyle(document.documentElement);
-
-    const paletteVariables = [
-        ["--deep", "Fundo escuro"],
-        ["--deep-2", "Fundo secundário"],
-        ["--ink", "Texto claro"],
-        ["--line", "Bordas"],
-        ["--purple", "Roxo da paleta"]
-    ];
-
-    paletteVariables.forEach(function ([variable, label]) {
-        const color = rootStyles.getPropertyValue(variable).trim();
-
-        if (!color) return;
-
-        const option = document.createElement("option");
-        option.value = color;
-        option.textContent = label;
-
-        backgroundSelect.appendChild(option);
+    onSelected(input.fontSize, 'input', function (component) {
+        component.style.fontSize = input.fontSize.value + 'px';
     });
-}
 
-/* Altera o fundo do componente selecionado */
-if (backgroundSelect) {
-    backgroundSelect.addEventListener("change", function () {
-        const component = getDimensionComponent();
+    onSelected(input.bold, 'change', function (component) {
+        const weight = input.bold.checked ? '700' : '400';
 
-        if (!component) {
-            alert("Selecione um componente da prévia primeiro.");
-            backgroundSelect.value = "";
-            return;
-        }
-
-        if (backgroundSelect.value === "") {
-            component.style.removeProperty("background-color");
-            return;
-        }
-
-        component.style.backgroundColor = backgroundSelect.value;
+        treeOf(component).forEach(function (element) {
+            element.style.fontWeight = weight;
+        });
     });
-}
 
-/* Atualiza a largura */
-if (widthInput && widthValue) {
-    widthInput.addEventListener("input", function () {
-        const component = getDimensionComponent();
-
-        widthValue.textContent = `${widthInput.value}%`;
-
-        if (!component) return;
-
-        component.style.width = `${widthInput.value}%`;
-        component.style.maxWidth = "100%";
-        component.style.boxSizing = "border-box";
+    onSelected(input.padding, 'input', function (component) {
+        component.style.padding = input.padding.value + 'px';
     });
-}
 
-/* Atualiza a altura */
-if (heightInput && heightValue) {
-    heightInput.addEventListener("input", function () {
-        const component = getDimensionComponent();
-        const height = Number(heightInput.value);
+    onSelected(input.margin, 'input', function (component) {
+        component.style.margin = input.margin.value + 'px';
+    });
 
-        heightValue.textContent = height === 0
-            ? "Automática"
-            : `${height} px`;
+    onSelected(input.width, 'input', function (component) {
+        component.style.width = input.width.value + '%';
+        component.style.maxWidth = '100%';
+        component.style.boxSizing = 'border-box';
+    });
 
-        if (!component) return;
+    onSelected(input.height, 'input', function (component) {
+        const height = Number(input.height.value);
 
         if (height === 0) {
-            component.style.removeProperty("height");
-            component.style.removeProperty("min-height");
-        } else {
-            component.style.height = `${height}px`;
-            component.style.minHeight = "0";
-            component.style.boxSizing = "border-box";
+            component.style.removeProperty('height');
+            return;
         }
+
+        component.style.height = height + 'px';
+        component.style.boxSizing = 'border-box';
     });
-}
-
-/* Atualiza os controles ao selecionar outro componente */
-if (dimensionCanvas) {
-    dimensionCanvas.addEventListener("click", function () {
-        const component = getDimensionComponent();
-
-        if (!component) return;
-
-        const styles = getComputedStyle(component);
-        const width = styles.width;
-        const height = styles.height;
-
-        if (widthInput && widthValue) {
-            const percentage = component.parentElement
-                ? (component.offsetWidth /
-                   component.parentElement.clientWidth) * 100
-                : 100;
-
-            const safeWidth = Math.min(
-                100,
-                Math.max(10, Math.round(percentage))
-            );
-
-            widthInput.value = safeWidth;
-            widthValue.textContent = `${safeWidth}%`;
-        }
-
-        if (heightInput && heightValue) {
-            const hasCustomHeight =
-                component.style.height !== "";
-
-            const currentHeight = hasCustomHeight
-                ? Math.round(parseFloat(height))
-                : 0;
-
-            heightInput.value = currentHeight;
-            heightValue.textContent = currentHeight === 0
-                ? "Automática"
-                : `${currentHeight} px`;
-        }
-
-        if (backgroundSelect) {
-            backgroundSelect.value = "";
-        }
-    });
-}
 
 
-/* ========================================
-   PERSONALIZAÇÃO RGB E TIPOGRAFIA
-   ======================================== */
+    /* ---------- Tema: cores e tipografia ---------- */
 
-(function initVisualSettings() {
-    const canvas = document.querySelector("#preview-canvas");
+    const scopeSelect = $('#visual-scope');
+    const targetSelect = $('#rgb-target');
+    const redInput = $('#rgb-red');
+    const greenInput = $('#rgb-green');
+    const blueInput = $('#rgb-blue');
+    const rgbPreview = $('#rgb-preview');
+    const rgbValue = $('#rgb-value');
 
-    // A personalização só funciona na página do editor.
-    if (!canvas) return;
+    const fontNameInput = $('#font-family-input');
+    const fontUrlInput = $('#font-url-input');
+    const fontFileInput = $('#font-file-input');
+    const fontPreview = $('#font-preview');
 
-    const scopeSelect = document.querySelector("#visual-scope");
-    const targetSelect = document.querySelector("#rgb-target");
-
-    const redInput = document.querySelector("#rgb-red");
-    const greenInput = document.querySelector("#rgb-green");
-    const blueInput = document.querySelector("#rgb-blue");
-
-    const rgbPreview = document.querySelector("#rgb-preview");
-    const rgbValue = document.querySelector("#rgb-value");
-    const applyRgbButton = document.querySelector("#apply-rgb");
-
-    const fontNameInput = document.querySelector("#font-family-input");
-    const fontUrlInput = document.querySelector("#font-url-input");
-    const fontFileInput = document.querySelector("#font-file-input");
-
-    const loadFontButton = document.querySelector("#load-font-url");
-    const applyFontButton = document.querySelector("#apply-font");
-    const fontPreview = document.querySelector("#font-preview-text");
-
-    let loadedFontName = "";
-    let uploadedFontUrl = "";
-
-    // Recupera o componente selecionado.
-    function getSelected() {
-        return canvas.querySelector(
-            ".editor-component.is-selected"
-        );
-    }
+    let loadedFontName = '';
+    let uploadedFontUrl = '';
 
     // Decide se a mudança será individual ou global.
     function getTargets() {
-        if (scopeSelect.value === "all") {
-            return Array.from(
-                canvas.querySelectorAll(".editor-component")
-            );
-        }
-
-        const selected = getSelected();
+        if (scopeSelect.value === 'all') return allComponents();
 
         return selected ? [selected] : [];
     }
 
-    // Limita cada canal RGB ao intervalo permitido.
-    function getChannelValue(input) {
-        const value = Number(input.value);
+    function requireTargets() {
+        const targets = getTargets();
 
-        if (input.value.trim() === "" || !Number.isFinite(value)) {
-            return null;
+        if (targets.length === 0) {
+            alert('Adicione um componente ou selecione um componente na prévia.');
         }
 
-        return Math.min(255, Math.max(0, Math.round(value)));
+        return targets;
     }
 
-    // Monta e atualiza a cor RGB.
     function getRgbColor() {
-        const r = getChannelValue(redInput);
-        const g = getChannelValue(greenInput);
-        const b = getChannelValue(blueInput);
+        const channels = [redInput, greenInput, blueInput].map(function (item) {
+            const value = Number(item.value);
 
-        if (r === null || g === null || b === null) {
-            return null;
-        }
+            if (item.value.trim() === '' || !Number.isFinite(value)) return null;
 
-        redInput.value = r;
-        greenInput.value = g;
-        blueInput.value = b;
+            return Math.min(255, Math.max(0, Math.round(value)));
+        });
 
-        return `rgb(${r}, ${g}, ${b})`;
+        if (channels.includes(null)) return null;
+
+        return 'rgb(' + channels.join(', ') + ')';
     }
 
     function updateRgbPreview() {
         const color = getRgbColor();
 
         if (!color) {
-            rgbValue.textContent = "Informe valores de 0 a 255.";
+            rgbValue.textContent = 'Informe valores de 0 a 255.';
             return;
         }
 
@@ -589,69 +569,63 @@ if (dimensionCanvas) {
         rgbValue.textContent = color;
     }
 
-    [redInput, greenInput, blueInput].forEach(function (input) {
-        input.addEventListener("input", updateRgbPreview);
-        input.addEventListener("change", updateRgbPreview);
+    [redInput, greenInput, blueInput].forEach(function (item) {
+        item.addEventListener('input', updateRgbPreview);
     });
 
-    updateRgbPreview();
+    function setBackground(targets, color) {
+        targets.forEach(function (component) {
+            component.style.backgroundColor = color;
+        });
+    }
 
-    // Aplica a cor de texto ou de fundo.
-    applyRgbButton.addEventListener("click", function () {
+    function setTextColor(targets, color) {
+        targets.forEach(function (component) {
+            treeOf(component).forEach(function (element) {
+                element.style.color = color;
+            });
+        });
+    }
+
+    $('#apply-rgb').addEventListener('click', function () {
         const color = getRgbColor();
 
         if (!color) {
-            alert("Preencha os três valores RGB entre 0 e 255.");
+            alert('Preencha os três valores RGB entre 0 e 255.');
             return;
         }
 
-        const targets = getTargets();
+        const targets = requireTargets();
 
-        if (targets.length === 0) {
-            alert(
-                "Adicione um componente ou selecione um componente na prévia."
-            );
-            return;
+        if (targets.length === 0) return;
+
+        if (targetSelect.value === 'background') {
+            setBackground(targets, color);
+        } else {
+            setTextColor(targets, color);
         }
-
-        const property = targetSelect.value;
-
-        targets.forEach(function (component) {
-            if (property === "backgroundColor") {
-                component.style.backgroundColor = color;
-            } else {
-                // Aplica também ao conteúdo interno, como o texto dos botões.
-                component.style.color = color;
-
-                component.querySelectorAll("[data-content]").forEach(
-                    function (element) {
-                        element.style.color = color;
-                    }
-                );
-            }
-        });
     });
 
-    // Atualiza a demonstração da tipografia.
-    function updateFontPreview() {
-        const fontName = fontNameInput.value.trim();
+    input.background.addEventListener('input', function () {
+        const targets = getTargets();
 
-        if (fontName) {
-            fontPreview.style.fontFamily = `"${fontName}", sans-serif`;
-        } else {
-            fontPreview.style.fontFamily = "";
-        }
+        if (targets.length > 0) setBackground(targets, input.background.value);
+    });
+
+    function updateFontPreview() {
+        const name = fontNameInput.value.trim();
+
+        fontPreview.style.fontFamily = name ? '"' + name + '", sans-serif' : '';
     }
 
-    fontNameInput.addEventListener("input", updateFontPreview);
+    fontNameInput.addEventListener('input', updateFontPreview);
 
-    // Carrega uma folha CSS externa que disponibilize a fonte.
-    loadFontButton.addEventListener("click", function () {
+    $('#load-font-url').addEventListener('click', function () {
         const url = fontUrlInput.value.trim();
-        const fontName = fontNameInput.value.trim();
+        const name = fontNameInput.value.trim();
 
-        if (!url || !fontName) {
-            alert("Informe o nome da fonte e o link da folha CSS.");
+        if (!url || !name) {
+            alert('Informe o nome da fonte e o link da folha CSS.');
             return;
         }
 
@@ -660,359 +634,136 @@ if (dimensionCanvas) {
         try {
             parsedUrl = new URL(url);
         } catch {
-            alert("Informe um endereço de URL válido.");
+            alert('Informe um endereço de URL válido.');
             return;
         }
 
-        if (!["https:", "http:"].includes(parsedUrl.protocol)) {
-            alert("O link precisa utilizar HTTP ou HTTPS.");
+        if (!['https:', 'http:'].includes(parsedUrl.protocol)) {
+            alert('O link precisa utilizar HTTP ou HTTPS.');
             return;
         }
 
-        // Reaproveita a folha se o mesmo link já estiver carregado.
-        let fontLink = document.querySelector("#custom-font-stylesheet");
+        let fontLink = $('#custom-font-stylesheet');
 
         if (!fontLink) {
-            fontLink = document.createElement("link");
-            fontLink.id = "custom-font-stylesheet";
-            fontLink.rel = "stylesheet";
+            fontLink = document.createElement('link');
+            fontLink.id = 'custom-font-stylesheet';
+            fontLink.rel = 'stylesheet';
             document.head.appendChild(fontLink);
         }
 
-        fontLink.href = parsedUrl.href;
-        loadedFontName = fontName;
+        loadedFontName = name;
 
         fontLink.onload = function () {
             updateFontPreview();
-
-            alert(
-                "Folha de estilos carregada. Confira se a fonte está disponível."
-            );
+            alert('Folha de estilos carregada. Confira se a fonte está disponível.');
         };
 
         fontLink.onerror = function () {
-            alert(
-                "Não foi possível carregar a folha CSS. Verifique o link e a conexão."
-            );
+            alert('Não foi possível carregar a folha CSS. Verifique o link e a conexão.');
         };
+
+        fontLink.href = parsedUrl.href;
     });
 
-    // Permite carregar arquivos de fonte do computador.
-    fontFileInput.addEventListener("change", async function () {
+    fontFileInput.addEventListener('change', async function () {
         const file = fontFileInput.files[0];
-        const fontName = fontNameInput.value.trim();
+        const name = fontNameInput.value.trim();
 
         if (!file) return;
 
-        if (!fontName) {
-            alert("Digite um nome para a fonte antes de carregá-la.");
-            fontFileInput.value = "";
+        if (!name) {
+            alert('Digite um nome para a fonte antes de carregá-la.');
+            fontFileInput.value = '';
             return;
         }
 
-        const allowedExtensions = /\.(ttf|otf|woff2?)$/i;
-
-        if (!allowedExtensions.test(file.name)) {
-            alert("Formato não suportado. Use TTF, OTF, WOFF ou WOFF2.");
-            fontFileInput.value = "";
+        if (!/\.(ttf|otf|woff2?)$/i.test(file.name)) {
+            alert('Formato não suportado. Use TTF, OTF, WOFF ou WOFF2.');
+            fontFileInput.value = '';
             return;
         }
 
-        // Limite para evitar o carregamento acidental de arquivos enormes.
         if (file.size > 10 * 1024 * 1024) {
-            alert("O arquivo precisa ter no máximo 10 MB.");
-            fontFileInput.value = "";
+            alert('O arquivo precisa ter no máximo 10 MB.');
+            fontFileInput.value = '';
             return;
         }
+
+        const fileUrl = URL.createObjectURL(file);
 
         try {
-            const fileUrl = URL.createObjectURL(file);
-            const fontFace = new FontFace(
-                fontName,
-                `url("${fileUrl}")`
-            );
+            const fontFace = new FontFace(name, 'url("' + fileUrl + '")');
 
             await fontFace.load();
             document.fonts.add(fontFace);
 
-            if (uploadedFontUrl) {
-                URL.revokeObjectURL(uploadedFontUrl);
-            }
+            if (uploadedFontUrl) URL.revokeObjectURL(uploadedFontUrl);
 
             uploadedFontUrl = fileUrl;
-            loadedFontName = fontName;
+            loadedFontName = name;
 
             updateFontPreview();
-
-            alert("Fonte carregada com sucesso!");
+            alert('Fonte carregada com sucesso!');
         } catch (error) {
-            console.error("Erro ao carregar a fonte:", error);
-            alert(
-                "Não foi possível carregar essa fonte. Verifique o arquivo."
-            );
+            URL.revokeObjectURL(fileUrl);
+            console.error('Erro ao carregar a fonte:', error);
+            alert('Não foi possível carregar essa fonte. Verifique o arquivo.');
         }
     });
 
-    // Aplica a fonte carregada ou uma fonte já disponível no navegador.
-    applyFontButton.addEventListener("click", function () {
-        const fontName = fontNameInput.value.trim();
+    $('#apply-font').addEventListener('click', function () {
+        const name = fontNameInput.value.trim();
 
-        if (!fontName) {
-            alert("Digite o nome da fonte que deseja utilizar.");
+        if (!name) {
+            alert('Digite o nome da fonte que deseja utilizar.');
             return;
         }
 
-        const targets = getTargets();
+        const targets = requireTargets();
 
-        if (targets.length === 0) {
-            alert(
-                "Adicione um componente ou selecione um componente na prévia."
-            );
-            return;
-        }
+        if (targets.length === 0) return;
 
-        const isLoaded = document.fonts.check(
-            `16px "${fontName}"`
-        );
+        const isLoaded = document.fonts.check('16px "' + name + '"');
 
-        if (!isLoaded && fontName !== loadedFontName) {
+        if (!isLoaded && name !== loadedFontName) {
             const useFont = confirm(
-                "Não foi possível confirmar se essa fonte está carregada. " +
-                "Deseja aplicá-la mesmo assim? Ela poderá aparecer com uma fonte substituta."
+                'Não foi possível confirmar se essa fonte está carregada. ' +
+                'Deseja aplicá-la mesmo assim? Ela poderá aparecer com uma fonte substituta.'
             );
 
             if (!useFont) return;
         }
 
         targets.forEach(function (component) {
-            component.style.fontFamily = `"${fontName}", sans-serif`;
-
-            component.querySelectorAll("*").forEach(
-                function (element) {
-                    element.style.fontFamily = "inherit";
-                }
-            );
+            treeOf(component).forEach(function (element) {
+                element.style.fontFamily = '"' + name + '", sans-serif';
+            });
         });
 
         updateFontPreview();
     });
-})();
+
+    updateRgbPreview();
 
 
+    /* ---------- Temas prontos ---------- */
 
-/* ========================================
-   ABAS DO EDITOR — ELYTRA TECH
-   ======================================== */
-
-(function initEditorTabs() {
-    const editor = document.querySelector(".editor-layout");
-
-    if (!editor) return;
-
-    const tabButtons = editor.querySelectorAll("[data-editor-tab]");
-    const panels = editor.querySelectorAll("[data-editor-panel]");
-    const canvas = document.querySelector("#preview-canvas");
-    const previewArea = document.querySelector("#editor-preview-area");
-    const welcome = document.querySelector("#editor-workspace-welcome");
-    const workspaceTitle = document.querySelector("#editor-workspace-title");
-    const openPreviewButton = document.querySelector("#open-editor-preview");
-    const layersList = document.querySelector("#editor-layers-list");
-
-    const tabTitles = {
-        components: "Componentes",
-        layers: "Camadas",
-        properties: "Propriedades",
-        themes: "Personalização do tema",
-        preview: "Prévia do site"
-    };
-
-    function openTab(tabName) {
-        tabButtons.forEach(function (button) {
-            const active = button.dataset.editorTab === tabName;
-
-            button.classList.toggle("is-active", active);
-            button.setAttribute("aria-pressed", String(active));
-        });
-
-        panels.forEach(function (panel) {
-            panel.hidden = panel.dataset.editorPanel !== tabName;
-        });
-
-        if (previewArea) {
-            previewArea.hidden = false;
-        }
-
-        if (welcome) {
-            welcome.hidden = true;
-        }
-
-        if (workspaceTitle) {
-            workspaceTitle.textContent = tabTitles[tabName] || "Editor";
-        }
-
-        if (tabName === "layers") {
-            updateLayers();
-        }
-    }
-
-    function getComponentName(component, index) {
-        const type = component.dataset.type || component.tagName.toLowerCase();
-
-        const names = {
-            header: "Cabeçalho",
-            title: "Título",
-            text: "Texto",
-            button: "Botão",
-            section: "Seção"
-        };
-
-        const content = component.textContent.trim().replace(/\s+/g, " ");
-        const name = names[type] || "Componente";
-        const description = content ? " — " + content.slice(0, 20) : "";
-
-        return (index + 1) + ". " + name + description;
-    }
-
-    function updateLayers() {
-        if (!canvas || !layersList) return;
-
-        const components = canvas.querySelectorAll(".editor-component");
-
-        layersList.replaceChildren();
-
-        if (components.length === 0) {
-            const emptyMessage = document.createElement("p");
-            emptyMessage.className = "editor-empty-layers";
-            emptyMessage.textContent = "Nenhum componente adicionado.";
-            layersList.appendChild(emptyMessage);
-            return;
-        }
-
-        components.forEach(function (component, index) {
-            const layer = document.createElement("button");
-
-            layer.type = "button";
-            layer.className = "editor-layer-item";
-            layer.textContent = getComponentName(component, index);
-
-            if (component.classList.contains("is-selected")) {
-                layer.classList.add("is-active");
-            }
-
-            layer.addEventListener("click", function () {
-                canvas.querySelectorAll(".editor-component").forEach(function (item) {
-                    item.classList.remove("is-selected");
-                });
-
-                component.classList.add("is-selected");
-
-                // Aciona os listeners de seleção já existentes no editor.
-                component.dispatchEvent(new MouseEvent("click", {
-                    bubbles: true
-                }));
-
-                openTab("properties");
-                updateLayers();
-            });
-
-            layersList.appendChild(layer);
-        });
-    }
-
-    tabButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-            openTab(button.dataset.editorTab);
-        });
-    });
-
-    if (openPreviewButton) {
-        openPreviewButton.addEventListener("click", function () {
-            openTab("preview");
-        });
-    }
-
-    if (canvas) {
-        canvas.addEventListener("click", function () {
-            requestAnimationFrame(updateLayers);
-        });
-    }
-
-    editor.querySelectorAll("[data-add]").forEach(function (button) {
-        button.addEventListener("click", function () {
-            requestAnimationFrame(updateLayers);
-        });
-    });
-
-    const clearButton = document.querySelector("#clear-preview");
-
-    if (clearButton) {
-        clearButton.addEventListener("click", function () {
-            requestAnimationFrame(updateLayers);
-        });
-    }
-
-    const removeButton = document.querySelector("#remove-component");
-
-    if (removeButton) {
-        removeButton.addEventListener("click", function () {
-            requestAnimationFrame(updateLayers);
-        });
-    }
-
-    // Abre a aba Componentes ao carregar.
-    openTab("components");
-    updateLayers();
-})();
-
-
-/* ========================================
-   TEMAS PRONTOS — ELYTRA TECH
-   ======================================== */
-
-(function initEditorThemes() {
-    const canvas = document.querySelector("#preview-canvas");
-    const themeSelect = document.querySelector("#editor-theme-select");
-    const applyButton = document.querySelector("#apply-editor-theme");
-    const themePreview = document.querySelector("#editor-theme-preview");
-
-    if (!canvas || !themeSelect || !applyButton) return;
+    const themeSelect = $('#editor-theme-select');
+    const themePreview = $('#editor-theme-preview');
 
     const themes = {
-        elytra: {
-            background: "#0d0b12",
-            text: "#f2edf5",
-            accent: "#ff4fc3",
-            surface: "#171020"
-        },
-        purple: {
-            background: "#171020",
-            text: "#f2edf5",
-            accent: "#a855f7",
-            surface: "#271333"
-        },
-        pink: {
-            background: "#1b101b",
-            text: "#f2edf5",
-            accent: "#ff4fc3",
-            surface: "#351329"
-        },
-        minimal: {
-            background: "#08080c",
-            text: "#f2edf5",
-            accent: "#7b2cbf",
-            surface: "#17131f"
-        }
+        elytra: { background: '#0d0b12', text: '#f2edf5', accent: '#ff4fc3', surface: '#171020' },
+        purple: { background: '#171020', text: '#f2edf5', accent: '#a855f7', surface: '#271333' },
+        pink: { background: '#1b101b', text: '#f2edf5', accent: '#ff4fc3', surface: '#351329' },
+        minimal: { background: '#08080c', text: '#f2edf5', accent: '#7b2cbf', surface: '#17131f' }
     };
 
-    function updateThemePreview() {
-        if (themePreview) {
-            themePreview.dataset.theme = themeSelect.value;
-        }
-    }
+    themeSelect.addEventListener('change', function () {
+        themePreview.dataset.theme = themeSelect.value;
+    });
 
-    themeSelect.addEventListener("change", updateThemePreview);
-
-    applyButton.addEventListener("click", function () {
+    $('#apply-editor-theme').addEventListener('click', function () {
         const theme = themes[themeSelect.value];
 
         if (!theme) return;
@@ -1020,38 +771,118 @@ if (dimensionCanvas) {
         canvas.style.backgroundColor = theme.background;
         canvas.style.color = theme.text;
 
-        canvas.querySelectorAll(".editor-component").forEach(function (component) {
-            component.style.color = theme.text;
+        allComponents().forEach(function (component) {
+            const type = component.dataset.type;
+
+            setTextColor([component], theme.text);
             component.style.borderColor = theme.accent;
 
-            if (component.matches("button")) {
-                component.style.backgroundColor = theme.accent;
-                component.style.color = theme.text;
+            if (type === 'header' || type === 'section') {
+                component.style.backgroundColor = theme.surface;
             }
 
-            if (component.matches("section, header")) {
-                component.style.backgroundColor = theme.surface;
+            if (type === 'button') {
+                contentOf(component).style.background = theme.accent;
             }
         });
     });
 
-    updateThemePreview();
-})();
+    themePreview.dataset.theme = themeSelect.value;
 
 
+    /* ---------- Abas e camadas ---------- */
 
-/* ========================================
-   HISTÓRICO — DESFAZER E REFAZER
-   ELYTRA TECH
-   ======================================== */
+    const tabButtons = $$('[data-editor-tab]');
+    const panels = $$('[data-editor-panel]');
+    const workspaceTitle = $('#editor-workspace-title');
+    const layersList = $('#editor-layers-list');
 
-(function initEditorHistory() {
-    const canvas = document.querySelector("#preview-canvas");
-    const undoButton = document.querySelector("#editor-undo");
-    const redoButton = document.querySelector("#editor-redo");
+    const tabTitles = {
+        components: 'Componentes',
+        layers: 'Camadas',
+        properties: 'Propriedades',
+        themes: 'Personalização do tema',
+        preview: 'Prévia do site'
+    };
 
-    if (!canvas || !undoButton || !redoButton) return;
+    const typeNames = {
+        header: 'Cabeçalho',
+        title: 'Título',
+        text: 'Texto',
+        button: 'Botão',
+        section: 'Seção'
+    };
 
+    function openTab(tabName) {
+        tabButtons.forEach(function (button) {
+            const active = button.dataset.editorTab === tabName;
+
+            button.classList.toggle('is-active', active);
+            button.setAttribute('aria-pressed', String(active));
+        });
+
+        panels.forEach(function (panel) {
+            panel.hidden = panel.dataset.editorPanel !== tabName;
+        });
+
+        workspaceTitle.textContent = tabTitles[tabName] || 'Editor';
+
+        if (tabName === 'layers') updateLayers();
+    }
+
+    function layerName(component, index) {
+        const name = typeNames[component.dataset.type] || 'Componente';
+        const text = component.textContent.trim().replace(/\s+/g, ' ');
+
+        return (index + 1) + '. ' + name + (text ? ' — ' + text.slice(0, 20) : '');
+    }
+
+    function updateLayers() {
+        const components = allComponents();
+
+        layersList.replaceChildren();
+
+        if (components.length === 0) {
+            const empty = document.createElement('p');
+
+            empty.className = 'editor-empty-layers';
+            empty.textContent = 'Nenhum componente adicionado.';
+            layersList.appendChild(empty);
+            return;
+        }
+
+        components.forEach(function (component, index) {
+            const layer = document.createElement('button');
+
+            layer.type = 'button';
+            layer.className = 'editor-layer-item';
+            layer.textContent = layerName(component, index);
+            layer.classList.toggle('is-active', component === selected);
+
+            layer.addEventListener('click', function () {
+                selectComponent(component);
+                openTab('properties');
+            });
+
+            layersList.appendChild(layer);
+        });
+    }
+
+    tabButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            openTab(button.dataset.editorTab);
+        });
+    });
+
+    $('#open-editor-preview').addEventListener('click', function () {
+        openTab('preview');
+    });
+
+
+    /* ---------- Histórico: desfazer e refazer ---------- */
+
+    const undoButton = $('#editor-undo');
+    const redoButton = $('#editor-redo');
     const MAX_HISTORY = 50;
 
     let history = [];
@@ -1060,20 +891,17 @@ if (dimensionCanvas) {
     let restoring = false;
 
     function getSnapshot() {
-        const components = Array.from(
-            canvas.querySelectorAll(":scope > .editor-component")
-        ).map(function (component) {
+        const components = allComponents().map(function (component) {
             const clone = component.cloneNode(true);
 
-            // A seleção visual não precisa fazer parte do histórico.
-            clone.classList.remove("is-selected");
+            clone.classList.remove('is-selected');
 
             return clone.outerHTML;
         });
 
         return JSON.stringify({
             components: components,
-            canvasStyle: canvas.getAttribute("style")
+            canvasStyle: canvas.getAttribute('style')
         });
     }
 
@@ -1087,105 +915,60 @@ if (dimensionCanvas) {
 
         const snapshot = getSnapshot();
 
-        // Evita guardar estados repetidos.
         if (history[historyIndex] === snapshot) return;
 
         // Uma nova alteração descarta o histórico futuro.
         history = history.slice(0, historyIndex + 1);
         history.push(snapshot);
 
-        if (history.length > MAX_HISTORY) {
-            history.shift();
-        }
+        if (history.length > MAX_HISTORY) history.shift();
 
         historyIndex = history.length - 1;
         updateButtons();
     }
 
-    function scheduleSnapshot() {
+    // Agrupa alterações rápidas (digitação, controles deslizantes).
+    function scheduleSave() {
         if (restoring) return;
 
         clearTimeout(debounceTimer);
-
-        // Agrupa alterações rápidas, como digitação e controles deslizantes.
         debounceTimer = setTimeout(function () {
             saveSnapshot();
+            updateLayers();
         }, 300);
     }
 
     function restoreSnapshot(snapshot) {
-        if (!snapshot) return;
+        const state = JSON.parse(snapshot);
 
         clearTimeout(debounceTimer);
         restoring = true;
 
-        const state = JSON.parse(snapshot);
-
-        // Desconecta temporariamente o observador para não registrar
-        // a restauração como uma nova alteração.
-        observer.disconnect();
-
-        canvas.querySelectorAll(":scope > .editor-component").forEach(
-            function (component) {
-                component.remove();
-            }
-        );
-
-        if (state.canvasStyle === null) {
-            canvas.removeAttribute("style");
-        } else {
-            canvas.setAttribute("style", state.canvasStyle);
-        }
-
-        const template = document.createElement("template");
-        template.innerHTML = state.components.join("");
-
-        canvas.appendChild(template.content);
-
-        const emptyMessage = document.querySelector("#editor-empty");
-        const fields = document.querySelector("#editor-fields");
-        const hint = document.querySelector("#editor-hint");
-
-        const components = canvas.querySelectorAll(".editor-component");
-
-        if (emptyMessage) {
-            emptyMessage.hidden = components.length > 0;
-        }
-
-        if (components.length > 0) {
-            // Selecionar o primeiro componente atualiza também
-            // as referências internas do editor original.
-            components[0].dispatchEvent(new MouseEvent("click", {
-                bubbles: true
-            }));
-        } else {
-            if (fields) fields.hidden = true;
-            if (hint) hint.hidden = false;
-        }
-
-        observer.observe(canvas, {
-            subtree: true,
-            childList: true,
-            characterData: true,
-            attributes: true,
-            attributeFilter: ["style"]
+        allComponents().forEach(function (component) {
+            component.remove();
         });
 
-        restoring = false;
-
-        // Atualiza a lista de camadas, se ela estiver presente.
-        const layersList = document.querySelector("#editor-layers-list");
-
-        if (layersList) {
-            const layerTab = document.querySelector(
-                '[data-editor-tab="layers"]'
-            );
-
-            if (layerTab) {
-                layerTab.click();
-            }
+        if (state.canvasStyle === null) {
+            canvas.removeAttribute('style');
+        } else {
+            canvas.setAttribute('style', state.canvasStyle);
         }
 
+        const template = document.createElement('template');
+
+        template.innerHTML = state.components.join('');
+        canvas.appendChild(template.content);
+
+        // Descarta os registros gerados pela restauração.
+        observer.takeRecords();
+        restoring = false;
+
+        selected = null;
+        fields.hidden = true;
+        hint.hidden = false;
+
+        refreshEmpty();
+        updateLayers();
         updateButtons();
     }
 
@@ -1203,26 +986,43 @@ if (dimensionCanvas) {
         restoreSnapshot(history[historyIndex]);
     }
 
-    const observer = new MutationObserver(function () {
-        scheduleSnapshot();
-    });
+    // Um único observador cuida do histórico e da lista de camadas.
+    const observer = new MutationObserver(scheduleSave);
 
     observer.observe(canvas, {
         subtree: true,
         childList: true,
         characterData: true,
         attributes: true,
-        attributeFilter: ["style"]
+        attributeFilter: ['style']
     });
 
-    undoButton.addEventListener("click", function () {
-        undo();
+    undoButton.addEventListener('click', undo);
+    redoButton.addEventListener('click', redo);
+
+    document.addEventListener('keydown', function (event) {
+        if (!(event.ctrlKey || event.metaKey)) return;
+
+        // Não interfere no desfazer nativo dos campos de texto.
+        if (event.target.closest('textarea, input[type="text"], input[type="url"]')) {
+            return;
+        }
+
+        const key = event.key.toLowerCase();
+
+        if (key === 'z' && !event.shiftKey) {
+            event.preventDefault();
+            undo();
+        } else if (key === 'y' || (key === 'z' && event.shiftKey)) {
+            event.preventDefault();
+            redo();
+        }
     });
 
-    redoButton.addEventListener("click", function () {
-        redo();
-    });
 
-    // Salva o estado inicial do editor.
+    /* ---------- Início ---------- */
+
+    openTab('components');
+    updateLayers();
     saveSnapshot();
 })();
