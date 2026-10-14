@@ -75,7 +75,7 @@ form.addEventListener('submit', async (event) => {
         });
 
         mostrar('Usuário cadastrado com sucesso!', 'green');
-        setTimeout(() => window.location.href = 'editor.html', 1200);
+        setTimeout(() => window.location.href = 'index.html', 1200);
     } catch (erro) {
         mostrar(traduzErro(erro.code), 'red');
         botao.disabled = false;

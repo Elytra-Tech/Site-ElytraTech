@@ -64,7 +64,7 @@ form.addEventListener('submit', async (event) => {
     try {
         await signInWithEmailAndPassword(auth, email, senha);
         mostrar('Login efetuado com sucesso!', 'green');
-        setTimeout(() => window.location.href = 'editor.html', 800);
+        setTimeout(() => window.location.href = 'index.html', 800);
     } catch (erro) {
         mostrar(traduzErro(erro.code), 'red');
         botao.disabled = false;
