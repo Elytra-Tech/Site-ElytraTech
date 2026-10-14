@@ -1,99 +1,378 @@
+/* ========================================
+   UTILITÁRIOS
+   ======================================== */
 
-/* =========================================
-   MENU MOBILE - ELYTRA TECH
-========================================= */
+const $ = (selector, scope = document) => scope.querySelector(selector);
+const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 
-const menuBtn = document.querySelector('.Color-button-anim');
-const navList = document.querySelector('.STYcabecalho ul');
 
-if (menuBtn && navList) {
-    menuBtn.setAttribute('aria-expanded', 'false');
+/* ========================================
+   MENU RESPONSIVO DO SITE
+   ======================================== */
 
-    menuBtn.addEventListener('click', () => {
-        const menuAberto = navList.classList.toggle('open');
+(function initMenu() {
+    const menuBtn = $('.Color-button-anim');
+    const navList = $('.STYcabecalho ul');
 
-        menuBtn.setAttribute('aria-expanded', String(menuAberto));
-        menuBtn.setAttribute(
-            'aria-label',
-            menuAberto ? 'Fechar menu' : 'Abrir menu'
-        );
+    if (!menuBtn || !navList) return;
+
+    menuBtn.addEventListener('click', function () {
+        navList.classList.toggle('open');
     });
 
-    document.querySelectorAll('.STYcabecalho ul a').forEach(link => {
-        link.addEventListener('click', () => {
-            navList.classList.remove('open');
-            menuBtn.setAttribute('aria-expanded', 'false');
-            menuBtn.setAttribute('aria-label', 'Abrir menu');
+    navList.addEventListener('click', function (event) {
+        if (event.target.closest('a')) navList.classList.remove('open');
+    });
+})();
+
+
+/* ========================================
+   ACESSIBILIDADE (painel #a11y)
+   ======================================== */
+
+(function initA11y() {
+    const toggle = $('#a11y-toggle');
+    const panel = $('#a11y-panel');
+
+    if (!toggle || !panel) return;
+
+    const root = document.documentElement;
+    const classes = {
+        'high-contrast': 'a11y-contrast',
+        'grayscale': 'a11y-gray',
+        'highlight-links': 'a11y-links',
+        'no-motion': 'a11y-nomotion'
+    };
+
+    let zoom = 1;
+
+    function setOpen(open) {
+        panel.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+    }
+
+    function applyZoom() {
+        zoom = Math.min(1.4, Math.max(0.8, zoom));
+        document.body.style.zoom = zoom === 1 ? '' : zoom;
+    }
+
+    toggle.addEventListener('click', function () {
+        setOpen(panel.hidden);
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!panel.hidden && !event.target.closest('.a11y')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !panel.hidden) {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
+
+    panel.addEventListener('click', function (event) {
+        const button = event.target.closest('button[data-action]');
+
+        if (!button) return;
+
+        const action = button.dataset.action;
+
+        if (action === 'font-up') {
+            zoom += 0.1;
+            applyZoom();
+        } else if (action === 'font-down') {
+            zoom -= 0.1;
+            applyZoom();
+        } else if (action === 'reset') {
+            zoom = 1;
+            applyZoom();
+
+            Object.values(classes).forEach(function (name) {
+                root.classList.remove(name);
+            });
+
+            $$('[aria-pressed]', panel).forEach(function (item) {
+                item.setAttribute('aria-pressed', 'false');
+            });
+        } else if (classes[action]) {
+            const active = root.classList.toggle(classes[action]);
+            button.setAttribute('aria-pressed', String(active));
+        }
+    });
+})();
+
+
+/* ========================================
+   PARTÍCULAS DO FUNDO (leve e pausável)
+   ======================================== */
+
+(function initParticles() {
+    const cv = $('#particles');
+
+    if (!cv) return;
+
+    const ctx = cv.getContext('2d');
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const count = window.innerWidth < 700 ? 25 : 50;
+    const maxDistance = 120;
+
+    let width = 0;
+    let height = 0;
+    let dots = [];
+
+    function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        width = window.innerWidth;
+        height = window.innerHeight;
+        cv.width = width * dpr;
+        cv.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function createDots() {
+        dots = Array.from({ length: count }, function () {
+            return {
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                r: Math.random() * 1.5 + 0.5
+            };
         });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < dots.length; i++) {
+            const a = dots[i];
+
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.7)';
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+            ctx.fill();
+
+            for (let j = i + 1; j < dots.length; j++) {
+                const b = dots[j];
+                const dx = a.x - b.x;
+                const dy = a.y - b.y;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist < maxDistance) {
+                    ctx.strokeStyle =
+                        'rgba(255, 79, 195, ' + (0.15 * (1 - dist / maxDistance)) + ')';
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function update() {
+        dots.forEach(function (dot) {
+            dot.x += dot.vx;
+            dot.y += dot.vy;
+
+            if (dot.x < 0 || dot.x > width) dot.vx *= -1;
+            if (dot.y < 0 || dot.y > height) dot.vy *= -1;
+        });
+    }
+
+    function isPaused() {
+        return document.hidden ||
+            reduceMotion.matches ||
+            root.classList.contains('a11y-nomotion') ||
+            document.body.classList.contains('alto-contraste');
+    }
+
+    function frame() {
+        if (isPaused()) {
+            // Quando pausado, verifica de novo só a cada meio segundo.
+            setTimeout(function () {
+                requestAnimationFrame(frame);
+            }, 500);
+            return;
+        }
+
+        update();
+        draw();
+        requestAnimationFrame(frame);
+    }
+
+    let resizeTimer;
+
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            resize();
+            createDots();
+        }, 150);
     });
-}
+
+    resize();
+    createDots();
+    draw();
+    requestAnimationFrame(frame);
+})();
 
 
 /* ========================================
    EDITOR VISUAL - ELYTRA TECH
+   Tudo do editor fica dentro deste bloco,
+   compartilhando o mesmo estado.
    ======================================== */
 
-const canvas = document.querySelector('#preview-canvas');
+(function initEditor() {
+    const canvas = $('#preview-canvas');
 
-if (canvas) {
-    const emptyMessage = document.querySelector('#editor-empty');
-    const fields = document.querySelector('#editor-fields');
-    const hint = document.querySelector('#editor-hint');
-    const contentInput = document.querySelector('#component-content');
-    const colorInput = document.querySelector('#component-color');
-    const removeButton = document.querySelector('#remove-component');
-    const clearButton = document.querySelector('#clear-preview');
+    // Só executa na página do editor.
+    if (!canvas) return;
 
-    let selectedComponent = null;
+    /* ---------- Referências ---------- */
 
+    const emptyMessage = $('#editor-empty');
+    const fields = $('#editor-fields');
+    const hint = $('#editor-hint');
+
+    const input = {
+        content: $('#component-content'),
+        color: $('#component-color'),
+        fontSize: $('#font-size'),
+        bold: $('#bold-toggle'),
+        padding: $('#padding-size'),
+        margin: $('#margin-size'),
+        width: $('#component-width'),
+        height: $('#component-height'),
+        background: $('#background-color')
+    };
+
+    // Textos que mostram o valor atual dos controles deslizantes.
+    const valueLabel = {
+        fontSize: $('#font-size-value'),
+        padding: $('#padding-size-value'),
+        margin: $('#margin-size-value')
+    };
+
+    const alignButtons = $$('.alignment-button');
+    const positionButtons = $$('.position-button');
     const defaultColor = '#f2edf5';
+
+    let selected = null;
+
+
+    /* ---------- Funções auxiliares ---------- */
+
+    function contentOf(component) {
+        return $('[data-content]', component);
+    }
+
+    // O componente e todos os elementos dentro dele.
+    function treeOf(component) {
+        return [component].concat($$('*', component));
+    }
+
+    function allComponents() {
+        return $$(':scope > .editor-component', canvas);
+    }
+
+    function refreshEmpty() {
+        emptyMessage.hidden = allComponents().length > 0;
+    }
+
+    // Converte cores RGB para hexadecimal.
+    function rgbToHex(color) {
+        if (color.startsWith('#')) return color;
+
+        const values = color.match(/\d+/g);
+
+        if (!values || values.length < 3) return defaultColor;
+
+        return '#' + values.slice(0, 3).map(function (value) {
+            return Number(value).toString(16).padStart(2, '0');
+        }).join('');
+    }
+
+    // Executa uma ação no componente selecionado (se houver).
+    function onSelected(element, eventName, callback) {
+        element.addEventListener(eventName, function (event) {
+            if (selected) callback(selected, event);
+        });
+    }
+
+    function requireSelected() {
+        if (!selected) {
+            alert('Selecione um componente da prévia primeiro.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function setLabel(name, value) {
+        if (valueLabel[name]) valueLabel[name].textContent = value + ' px';
+    }
+
+    // Marca apenas o botão ativo de um grupo.
+    function markActive(buttons, activeButton) {
+        buttons.forEach(function (button) {
+            const active = button === activeButton;
+
+            button.classList.toggle('is-active', active);
+            button.classList.toggle('active', active);
+        });
+    }
+
+
+    /* ---------- Criação de componentes ---------- */
 
     // Cria um componente sem interpretar o texto como HTML.
     function createComponent(type) {
         const component = document.createElement('div');
+        let content;
 
-        component.classList.add('editor-component');
+        component.className = 'editor-component';
         component.dataset.type = type;
-
-        let content = document.createElement('div');
-        content.dataset.content = '';
 
         switch (type) {
             case 'header':
                 component.classList.add('editor-preview-header');
+                content = document.createElement('div');
                 content.textContent = 'Minha marca';
                 break;
 
             case 'title':
                 content = document.createElement('h2');
-                content.dataset.content = '';
                 content.textContent = 'Meu novo título';
                 break;
 
             case 'text':
                 content = document.createElement('p');
-                content.dataset.content = '';
                 content.textContent = 'Escreva seu texto aqui.';
                 break;
 
             case 'button':
                 content = document.createElement('button');
                 content.type = 'button';
-                content.classList.add('editor-preview-button');
+                content.className = 'editor-preview-cta';
                 content.textContent = 'Clique aqui';
                 break;
 
-            case 'section':
+            case 'section': {
                 component.classList.add('editor-preview-section');
 
                 const sectionTitle = document.createElement('h2');
                 sectionTitle.textContent = 'Minha seção';
+                component.appendChild(sectionTitle);
 
                 content = document.createElement('p');
                 content.textContent = 'Adicione uma descrição para esta seção.';
-
-                component.appendChild(sectionTitle);
                 break;
+            }
 
             default:
                 return null;
@@ -105,63 +384,75 @@ if (canvas) {
         return component;
     }
 
-    // Adiciona o componente à área de prévia.
     function addComponent(type) {
         const component = createComponent(type);
 
         if (!component) return;
 
         canvas.appendChild(component);
-        emptyMessage.hidden = true;
-
+        refreshEmpty();
         selectComponent(component);
     }
 
-    // Seleciona um componente e carrega suas propriedades.
+
+    /* ---------- Seleção ---------- */
+
     function selectComponent(component) {
-        if (selectedComponent) {
-            selectedComponent.classList.remove('is-selected');
-        }
+        if (selected) selected.classList.remove('is-selected');
 
-        selectedComponent = component;
-        selectedComponent.classList.add('is-selected');
+        selected = component;
+        selected.classList.add('is-selected');
 
-        const editableContent = selectedComponent.querySelector(
-            '[data-content]'
-        );
+        const content = contentOf(component);
+        const styles = getComputedStyle(component);
+        const contentStyles = getComputedStyle(content);
 
-        contentInput.value = editableContent.textContent;
-        colorInput.value = rgbToHex(
-            getComputedStyle(editableContent).color
+        const fontSize = parseInt(styles.fontSize, 10) || 24;
+        const padding = parseInt(styles.paddingTop, 10) || 0;
+        const margin = parseInt(styles.marginBottom, 10) || 0;
+
+        input.content.value = content.textContent;
+        input.color.value = rgbToHex(contentStyles.color);
+        input.fontSize.value = fontSize;
+        input.bold.checked = Number(contentStyles.fontWeight) >= 600;
+        input.padding.value = padding;
+        input.margin.value = margin;
+
+        // A largura pode estar em "fit-content" (posicionamento); nesse caso volta a 100.
+        input.width.value = component.style.width.endsWith('%')
+            ? parseInt(component.style.width, 10)
+            : 100;
+        input.height.value = component.style.height
+            ? parseInt(component.style.height, 10)
+            : 0;
+
+        setLabel('fontSize', fontSize);
+        setLabel('padding', padding);
+        setLabel('margin', margin);
+
+        markActive(
+            alignButtons,
+            alignButtons.find(function (button) {
+                return button.dataset.align === component.style.textAlign;
+            })
         );
 
         fields.hidden = false;
         hint.hidden = true;
+
+        updateLayers();
     }
 
-    // Atualiza o conteúdo enquanto você digita.
-    contentInput.addEventListener('input', function () {
-        if (!selectedComponent) return;
+    function deselect() {
+        if (selected) selected.classList.remove('is-selected');
 
-        const editableContent = selectedComponent.querySelector(
-            '[data-content]'
-        );
+        selected = null;
+        fields.hidden = true;
+        hint.hidden = false;
 
-        editableContent.textContent = contentInput.value;
-    });
+        updateLayers();
+    }
 
-    // Atualiza a cor do texto selecionado.
-    colorInput.addEventListener('input', function () {
-        if (!selectedComponent) return;
-
-        const editableContent = selectedComponent.querySelector(
-            '[data-content]'
-        );
-
-        editableContent.style.color = colorInput.value;
-    });
-
-    // Seleciona componentes clicados na prévia.
     canvas.addEventListener('click', function (event) {
         const component = event.target.closest('.editor-component');
 
@@ -170,642 +461,882 @@ if (canvas) {
         }
     });
 
-    // Botões para adicionar os componentes.
-    document.querySelectorAll('[data-add]').forEach(function (button) {
+    $$('[data-add]').forEach(function (button) {
         button.addEventListener('click', function () {
             addComponent(button.dataset.add);
         });
     });
 
-    // Remove somente o componente selecionado.
-    removeButton.addEventListener('click', function () {
-        if (!selectedComponent) return;
+    $('#remove-component').addEventListener('click', function () {
+        if (!selected) return;
 
-        selectedComponent.remove();
-        selectedComponent = null;
-
-        fields.hidden = true;
-        hint.hidden = false;
-        emptyMessage.hidden = canvas.querySelector(
-            '.editor-component'
-        ) !== null;
+        selected.remove();
+        deselect();
+        refreshEmpty();
     });
 
-    // Limpa toda a área de prévia.
-    clearButton.addEventListener('click', function () {
-        canvas.querySelectorAll('.editor-component').forEach(
-            function (component) {
-                component.remove();
-            }
-        );
-
-        selectedComponent = null;
-        fields.hidden = true;
-        hint.hidden = false;
-        emptyMessage.hidden = false;
-    });
-
-    // Converte cores RGB para hexadecimal.
-    function rgbToHex(color) {
-        if (color.startsWith('#')) return color;
-
-        const values = color.match(/\d+/g);
-
-        if (!values || values.length < 3) {
-            return defaultColor;
-        }
-
-        return '#' + values.slice(0, 3).map(function (value) {
-            return Number(value).toString(16).padStart(2, '0');
-        }).join('');
-    }
-}
-
-
-/* Alinhamento do texto no editor */
-const alignmentButtons = document.querySelectorAll(".alignment-button");
-
-alignmentButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-        const selectedComponent = document.querySelector(
-            "#preview-canvas .editor-component.is-selected"
-        );
-
-        if (!selectedComponent) {
-            alert("Selecione um componente da prévia primeiro.");
-            return;
-        }
-
-        const alignment = button.dataset.align;
-
-        selectedComponent.style.textAlign = alignment;
-
-        alignmentButtons.forEach(function (item) {
-            item.classList.remove("active");
+    $('#clear-preview').addEventListener('click', function () {
+        allComponents().forEach(function (component) {
+            component.remove();
         });
 
-        button.classList.add("active");
-    });
-});
-/* =========================================
-   ACESSIBILIDADE - ELYTRA TECH
-========================================= */
-
-const btnAcessibilidade = document.querySelector('#btnAcessibilidade');
-const painelAcessibilidade = document.querySelector('#painelAcessibilidade');
-
-const aumentarTexto = document.querySelector('#aumentarTexto');
-const diminuirTexto = document.querySelector('#diminuirTexto');
-const restaurarAcessibilidade = document.querySelector('#restaurarAcessibilidade');
-
-const alternarContraste = document.querySelector('#alternarContraste');
-
-const btnTemas = document.querySelector('#btnTemas');
-const opcoesTemas = document.querySelector('#opcoesTemas');
-
-const tipoDaltonismo = document.querySelector('#tipoDaltonismo');
-const destacarLinks = document.querySelector('#destacarLinks');
-
-let escalaTexto = 1;
-
-const elementosTexto = [
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'p', 'a', 'button', 'li', 'span',
-    'label', 'strong', 'em', 'small',
-    'input', 'textarea', 'select'
-].join(', ');
-
-
-/* =========================================
-   ABRIR E FECHAR O PAINEL
-========================================= */
-
-if (btnAcessibilidade && painelAcessibilidade) {
-    btnAcessibilidade.setAttribute('aria-expanded', 'false');
-
-    btnAcessibilidade.addEventListener('click', () => {
-        const vaiAbrir = painelAcessibilidade.hidden;
-
-        painelAcessibilidade.hidden = !vaiAbrir;
-
-        btnAcessibilidade.setAttribute(
-            'aria-expanded',
-            String(vaiAbrir)
-        );
+        deselect();
+        refreshEmpty();
     });
 
-    // Fechar com Escape
-    document.addEventListener('keydown', evento => {
-        if (evento.key === 'Escape') {
-            painelAcessibilidade.hidden = true;
 
-            btnAcessibilidade.setAttribute('aria-expanded', 'false');
+    /* ---------- Propriedades do componente ---------- */
 
-            if (opcoesTemas && btnTemas) {
-                opcoesTemas.hidden = true;
-                btnTemas.setAttribute('aria-expanded', 'false');
-            }
-
-            btnAcessibilidade.focus();
-        }
+    onSelected(input.content, 'input', function (component) {
+        contentOf(component).textContent = input.content.value;
     });
 
-    // Fechar ao clicar fora
-    document.addEventListener('click', evento => {
-        if (
-            evento.target instanceof Element &&
-            !evento.target.closest('.acessibilidade-container') &&
-            !painelAcessibilidade.hidden
-        ) {
-            painelAcessibilidade.hidden = true;
-
-            btnAcessibilidade.setAttribute('aria-expanded', 'false');
-        }
-    });
-}
-
-
-/* =========================================
-   AUMENTAR E DIMINUIR TEXTO
-========================================= */
-
-function aplicarEscalaTexto() {
-    document.querySelectorAll(elementosTexto).forEach(elemento => {
-        // Não modificar os textos do painel de acessibilidade
-        if (elemento.closest('.acessibilidade-container')) {
-            return;
-        }
-
-        // Guardar os tamanhos originais uma única vez
-        if (!elemento.dataset.tamanhoOriginal) {
-            elemento.dataset.tamanhoOriginal =
-                getComputedStyle(elemento).fontSize;
-
-            elemento.dataset.estiloOriginal =
-                elemento.style.fontSize;
-        }
-
-        const tamanhoOriginal = parseFloat(
-            elemento.dataset.tamanhoOriginal
-        );
-
-        elemento.style.fontSize =
-            `${tamanhoOriginal * escalaTexto}px`;
-    });
-}
-
-
-// Aumentar texto
-if (aumentarTexto) {
-    aumentarTexto.addEventListener('click', () => {
-        escalaTexto = Math.min(
-            Math.round((escalaTexto + 0.1) * 10) / 10,
-            1.5
-        );
-
-        aplicarEscalaTexto();
-    });
-}
-
-
-// Diminuir texto
-if (diminuirTexto) {
-    diminuirTexto.addEventListener('click', () => {
-        escalaTexto = Math.max(
-            Math.round((escalaTexto - 0.1) * 10) / 10,
-            0.8
-        );
-
-        aplicarEscalaTexto();
-    });
-}
-
-
-/* =========================================
-   TEMA CLARO E ESCURO
-========================================= */
-
-const opcoesTema = document.querySelectorAll(
-    'input[name="tema"]'
-);
-
-
-// Abrir e fechar opções de tema
-if (btnTemas && opcoesTemas) {
-    btnTemas.addEventListener('click', () => {
-        const vaiAbrir = opcoesTemas.hidden;
-
-        opcoesTemas.hidden = !vaiAbrir;
-
-        btnTemas.setAttribute(
-            'aria-expanded',
-            String(vaiAbrir)
-        );
-    });
-}
-
-
-// Aplicar tema selecionado
-opcoesTema.forEach(opcao => {
-    opcao.addEventListener('change', () => {
-        if (!opcao.checked) return;
-
-        document.body.classList.toggle(
-            'tema-claro',
-            opcao.value === 'claro'
-        );
-    });
-});
-
-
-/* Personalização avançada dos componentes */
-const fontSizeInput = document.querySelector("#font-size");
-const fontSizeValue = document.querySelector("#font-size-value");
-
-const paddingInput = document.querySelector("#padding-size");
-const paddingValue = document.querySelector("#padding-size-value");
-
-const marginInput = document.querySelector("#margin-size");
-const marginValue = document.querySelector("#margin-size-value");
-
-const boldToggle = document.querySelector("#bold-toggle");
-const positionButtons = document.querySelectorAll(".position-button");
-
-function getSelectedComponent() {
-    return document.querySelector(
-        "#preview-canvas .editor-component.is-selected"
-    );
-}
-
-/* Atualiza o tamanho da fonte */
-if (fontSizeInput && fontSizeValue) {
-    fontSizeInput.addEventListener("input", function () {
-        const component = getSelectedComponent();
-
-        fontSizeValue.textContent = `${fontSizeInput.value} px`;
-
-        if (component) {
-            component.style.fontSize = `${fontSizeInput.value}px`;
-        }
-    });
-}
-
-
-/* Ativa ou desativa o negrito */
-if (boldToggle) {
-    boldToggle.addEventListener("click", function () {
-        const component = getSelectedComponent();
-
-        if (!component) {
-            alert("Selecione um componente da prévia primeiro.");
-            return;
-        }
-
-        const currentWeight = window.getComputedStyle(component).fontWeight;
-        const isBold = Number(currentWeight) >= 600;
-
-        component.style.setProperty(
-            "font-weight",
-            isBold ? "400" : "700",
-            "important"
-        );
-
-        boldToggle.classList.toggle("active", !isBold);
-    });
-}
-
-
-/* Controla o espaçamento interno */
-if (paddingInput && paddingValue) {
-    paddingInput.addEventListener("input", function () {
-        const component = getSelectedComponent();
-
-        paddingValue.textContent = `${paddingInput.value} px`;
-
-        if (component) {
-            component.style.padding = `${paddingInput.value}px`;
-        }
-    });
-}
-
-/* Controla o espaçamento externo */
-if (marginInput && marginValue) {
-    marginInput.addEventListener("input", function () {
-        const component = getSelectedComponent();
-
-        marginValue.textContent = `${marginInput.value} px`;
-
-        if (component) {
-            component.style.margin = `${marginInput.value}px`;
-        }
-    });
-}
-
-/* Posiciona o componente */
-positionButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-        const component = getSelectedComponent();
-
-        if (!component) {
-            alert("Selecione um componente da prévia primeiro.");
-            return;
-        }
-
-        const position = button.dataset.position;
-
-        component.style.display = "block";
-        component.style.width = "fit-content";
-        component.style.maxWidth = "100%";
-
-        if (position === "left") {
-            component.style.marginLeft = "0";
-            component.style.marginRight = "auto";
-        } else if (position === "center") {
-            component.style.marginLeft = "auto";
-            component.style.marginRight = "auto";
-        } else {
-            component.style.marginLeft = "auto";
-            component.style.marginRight = "0";
-        }
-
-        positionButtons.forEach(function (item) {
-            item.classList.toggle("active", item === button);
+    onSelected(input.color, 'input', function (component) {
+        treeOf(component).forEach(function (element) {
+            element.style.color = input.color.value;
         });
     });
-});
 
+    // Alinhamento do texto
+    alignButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            if (!requireSelected()) return;
 
-/* ========================================
-   FUNDO, LARGURA E ALTURA DOS COMPONENTES
-   ======================================== */
-
-const backgroundSelect = document.querySelector("#background-color");
-const widthInput = document.querySelector("#component-width");
-const widthValue = document.querySelector("#component-width-value");
-const heightInput = document.querySelector("#component-height");
-const heightValue = document.querySelector("#component-height-value");
-
-const dimensionCanvas = document.querySelector("#preview-canvas");
-
-/* Retorna o componente atualmente selecionado */
-function getDimensionComponent() {
-    return document.querySelector(
-        "#preview-canvas .editor-component.is-selected"
-    );
-}
-
-/* Preenche o seletor usando as cores do tema existente */
-if (backgroundSelect) {
-    const rootStyles = getComputedStyle(document.documentElement);
-
-    const paletteVariables = [
-        ["--deep", "Fundo escuro"],
-        ["--deep-2", "Fundo secundário"],
-        ["--ink", "Texto claro"],
-        ["--line", "Bordas"],
-        ["--purple", "Roxo da paleta"]
-    ];
-
-    paletteVariables.forEach(function ([variable, label]) {
-        const color = rootStyles.getPropertyValue(variable).trim();
-
-        if (!color) return;
-
-        const option = document.createElement("option");
-        option.value = color;
-        option.textContent = label;
-
-        backgroundSelect.appendChild(option);
+            selected.style.textAlign = button.dataset.align;
+            markActive(alignButtons, button);
+        });
     });
-}
 
-/* Altera o fundo do componente selecionado */
-if (backgroundSelect) {
-    backgroundSelect.addEventListener("change", function () {
-        const component = getDimensionComponent();
+    // Posição do componente (esquerda, centro, direita)
+    positionButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            if (!requireSelected()) return;
 
-        if (!component) {
-            alert("Selecione um componente da prévia primeiro.");
-            backgroundSelect.value = "";
-            return;
-        }
+            const position = button.dataset.position;
 
-        if (backgroundSelect.value === "") {
-            component.style.removeProperty("background-color");
-            return;
-        }
+            selected.style.display = 'block';
+            selected.style.width = 'fit-content';
+            selected.style.maxWidth = '100%';
 
-        component.style.backgroundColor = backgroundSelect.value;
+            if (position === 'left') {
+                selected.style.marginLeft = '0';
+                selected.style.marginRight = 'auto';
+            } else if (position === 'center') {
+                selected.style.marginLeft = 'auto';
+                selected.style.marginRight = 'auto';
+            } else {
+                selected.style.marginLeft = 'auto';
+                selected.style.marginRight = '0';
+            }
+
+            markActive(positionButtons, button);
+        });
     });
-}
 
-/* Atualiza a largura */
-if (widthInput && widthValue) {
-    widthInput.addEventListener("input", function () {
-        const component = getDimensionComponent();
-
-        widthValue.textContent = `${widthInput.value}%`;
-
-        if (!component) return;
-
-        component.style.width = `${widthInput.value}%`;
-        component.style.maxWidth = "100%";
-        component.style.boxSizing = "border-box";
+    onSelected(input.fontSize, 'input', function (component) {
+        component.style.fontSize = input.fontSize.value + 'px';
+        setLabel('fontSize', input.fontSize.value);
     });
-}
 
-/* Atualiza a altura */
-if (heightInput && heightValue) {
-    heightInput.addEventListener("input", function () {
-        const component = getDimensionComponent();
-        const height = Number(heightInput.value);
+    onSelected(input.bold, 'change', function (component) {
+        const weight = input.bold.checked ? '700' : '400';
 
-        heightValue.textContent = height === 0
-            ? "Automática"
-            : `${height} px`;
+        treeOf(component).forEach(function (element) {
+            element.style.fontWeight = weight;
+        });
+    });
 
-        if (!component) return;
+    onSelected(input.padding, 'input', function (component) {
+        component.style.padding = input.padding.value + 'px';
+        setLabel('padding', input.padding.value);
+    });
+
+    onSelected(input.margin, 'input', function (component) {
+        component.style.margin = input.margin.value + 'px';
+        setLabel('margin', input.margin.value);
+    });
+
+    onSelected(input.width, 'input', function (component) {
+        component.style.width = input.width.value + '%';
+        component.style.maxWidth = '100%';
+        component.style.boxSizing = 'border-box';
+    });
+
+    onSelected(input.height, 'input', function (component) {
+        const height = Number(input.height.value);
 
         if (height === 0) {
-            component.style.removeProperty("height");
-            component.style.removeProperty("min-height");
+            component.style.removeProperty('height');
+            return;
+        }
+
+        component.style.height = height + 'px';
+        component.style.boxSizing = 'border-box';
+    });
+
+    // Os rótulos dos controles começam com o valor inicial.
+    setLabel('fontSize', input.fontSize.value);
+    setLabel('padding', input.padding.value);
+    setLabel('margin', input.margin.value);
+
+
+    /* ---------- Tema: cores e tipografia ---------- */
+
+    const scopeSelect = $('#visual-scope');
+    const targetSelect = $('#rgb-target');
+    const redInput = $('#rgb-red');
+    const greenInput = $('#rgb-green');
+    const blueInput = $('#rgb-blue');
+    const rgbPreview = $('#rgb-preview');
+    const rgbValue = $('#rgb-value');
+
+    const fontNameInput = $('#font-family-input');
+    const fontUrlInput = $('#font-url-input');
+    const fontFileInput = $('#font-file-input');
+    const fontPreview = $('#font-preview');
+
+    let loadedFontName = '';
+    let uploadedFontUrl = '';
+
+    // Decide se a mudança será individual ou global.
+    function getTargets() {
+        if (scopeSelect.value === 'all') return allComponents();
+
+        return selected ? [selected] : [];
+    }
+
+    function requireTargets() {
+        const targets = getTargets();
+
+        if (targets.length === 0) {
+            alert('Adicione um componente ou selecione um componente na prévia.');
+        }
+
+        return targets;
+    }
+
+    function getRgbColor() {
+        const channels = [redInput, greenInput, blueInput].map(function (item) {
+            const value = Number(item.value);
+
+            if (item.value.trim() === '' || !Number.isFinite(value)) return null;
+
+            return Math.min(255, Math.max(0, Math.round(value)));
+        });
+
+        if (channels.includes(null)) return null;
+
+        return 'rgb(' + channels.join(', ') + ')';
+    }
+
+    function updateRgbPreview() {
+        const color = getRgbColor();
+
+        if (!color) {
+            rgbValue.textContent = 'Informe valores de 0 a 255.';
+            return;
+        }
+
+        rgbPreview.style.backgroundColor = color;
+        rgbValue.textContent = color;
+    }
+
+    [redInput, greenInput, blueInput].forEach(function (item) {
+        item.addEventListener('input', updateRgbPreview);
+    });
+
+    function setBackground(targets, color) {
+        targets.forEach(function (component) {
+            component.style.backgroundColor = color;
+        });
+    }
+
+    function setTextColor(targets, color) {
+        targets.forEach(function (component) {
+            treeOf(component).forEach(function (element) {
+                element.style.color = color;
+            });
+        });
+    }
+
+    $('#apply-rgb').addEventListener('click', function () {
+        const color = getRgbColor();
+
+        if (!color) {
+            alert('Preencha os três valores RGB entre 0 e 255.');
+            return;
+        }
+
+        const targets = requireTargets();
+
+        if (targets.length === 0) return;
+
+        if (targetSelect.value === 'background') {
+            setBackground(targets, color);
         } else {
-            component.style.height = `${height}px`;
-            component.style.minHeight = "0";
-            component.style.boxSizing = "border-box";
+            setTextColor(targets, color);
         }
     });
-}
 
-/* Atualiza os controles ao selecionar outro componente */
-if (dimensionCanvas) {
-    dimensionCanvas.addEventListener("click", function () {
-        const component = getDimensionComponent();
+    input.background.addEventListener('input', function () {
+        const targets = getTargets();
 
-        if (!component) return;
+        if (targets.length > 0) setBackground(targets, input.background.value);
+    });
 
-        const styles = getComputedStyle(component);
-        const width = styles.width;
-        const height = styles.height;
+    function updateFontPreview() {
+        const name = fontNameInput.value.trim();
 
-        if (widthInput && widthValue) {
-            const percentage = component.parentElement
-                ? (component.offsetWidth /
-                   component.parentElement.clientWidth) * 100
-                : 100;
+        fontPreview.style.fontFamily = name ? '"' + name + '", sans-serif' : '';
+    }
 
-            const safeWidth = Math.min(
-                100,
-                Math.max(10, Math.round(percentage))
+    fontNameInput.addEventListener('input', updateFontPreview);
+
+    $('#load-font-url').addEventListener('click', function () {
+        const url = fontUrlInput.value.trim();
+        const name = fontNameInput.value.trim();
+
+        if (!url || !name) {
+            alert('Informe o nome da fonte e o link da folha CSS.');
+            return;
+        }
+
+        let parsedUrl;
+
+        try {
+            parsedUrl = new URL(url);
+        } catch {
+            alert('Informe um endereço de URL válido.');
+            return;
+        }
+
+        if (!['https:', 'http:'].includes(parsedUrl.protocol)) {
+            alert('O link precisa utilizar HTTP ou HTTPS.');
+            return;
+        }
+
+        let fontLink = $('#custom-font-stylesheet');
+
+        if (!fontLink) {
+            fontLink = document.createElement('link');
+            fontLink.id = 'custom-font-stylesheet';
+            fontLink.rel = 'stylesheet';
+            document.head.appendChild(fontLink);
+        }
+
+        loadedFontName = name;
+
+        fontLink.onload = function () {
+            updateFontPreview();
+            alert('Folha de estilos carregada. Confira se a fonte está disponível.');
+        };
+
+        fontLink.onerror = function () {
+            alert('Não foi possível carregar a folha CSS. Verifique o link e a conexão.');
+        };
+
+        fontLink.href = parsedUrl.href;
+    });
+
+    fontFileInput.addEventListener('change', async function () {
+        const file = fontFileInput.files[0];
+        const name = fontNameInput.value.trim();
+
+        if (!file) return;
+
+        if (!name) {
+            alert('Digite um nome para a fonte antes de carregá-la.');
+            fontFileInput.value = '';
+            return;
+        }
+
+        if (!/\.(ttf|otf|woff2?)$/i.test(file.name)) {
+            alert('Formato não suportado. Use TTF, OTF, WOFF ou WOFF2.');
+            fontFileInput.value = '';
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            alert('O arquivo precisa ter no máximo 10 MB.');
+            fontFileInput.value = '';
+            return;
+        }
+
+        const fileUrl = URL.createObjectURL(file);
+
+        try {
+            const fontFace = new FontFace(name, 'url("' + fileUrl + '")');
+
+            await fontFace.load();
+            document.fonts.add(fontFace);
+
+            if (uploadedFontUrl) URL.revokeObjectURL(uploadedFontUrl);
+
+            uploadedFontUrl = fileUrl;
+            loadedFontName = name;
+
+            updateFontPreview();
+            alert('Fonte carregada com sucesso!');
+        } catch (error) {
+            URL.revokeObjectURL(fileUrl);
+            console.error('Erro ao carregar a fonte:', error);
+            alert('Não foi possível carregar essa fonte. Verifique o arquivo.');
+        }
+    });
+
+    $('#apply-font').addEventListener('click', function () {
+        const name = fontNameInput.value.trim();
+
+        if (!name) {
+            alert('Digite o nome da fonte que deseja utilizar.');
+            return;
+        }
+
+        const targets = requireTargets();
+
+        if (targets.length === 0) return;
+
+        const isLoaded = document.fonts.check('16px "' + name + '"');
+
+        if (!isLoaded && name !== loadedFontName) {
+            const useFont = confirm(
+                'Não foi possível confirmar se essa fonte está carregada. ' +
+                'Deseja aplicá-la mesmo assim? Ela poderá aparecer com uma fonte substituta.'
             );
 
-            widthInput.value = safeWidth;
-            widthValue.textContent = `${safeWidth}%`;
+            if (!useFont) return;
         }
 
-        if (heightInput && heightValue) {
-            const hasCustomHeight =
-                component.style.height !== "";
+        targets.forEach(function (component) {
+            treeOf(component).forEach(function (element) {
+                element.style.fontFamily = '"' + name + '", sans-serif';
+            });
+        });
 
-            const currentHeight = hasCustomHeight
-                ? Math.round(parseFloat(height))
-                : 0;
+        updateFontPreview();
+    });
 
-            heightInput.value = currentHeight;
-            heightValue.textContent = currentHeight === 0
-                ? "Automática"
-                : `${currentHeight} px`;
+    updateRgbPreview();
+
+
+    /* ---------- Temas prontos ---------- */
+
+    const themeSelect = $('#editor-theme-select');
+    const themePreview = $('#editor-theme-preview');
+
+    const themes = {
+        elytra: { background: '#0d0b12', text: '#f2edf5', accent: '#ff4fc3', surface: '#171020' },
+        purple: { background: '#171020', text: '#f2edf5', accent: '#a855f7', surface: '#271333' },
+        pink: { background: '#1b101b', text: '#f2edf5', accent: '#ff4fc3', surface: '#351329' },
+        minimal: { background: '#08080c', text: '#f2edf5', accent: '#7b2cbf', surface: '#17131f' }
+    };
+
+    themeSelect.addEventListener('change', function () {
+        themePreview.dataset.theme = themeSelect.value;
+    });
+
+    $('#apply-editor-theme').addEventListener('click', function () {
+        const theme = themes[themeSelect.value];
+
+        if (!theme) return;
+
+        canvas.style.backgroundColor = theme.background;
+        canvas.style.color = theme.text;
+
+        allComponents().forEach(function (component) {
+            const type = component.dataset.type;
+
+            setTextColor([component], theme.text);
+            component.style.borderColor = theme.accent;
+
+            if (type === 'header' || type === 'section') {
+                component.style.backgroundColor = theme.surface;
+            }
+
+            if (type === 'button') {
+                contentOf(component).style.background = theme.accent;
+            }
+        });
+    });
+
+    themePreview.dataset.theme = themeSelect.value;
+
+
+    /* ---------- Abas e camadas ---------- */
+
+    const tabButtons = $$('[data-editor-tab]');
+    const panels = $$('[data-editor-panel]');
+    const workspaceTitle = $('#editor-workspace-title');
+    const layersList = $('#editor-layers-list');
+
+    const tabTitles = {
+        components: 'Componentes',
+        layers: 'Camadas',
+        properties: 'Propriedades',
+        themes: 'Personalização do tema',
+        preview: 'Prévia do site'
+    };
+
+    const typeNames = {
+        header: 'Cabeçalho',
+        title: 'Título',
+        text: 'Texto',
+        button: 'Botão',
+        section: 'Seção'
+    };
+
+    function openTab(tabName) {
+        tabButtons.forEach(function (button) {
+            const active = button.dataset.editorTab === tabName;
+
+            button.classList.toggle('is-active', active);
+            button.setAttribute('aria-pressed', String(active));
+        });
+
+        panels.forEach(function (panel) {
+            panel.hidden = panel.dataset.editorPanel !== tabName;
+        });
+
+        workspaceTitle.textContent = tabTitles[tabName] || 'Editor';
+
+        if (tabName === 'layers') updateLayers();
+    }
+
+    function layerName(component, index) {
+        const name = typeNames[component.dataset.type] || 'Componente';
+        const text = component.textContent.trim().replace(/\s+/g, ' ');
+
+        return (index + 1) + '. ' + name + (text ? ' — ' + text.slice(0, 20) : '');
+    }
+
+    function updateLayers() {
+        const components = allComponents();
+
+        layersList.replaceChildren();
+
+        if (components.length === 0) {
+            const empty = document.createElement('p');
+
+            empty.className = 'editor-empty-layers';
+            empty.textContent = 'Nenhum componente adicionado.';
+            layersList.appendChild(empty);
+            return;
         }
 
-        if (backgroundSelect) {
-            backgroundSelect.value = "";
+        components.forEach(function (component, index) {
+            const layer = document.createElement('button');
+
+            layer.type = 'button';
+            layer.className = 'editor-layer-item';
+            layer.textContent = layerName(component, index);
+            layer.classList.toggle('is-active', component === selected);
+
+            layer.addEventListener('click', function () {
+                selectComponent(component);
+                openTab('properties');
+            });
+
+            layersList.appendChild(layer);
+        });
+    }
+
+    tabButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            openTab(button.dataset.editorTab);
+        });
+    });
+
+    $('#open-editor-preview').addEventListener('click', function () {
+        openTab('preview');
+    });
+
+
+    /* ---------- Histórico: desfazer e refazer ---------- */
+
+    const undoButton = $('#editor-undo');
+    const redoButton = $('#editor-redo');
+    const MAX_HISTORY = 50;
+
+    let history = [];
+    let historyIndex = -1;
+    let debounceTimer = null;
+    let restoring = false;
+
+    function getSnapshot() {
+        const components = allComponents().map(function (component) {
+            const clone = component.cloneNode(true);
+
+            clone.classList.remove('is-selected');
+
+            return clone.outerHTML;
+        });
+
+        return JSON.stringify({
+            components: components,
+            canvasStyle: canvas.getAttribute('style')
+        });
+    }
+
+    function updateButtons() {
+        undoButton.disabled = historyIndex <= 0;
+        redoButton.disabled = historyIndex >= history.length - 1;
+    }
+
+    function saveSnapshot() {
+        if (restoring) return;
+
+        const snapshot = getSnapshot();
+
+        if (history[historyIndex] === snapshot) return;
+
+        // Uma nova alteração descarta o histórico futuro.
+        history = history.slice(0, historyIndex + 1);
+        history.push(snapshot);
+
+        if (history.length > MAX_HISTORY) history.shift();
+
+        historyIndex = history.length - 1;
+        updateButtons();
+    }
+
+    // Agrupa alterações rápidas (digitação, controles deslizantes).
+    function scheduleSave() {
+        if (restoring) return;
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+            saveSnapshot();
+            updateLayers();
+        }, 300);
+    }
+
+    function restoreSnapshot(snapshot) {
+        const state = JSON.parse(snapshot);
+
+        clearTimeout(debounceTimer);
+        restoring = true;
+
+        allComponents().forEach(function (component) {
+            component.remove();
+        });
+
+        if (state.canvasStyle === null) {
+            canvas.removeAttribute('style');
+        } else {
+            canvas.setAttribute('style', state.canvasStyle);
+        }
+
+        const template = document.createElement('template');
+
+        template.innerHTML = state.components.join('');
+        canvas.appendChild(template.content);
+
+        // Descarta os registros gerados pela restauração.
+        observer.takeRecords();
+        restoring = false;
+
+        selected = null;
+        fields.hidden = true;
+        hint.hidden = false;
+
+        refreshEmpty();
+        updateLayers();
+        updateButtons();
+    }
+
+    function undo() {
+        if (historyIndex <= 0) return;
+
+        historyIndex--;
+        restoreSnapshot(history[historyIndex]);
+    }
+
+    function redo() {
+        if (historyIndex >= history.length - 1) return;
+
+        historyIndex++;
+        restoreSnapshot(history[historyIndex]);
+    }
+
+    // Um único observador cuida do histórico e da lista de camadas.
+    const observer = new MutationObserver(scheduleSave);
+
+    observer.observe(canvas, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ['style']
+    });
+
+    undoButton.addEventListener('click', undo);
+    redoButton.addEventListener('click', redo);
+
+    document.addEventListener('keydown', function (event) {
+        if (!(event.ctrlKey || event.metaKey)) return;
+
+        // Não interfere no desfazer nativo dos campos de texto.
+        if (event.target.closest('textarea, input[type="text"], input[type="url"]')) {
+            return;
+        }
+
+        const key = event.key.toLowerCase();
+
+        if (key === 'z' && !event.shiftKey) {
+            event.preventDefault();
+            undo();
+        } else if (key === 'y' || (key === 'z' && event.shiftKey)) {
+            event.preventDefault();
+            redo();
         }
     });
-}
+
+
+    /* ---------- Início ---------- */
+
+    openTab('components');
+    updateLayers();
+    saveSnapshot();
+})();
+
+
 /* =========================================
-   ALTO CONTRASTE
+   ACESSIBILIDADE - ELYTRA TECH
+   (painel #btnAcessibilidade)
 ========================================= */
 
-if (alternarContraste) {
-    alternarContraste.setAttribute('aria-pressed', 'false');
+(function initAcessibilidade() {
+    const btnAcessibilidade = $('#btnAcessibilidade');
+    const painelAcessibilidade = $('#painelAcessibilidade');
 
-    alternarContraste.addEventListener('click', () => {
-        const ativo = document.body.classList.toggle('alto-contraste');
+    const aumentarTexto = $('#aumentarTexto');
+    const diminuirTexto = $('#diminuirTexto');
+    const restaurarAcessibilidade = $('#restaurarAcessibilidade');
 
-        alternarContraste.setAttribute(
-            'aria-pressed',
-            String(ativo)
-        );
+    const alternarContraste = $('#alternarContraste');
+
+    const btnTemas = $('#btnTemas');
+    const opcoesTemas = $('#opcoesTemas');
+
+    const tipoDaltonismo = $('#tipoDaltonismo');
+    const destacarLinks = $('#destacarLinks');
+
+    let escalaTexto = 1;
+
+    const elementosTexto = [
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'p', 'a', 'button', 'li', 'span',
+        'label', 'strong', 'em', 'small',
+        'input', 'textarea', 'select'
+    ].join(', ');
+
+
+    /* ---------- Abrir e fechar o painel ---------- */
+
+    if (btnAcessibilidade && painelAcessibilidade) {
+        btnAcessibilidade.setAttribute('aria-expanded', 'false');
+
+        btnAcessibilidade.addEventListener('click', () => {
+            const vaiAbrir = painelAcessibilidade.hidden;
+
+            painelAcessibilidade.hidden = !vaiAbrir;
+            btnAcessibilidade.setAttribute('aria-expanded', String(vaiAbrir));
+        });
+
+        // Fechar com Escape
+        document.addEventListener('keydown', evento => {
+            if (evento.key === 'Escape') {
+                painelAcessibilidade.hidden = true;
+                btnAcessibilidade.setAttribute('aria-expanded', 'false');
+
+                if (opcoesTemas && btnTemas) {
+                    opcoesTemas.hidden = true;
+                    btnTemas.setAttribute('aria-expanded', 'false');
+                }
+
+                btnAcessibilidade.focus();
+            }
+        });
+
+        // Fechar ao clicar fora
+        document.addEventListener('click', evento => {
+            if (
+                evento.target instanceof Element &&
+                !evento.target.closest('.acessibilidade-container') &&
+                !painelAcessibilidade.hidden
+            ) {
+                painelAcessibilidade.hidden = true;
+                btnAcessibilidade.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+
+    /* ---------- Aumentar e diminuir texto ---------- */
+
+    function aplicarEscalaTexto() {
+        document.querySelectorAll(elementosTexto).forEach(elemento => {
+            // Não modificar o painel de acessibilidade nem a prévia do editor
+            if (
+                elemento.closest('.acessibilidade-container') ||
+                elemento.closest('#preview-canvas')
+            ) {
+                return;
+            }
+
+            // Guardar os tamanhos originais uma única vez
+            if (!elemento.dataset.tamanhoOriginal) {
+                elemento.dataset.tamanhoOriginal = getComputedStyle(elemento).fontSize;
+                elemento.dataset.estiloOriginal = elemento.style.fontSize;
+            }
+
+            const tamanhoOriginal = parseFloat(elemento.dataset.tamanhoOriginal);
+
+            elemento.style.fontSize = `${tamanhoOriginal * escalaTexto}px`;
+        });
+    }
+
+    if (aumentarTexto) {
+        aumentarTexto.addEventListener('click', () => {
+            escalaTexto = Math.min(Math.round((escalaTexto + 0.1) * 10) / 10, 1.5);
+            aplicarEscalaTexto();
+        });
+    }
+
+    if (diminuirTexto) {
+        diminuirTexto.addEventListener('click', () => {
+            escalaTexto = Math.max(Math.round((escalaTexto - 0.1) * 10) / 10, 0.8);
+            aplicarEscalaTexto();
+        });
+    }
+
+
+    /* ---------- Tema claro e escuro ---------- */
+
+    const opcoesTema = document.querySelectorAll('input[name="tema"]');
+
+    // Abrir e fechar opções de tema
+    if (btnTemas && opcoesTemas) {
+        btnTemas.addEventListener('click', () => {
+            const vaiAbrir = opcoesTemas.hidden;
+
+            opcoesTemas.hidden = !vaiAbrir;
+            btnTemas.setAttribute('aria-expanded', String(vaiAbrir));
+        });
+    }
+
+    // Aplicar tema selecionado
+    opcoesTema.forEach(opcao => {
+        opcao.addEventListener('change', () => {
+            if (!opcao.checked) return;
+
+            document.body.classList.toggle('tema-claro', opcao.value === 'claro');
+        });
     });
-}
 
 
-/* =========================================
-   ADAPTAÇÕES PARA DALTONISMO
-========================================= */
+    /* ---------- Alto contraste ---------- */
 
-const classesDaltonismo = [
-    'daltonismo-protanopia',
-    'daltonismo-deuteranopia',
-    'daltonismo-tritanopia'
-];
+    if (alternarContraste) {
+        alternarContraste.setAttribute('aria-pressed', 'false');
 
-function aplicarDaltonismo(tipo) {
-    // Remover qualquer adaptação anterior
-    document.body.classList.remove(...classesDaltonismo);
+        alternarContraste.addEventListener('click', () => {
+            const ativo = document.body.classList.toggle('alto-contraste');
 
-    // Só adicionar uma classe quando houver seleção
-    if (
-        ['protanopia', 'deuteranopia', 'tritanopia'].includes(tipo)
-    ) {
-        document.body.classList.add(`daltonismo-${tipo}`);
+            alternarContraste.setAttribute('aria-pressed', String(ativo));
+        });
+    }
+
+
+    /* ---------- Adaptações para daltonismo ---------- */
+
+    const classesDaltonismo = [
+        'daltonismo-protanopia',
+        'daltonismo-deuteranopia',
+        'daltonismo-tritanopia'
+    ];
+
+    function aplicarDaltonismo(tipo) {
+        // Remover qualquer adaptação anterior
+        document.body.classList.remove(...classesDaltonismo);
+
+        // Só adicionar uma classe quando houver seleção
+        if (['protanopia', 'deuteranopia', 'tritanopia'].includes(tipo)) {
+            document.body.classList.add(`daltonismo-${tipo}`);
+        }
+
+        if (tipoDaltonismo) {
+            tipoDaltonismo.value = tipo;
+        }
     }
 
     if (tipoDaltonismo) {
-        tipoDaltonismo.value = tipo;
+        tipoDaltonismo.addEventListener('change', () => {
+            aplicarDaltonismo(tipoDaltonismo.value);
+        });
+
+        // Não ativar nenhuma adaptação automaticamente
+        aplicarDaltonismo('nenhum');
     }
-}
-
-if (tipoDaltonismo) {
-    tipoDaltonismo.addEventListener('change', () => {
-        aplicarDaltonismo(tipoDaltonismo.value);
-    });
-
-    // Não ativar nenhuma adaptação automaticamente
-    aplicarDaltonismo('nenhum');
-}
 
 
-/* =========================================
-   DESTACAR LINKS
-========================================= */
+    /* ---------- Destacar links ---------- */
 
-if (destacarLinks) {
-    destacarLinks.addEventListener('change', () => {
-        const ativo = destacarLinks.checked;
+    if (destacarLinks) {
+        destacarLinks.addEventListener('change', () => {
+            const ativo = destacarLinks.checked;
 
-        document.body.classList.toggle('links-destacados', ativo);
-
-        destacarLinks.setAttribute(
-            'aria-pressed',
-            String(ativo)
-        );
-    });
-}
+            document.body.classList.toggle('links-destacados', ativo);
+            destacarLinks.setAttribute('aria-pressed', String(ativo));
+        });
+    }
 
 
-/* =========================================
-   RESTAURAR CONFIGURAÇÕES PADRÃO
-========================================= */
+    /* ---------- Restaurar configurações padrão ---------- */
 
-if (restaurarAcessibilidade) {
-    restaurarAcessibilidade.addEventListener('click', () => {
+    if (restaurarAcessibilidade) {
+        restaurarAcessibilidade.addEventListener('click', () => {
 
-        // Restaurar tamanhos do texto
-        escalaTexto = 1;
+            // Restaurar tamanhos do texto
+            escalaTexto = 1;
 
-        document.querySelectorAll('[data-tamanho-original]')
-            .forEach(elemento => {
-                elemento.style.fontSize =
-                    elemento.dataset.estiloOriginal || '';
+            document.querySelectorAll('[data-tamanho-original]').forEach(elemento => {
+                elemento.style.fontSize = elemento.dataset.estiloOriginal || '';
 
                 delete elemento.dataset.tamanhoOriginal;
                 delete elemento.dataset.estiloOriginal;
             });
 
-        // Restaurar tema escuro
-        document.body.classList.remove('tema-claro');
+            // Restaurar tema escuro
+            document.body.classList.remove('tema-claro');
 
-        const temaEscuro = document.querySelector(
-            'input[name="tema"][value="escuro"]'
-        );
+            const temaEscuro = document.querySelector('input[name="tema"][value="escuro"]');
 
-        if (temaEscuro) {
-            temaEscuro.checked = true;
-        }
+            if (temaEscuro) temaEscuro.checked = true;
 
-        // Restaurar cores originais
-        aplicarDaltonismo('nenhum');
+            // Restaurar cores originais
+            aplicarDaltonismo('nenhum');
 
-        // Desativar alto contraste
-        document.body.classList.remove('alto-contraste');
+            // Desativar alto contraste
+            document.body.classList.remove('alto-contraste');
 
-        if (alternarContraste) {
-            alternarContraste.setAttribute('aria-pressed', 'false');
-        }
+            if (alternarContraste) {
+                alternarContraste.setAttribute('aria-pressed', 'false');
+            }
 
-        // Desativar destaque dos links
-        document.body.classList.remove('links-destacados');
+            // Desativar destaque dos links
+            document.body.classList.remove('links-destacados');
 
-        if (destacarLinks) {
-            destacarLinks.checked = false;
-            destacarLinks.setAttribute('aria-pressed', 'false');
-        }
+            if (destacarLinks) {
+                destacarLinks.checked = false;
+                destacarLinks.setAttribute('aria-pressed', 'false');
+            }
 
-        // Fechar opções de temas
-        if (opcoesTemas && btnTemas) {
-            opcoesTemas.hidden = true;
-            btnTemas.setAttribute('aria-expanded', 'false');
-        }
-    });
-};
+            // Fechar opções de temas
+            if (opcoesTemas && btnTemas) {
+                opcoesTemas.hidden = true;
+                btnTemas.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+})();
