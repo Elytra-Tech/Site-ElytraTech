@@ -24,34 +24,10 @@
             <li><a href="#Serviços-Scroll">Serviços</a></li>
             <li><a href="#Casos-Scroll">Casos</a></li>
         </ul>
-        <a href="#QuemSomos-Scroll" class="nav-cta">Conheça mais sobre nós</a>
+        <a href="PagLogin.html" class="nav-cta">Construa seu site aqui</a>
 
         <!-- BOTÃO DE ACESSIBILIDADE -->
-        <div class="a11y">
-            <button
-                id="a11y-toggle"
-                class="a11y__btn"
-                type="button"
-                aria-label="Abrir opções de acessibilidade"
-                aria-expanded="false"
-                aria-controls="a11y-panel"
-            >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <circle cx="12" cy="4" r="2"/>
-                    <path d="M21 9H3v2h6v11h2v-5h2v5h2V11h6z"/>
-                </svg>
-            </button>
-
-            <div id="a11y-panel" class="a11y__panel" role="group" aria-label="Opções de acessibilidade" hidden>
-                <button type="button" data-action="font-up">A+ Aumentar fonte</button>
-                <button type="button" data-action="font-down">A− Diminuir fonte</button>
-                <button type="button" data-action="high-contrast" aria-pressed="false">Alto contraste</button>
-                <button type="button" data-action="grayscale" aria-pressed="false">Escala de cinza</button>
-                <button type="button" data-action="highlight-links" aria-pressed="false">Destacar links</button>
-                <button type="button" data-action="no-motion" aria-pressed="false">Pausar animações</button>
-                <button type="button" data-action="reset" class="a11y__reset">Restaurar padrão</button>
-            </div>
-        </div>
+        
 
         <button class="Color-button-anim" aria-label="Abrir menu">☰</button>
     </header>
@@ -60,6 +36,86 @@
     <section id="Home-Scroll" class="Prim-Sec">
         <canvas id="particles"></canvas>    
         <div class="hero-content">
+
+            
+<!-- BOTÃO DE ACESSIBILIDADE -->
+<div class="acessibilidade-container">
+
+<button
+    id="btnAcessibilidade"
+    class="btn-acessibilidade"
+    type="button"
+    aria-label="Abrir opções de acessibilidade"
+    aria-expanded="false"
+    aria-controls="painelAcessibilidade"
+>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="4" r="2"/>
+        <path d="M21 9H3v2h6v11h2v-5h2v5h2V11h6z"/>
+    </svg>
+</button>
+
+    <div
+        id="painelAcessibilidade"
+        class="painel-acessibilidade"
+        hidden
+    >
+        <h3>Acessibilidade</h3>
+
+        <button type="button" id="aumentarTexto">
+            A+ Aumentar texto
+        </button>
+
+        <button type="button" id="diminuirTexto">
+            A− Diminuir texto
+        </button>
+
+        
+<!-- TEMA DO SITE -->
+<button
+    type="button"
+    id="btnTemas"
+    aria-expanded="false"
+    aria-controls="opcoesTemas"
+>
+    <i class="ph ph-palette"></i> Temas
+</button>
+
+<div id="opcoesTemas" class="opcoes-acessibilidade" hidden>
+    <h4>Tema visual</h4>
+
+    <label>
+        <input type="radio" name="tema" value="escuro" checked>
+        Tema escuro
+    </label>
+
+    <label>
+        <input type="radio" name="tema" value="claro">
+        Tema claro
+    </label>
+
+    <hr>
+
+    <h4>Adaptação de cores</h4>
+
+    <label for="tipoDaltonismo">Tipo de daltonismo</label>
+
+    <select id="tipoDaltonismo">
+        <option value="nenhum">Padrão</option>
+        <option value="protanopia">Protanopia</option>
+        <option value="deuteranopia">Deuteranopia</option>
+        <option value="tritanopia">Tritanopia</option>
+    </select>
+</div>
+
+
+        <button type="button" id="restaurarAcessibilidade">
+            Restaurar padrão
+        </button>
+    </div>
+
+</div>
+
 
             <span class="company-name">ELYTRA TECH</span>
 

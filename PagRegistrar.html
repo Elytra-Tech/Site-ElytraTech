@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+    <link rel="stylesheet" href="PagLogin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+     <section class="login-section">
+        <div class="register-container">
+
+            <h1 class="register-title">Registrar</h1>
+
+            <form class="login-form" action="process_register.php" method="POST">
+                <input class="Inputs-In" id="DataLog" type="text" name="username" placeholder="Usuario" required>
+                <input class="Inputs-In" id="numero" maxlength="11" type="tel" name="numero" placeholder="Número de telefone" required>
+                <input class="Inputs-In" id="email" type="email" name="email" placeholder="Email" required>
+                <input class="Inputs-In" id="password" type="password" name="password" placeholder="Senha" required>
+                <p id="ErrorMessage"></p>
+                <button class="login-button" id="loginButton" type="submit">Registrar</button>
+                <button class="return-btn" type="button" onClick="window.location.href='index.html'">Voltar</button>
+                <p>Já tem uma conta?<a href="PagLogin.html" class="register-link"> Faça login</a></p>
+            </form>
+
+        </div>
+    </section>
+
+    <script>
+    const inputUsuario = document.getElementById('DataLog');
+    const inputTelefone = document.getElementById('numero');
+    const inputEmail = document.getElementById('email');
+    const inputSenha = document.getElementById('password');
+    const botaoRegistrar = document.getElementById('loginButton');
+    const msgErro = document.getElementById('ErrorMessage');
+
+    botaoRegistrar.addEventListener('click', async function(event) {
+        event.preventDefault();
+
+        const usuario = inputUsuario.value;
+        const telefone = inputTelefone.value;
+        const email = inputEmail.value;
+        const senha = inputSenha.value;
+
+        // Validação local se há campos vazios
+        if (!usuario || !telefone || !email || !senha) {
+            botaoRegistrar.style.borderColor = 'red';
+            msgErro.style.color = 'red';
+            msgErro.textContent = 'Por favor, preencha todos os campos.';
+            msgErro.style.display = 'block';
+            return;
+        }
+
+        try {
+            const resposta = await fetch('http://localhost:3000/api/registrar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario, telefone, email, senha })
+            });
+
+            const resultado = await resposta.json();
+
+            if (resposta.ok && resultado.sucesso) {
+                botaoRegistrar.style.borderColor = '';
+                msgErro.style.color = 'green';
+                msgErro.textContent = resultado.mensagem; // "Usuário cadastrado com sucesso!"
+                msgErro.style.display = 'block';
+
+                setTimeout(() => {
+                    window.location.href = 'PagLogin.html';
+                }, 1500);
+            } else {
+                botaoRegistrar.style.borderColor = 'red';
+                msgErro.style.color = 'red';
+                msgErro.textContent = resultado.mensagem; // "Este email ou nome de usuário já está em uso."
+                msgErro.style.display = 'block';
+            }
+
+        } catch (erro) {
+            console.error('Erro de rede:', erro);
+            botaoRegistrar.style.borderColor = 'red';
+            msgErro.style.color = 'red';
+            msgErro.textContent = 'Erro ao conectar com o servidor.';
+            msgErro.style.display = 'block';
+        }
+    });
+
+    // Limpa os erros quando o utilizador começa a escrever de novo
+    [inputUsuario, inputTelefone, inputEmail, inputSenha].forEach(input => {
+        input.addEventListener('input', () => {
+            botaoRegistrar.style.borderColor = '';
+            msgErro.style.display = 'none';
+        });
+    });
+</script>
+
+</body>
+</html>
