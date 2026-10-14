@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login/Registrar</title>
+    <title>Login</title>
     <link rel="stylesheet" href="PagLogin.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="bg-fundo"></div>
 
     <section class="login-section">
         <div class="login-container">
 
             <h1 class="login-title">Login</h1>
 
-            <form class="login-form" action="process_login.php" method="POST">
-                <input class="Inputs-In" id="DataLog" type="text" name="username" placeholder="Usuario" required>
-                <input class="Inputs-In" id="password" type="password" name="password" placeholder="Senha" required>
+            <form class="login-form">
+                <input class="Inputs-In" id="email" type="email" placeholder="Email" required>
+                <input class="Inputs-In" id="password" type="password" placeholder="Senha" required>
 
-                <p id="ErrorMessage">Login ou Senha incorretos.</p>
+                <p id="ErrorMessage"></p>
 
                 <button class="login-button" id="loginButton" type="submit">Entrar</button>
                 <button class="return-btn" type="button" onclick="window.location.href='index.html'">Voltar</button>
@@ -32,73 +31,51 @@
         </div>
     </section>
 
-<script>
-    const inputUsuario = document.getElementById('DataLog');
-    const inputSenha = document.getElementById('password');
-    const botaoLogin = document.getElementById('loginButton');
-    const msgErro = document.getElementById('ErrorMessage'); // O <p> de erro no HTML de login
+<script type="module">
+import { auth, traduzErro } from "./firebase.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
-    botaoLogin.addEventListener('click', async function(event) {
-        event.preventDefault();
+const form = document.querySelector('.login-form');
+const inputEmail = document.getElementById('email');
+const inputSenha = document.getElementById('password');
+const botao = document.getElementById('loginButton');
+const msgErro = document.getElementById('ErrorMessage');
 
-        const usuario = inputUsuario.value;
-        const senha = inputSenha.value;
+function mostrar(texto, cor) {
+    msgErro.style.color = cor;
+    msgErro.textContent = texto;
+    msgErro.style.display = 'block';
+    botao.style.borderColor = cor === 'red' ? 'red' : '';
+}
 
-        // Validação se há campos vazios
-        if (usuario === "" || senha === "") {
-            botaoLogin.style.borderColor = 'red';
-            msgErro.style.color = 'red';
-            msgErro.textContent = 'Por favor, preencha todos os campos.';
-            msgErro.style.display = 'block';
-            return;
-        }
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-        try {
-            const resposta = await fetch('https://site-elytratech.onrender.com/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ usuario, senha })
-            });
+    const email = inputEmail.value.trim();
+    const senha = inputSenha.value;
 
-            const resultado = await resposta.json();
+    if (!email || !senha) {
+        mostrar('Por favor, preencha todos os campos.', 'red');
+        return;
+    }
 
-            if (resultado.sucesso) {
-                botaoLogin.style.borderColor = '';
-                msgErro.style.color = 'green';
-                msgErro.textContent = 'Login efetuado com sucesso!';
-                msgErro.style.display = 'block';
+    botao.disabled = true;
 
-                setTimeout(() => {
-                    // Substitui 'dashboard.html' pela página para onde queres ir após entrar
-                    window.location.href = 'editor.html'; 
-                }, 1000);
-            } else {
-                botaoLogin.style.borderColor = 'red';
-                msgErro.style.color = 'red';
-                msgErro.textContent = resultado.mensagem; // Ex: "Usuário/Email ou senha incorretos."
-                msgErro.style.display = 'block';
-            }
+    try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        mostrar('Login efetuado com sucesso!', 'green');
+        setTimeout(() => window.location.href = 'editor.html', 800);
+    } catch (erro) {
+        mostrar(traduzErro(erro.code), 'red');
+        botao.disabled = false;
+    }
+});
 
-        } catch (erro) {
-            console.error('Erro ao conectar com o servidor:', erro);
-            botaoLogin.style.borderColor = 'red';
-            msgErro.style.color = 'red';
-            msgErro.textContent = 'Erro de conexão com o servidor.';
-            msgErro.style.display = 'block';
-        }
-    });
-
-    // Limpa o erro ao começar a digitar
-    inputUsuario.addEventListener('input', () => {
-        botaoLogin.style.borderColor = '';
-        msgErro.style.display = 'none';
-    });
-
-    inputSenha.addEventListener('input', () => {
-        botaoLogin.style.borderColor = '';
-        msgErro.style.display = 'none';
-    });
+[inputEmail, inputSenha].forEach(i => i.addEventListener('input', () => {
+    botao.style.borderColor = '';
+    msgErro.style.display = 'none';
+}));
 </script>
-    
+
 </body>
 </html>
