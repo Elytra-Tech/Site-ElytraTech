@@ -67,7 +67,7 @@ body {
     flex-direction:column;
     justify-content: center;
     align-items: center;
-    max-height: 500px;
+    max-height: 600px;
     height: 100%;
     max-width: 500px;
     width: 100%;
@@ -233,4 +233,121 @@ body {
     .Inputs-In {
         font-size: 16px; /* Evita zoom automático no iOS */
     }
+}
+
+.sec-adm{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.admin-register-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 30px;
+}
+
+.admin-register-form {
+    background-color: hsla(263, 20%, 8%, 0.85);
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border: 2px solid hsla(340, 77%, 88%, 0.14);
+    transition: all 0.2s ease-in-out;
+}
+
+.admin-register-form:hover {
+    border-color: hsl(320, 100%, 65%);
+}
+
+.admin-register-form h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+    color: #f8fafc;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #94a3b8;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #cbd5e1;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    background-color: hsl(240, 15%, 5%);
+    border: 1px solid hsla(340, 77%, 88%, 0.14);
+    border-radius: 6px;
+    color: #f8fafc;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.input-group input:focus {
+    border-color: hsl(320, 100%, 65%);
+    background-color: hsl(263, 20%, 8%);
+}
+
+/* Destalhe especial para a caixa da chave secreta */
+.secret-box input {
+    border-color: hsl(320, 100%, 65%);
+}
+
+button#loginButton {
+    width: 100%;
+    padding: 12px;
+    background-color: hsl(320, 100%, 65%);
+    border: none;
+    border-radius: 6px;
+    color: #f8fafc;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin-top: 10px;
+}
+
+button#loginButton:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+.error-message {
+    font-size: 13px;
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.links-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.links-footer a {
+    color: hsl(320, 100%, 65%);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.links-footer a:hover {
+    text-decoration: underline;
 }

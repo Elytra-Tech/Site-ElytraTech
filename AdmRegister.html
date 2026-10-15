@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registar Administrador</title>
+    <link rel="stylesheet" href="PagLogin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <section class="login-section">
+        <div class="register-container">
+
+            <h1 class="register-title">Registar Admin</h1>
+
+            <form class="login-form">
+                <input class="Inputs-In" id="DataLog" type="text" placeholder="Nome de Utilizador" required>
+                <input class="Inputs-In" id="email" type="email" placeholder="Email de Administrador" required>
+                <input class="Inputs-In" id="password" type="password" placeholder="Senha (mínimo 6 caracteres)" required>
+                <!-- Campo exclusivo para a chave de acesso mestra -->
+                <input class="Inputs-In" id="adminKey" type="password" placeholder="Chave de Acesso Secreta" required style="border-color: var(--pink);">
+                
+                <p id="ErrorMessage"></p>
+                
+                <button class="login-button" id="loginButton" type="submit">Criar Conta Admin</button>
+                <button class="return-btn" type="button" onclick="window.location.href='index.html'">Voltar</button>
+                
+                <p style="text-align: center; margin-top: 5px;">Já tem conta? <a href="Admin-Login.html" class="register-link">Faça login de Admin</a></p>
+                                <p style="text-align: center; margin-top: 5px;">Já tem conta? <a href="PagLogin.html" class="register-link">Faça login</a></p>
+
+            </form>
+
+        </div>
+    </section>
+
+<script type="module">
+import { auth, db, traduzErro } from "./firebase.js";
+import { createUserWithEmailAndPassword, updateProfile } 
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { doc, setDoc, serverTimestamp } 
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+// Chave secreta mestra definida para liberar contas de administrador
+const CHAVE_MESTRA_ADMIN = "ElytraAdmin2026!";
+
+const form = document.querySelector('.login-form');
+const inputUsuario = document.getElementById('DataLog');
+const inputEmail = document.getElementById('email');
+const inputSenha = document.getElementById('password');
+const inputAdminKey = document.getElementById('adminKey');
+const botao = document.getElementById('loginButton');
+const msgErro = document.getElementById('ErrorMessage');
+
+function mostrar(texto, cor) {
+    msgErro.style.color = cor;
+    msgErro.textContent = texto;
+    msgErro.style.display = 'block';
+    botao.style.borderColor = cor === 'red' ? 'red' : '';
+}
+
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const usuario = inputUsuario.value.trim();
+    const email = inputEmail.value.trim();
+    const senha = inputSenha.value;
+    const adminKey = inputAdminKey.value;
+
+    if (!usuario || !email || !senha || !adminKey) {
+        mostrar('Por favor, preencha todos os campos.', 'red');
+        return;
+    }
+
+    // Validação da chave secreta universal
+    if (adminKey !== CHAVE_MESTRA_ADMIN) {
+        mostrar('Chave de Acesso Secreta inválida!', 'red');
+        return;
+    }
+
+    botao.disabled = true;
+
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        await updateProfile(cred.user, { displayName: usuario });
+        
+        // Guarda na coleção 'admins' do Firestore
+        await setDoc(doc(db, 'admins', cred.user.uid), {
+            usuario, 
+            email, 
+            role: 'admin',
+            criadoEm: serverTimestamp()
+        });
+
+        mostrar('Conta de Administrador criada com sucesso!', 'green');
+        setTimeout(() => window.location.href = 'PagLogin.html', 1200);
+    } catch (erro) {
+        mostrar(traduzErro(erro.code), 'red');
+        botao.disabled = false;
+    }
+});
+
+[inputUsuario, inputEmail, inputSenha, inputAdminKey].forEach(i => 
+    i.addEventListener('input', () => {
+        botao.style.borderColor = '';
+        msgErro.style.display = 'none';
+    })
+);
+</script>
+
+</body>
+</html>
