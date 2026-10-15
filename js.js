@@ -1020,6 +1020,112 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
     });
 
 
+    /* ---------- Enviar prévia pelo WhatsApp ---------- */
+
+const WHATSAPP_NUMBER = '5562994569506'; // 55 + DDD + número, sem espaços
+
+function toHex(color) {
+    // Fundo transparente = sem cor definida
+    if (!color || /rgba\(.*,\s*0\)$/.test(color) || color === 'transparent') {
+        return 'padrão';
+    }
+    return rgbToHex(color).toUpperCase();
+}
+
+function buildSummary() {
+    const components = allComponents();
+
+    const lines = components.map(function (component, index) {
+        const type = component.dataset.type;
+        const content = contentOf(component);
+        const contentStyle = getComputedStyle(content);
+        const componentStyle = getComputedStyle(component);
+
+        const title = type === 'section'
+            ? ($('h2', component)?.textContent.trim() || '') + ' | '
+            : '';
+
+        const font = contentStyle.fontFamily.split(',')[0].replace(/["']/g, '');
+
+        return (index + 1) + '. ' + (typeNames[type] || 'Componente') +
+            ': "' + title + content.textContent.trim() + '"\n' +
+            '   Texto ' + toHex(contentStyle.color) +
+            ' | Fundo ' + toHex(componentStyle.backgroundColor) +
+            ' | ' + parseInt(componentStyle.fontSize, 10) + 'px' +
+            ' | ' + font +
+            ' | Alinhamento ' + (component.style.textAlign || 'padrão');
+    });
+
+    return {
+        count: components.length,
+        text: lines.join('\n'),
+        canvasBg: toHex(canvas.style.backgroundColor)
+    };
+}
+
+function getCleanHtml() {
+    const clone = canvas.cloneNode(true);
+
+    $$('.is-selected', clone).forEach(function (el) {
+        el.classList.remove('is-selected');
+    });
+
+    $('#editor-empty', clone)?.remove();
+
+    return clone.innerHTML;
+}
+
+$('#send-whatsapp').addEventListener('click', async function () {
+    const summary = buildSummary();
+
+    if (summary.count === 0) {
+        alert('Adicione pelo menos um componente antes de enviar.');
+        return;
+    }
+
+    const button = this;
+    button.disabled = true;
+
+    // Abre a aba já no clique, senão celulares bloqueiam o pop-up depois do await
+    const win = window.open('', '_blank');
+
+    try {
+        // Salva a prévia completa na nuvem (se o módulo estiver carregado)
+        let previewId = null;
+
+        if (window.salvarPreviaNuvem) {
+            try {
+                previewId = await window.salvarPreviaNuvem(getCleanHtml(), summary.text);
+            } catch (error) {
+                console.error('Não foi possível salvar a prévia:', error);
+            }
+        }
+
+        let message =
+            '*Prévia do site – Elytra Tech*\n\n' +
+            'Olá! Finalizei minha prévia no editor.\n' +
+            (previewId ? 'Código da prévia: *' + previewId + '*\n' : '') +
+            'Fundo da página: ' + summary.canvasBg + '\n\n' +
+            summary.text;
+
+        // Limite seguro para a URL do WhatsApp
+        if (message.length > 1500) {
+            message = message.slice(0, 1500) + '\n...(resumo cortado)';
+        }
+
+        const url = 'https://wa.me/' + WHATSAPP_NUMBER +
+            '?text=' + encodeURIComponent(message);
+
+        if (win) {
+            win.location.href = url;
+        } else {
+            window.location.href = url;
+        }
+    } finally {
+        button.disabled = false;
+    }
+});
+
     /* ---------- Início ---------- */
 
     openTab('components');
