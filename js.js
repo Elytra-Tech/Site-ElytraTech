@@ -1047,96 +1047,92 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
    (painel #btnAcessibilidade)
 ========================================= */
 
-(function initAcessibilidade() {
-    const btnAcessibilidade = $('#btnAcessibilidade');
-    const painelAcessibilidade = $('#painelAcessibilidade');
+function initAcessibilidade() {
+    // Usamos getElementById direto para garantir que não depende de funções auxiliares
+    const btnAcessibilidade = document.getElementById('btnAcessibilidade');
+    const painelAcessibilidade = document.getElementById('painelAcessibilidade');
 
-    const aumentarTexto = $('#aumentarTexto');
-    const diminuirTexto = $('#diminuirTexto');
-    const restaurarAcessibilidade = $('#restaurarAcessibilidade');
+    if (!btnAcessibilidade || !painelAcessibilidade) {
+        console.warn("Elementos de acessibilidade não encontrados no DOM.");
+        return;
+    }
 
-    const alternarContraste = $('#alternarContraste');
-
-    const btnTemas = $('#btnTemas');
-    const opcoesTemas = $('#opcoesTemas');
-
-    const tipoDaltonismo = $('#tipoDaltonismo');
-    const destacarLinks = $('#destacarLinks');
+    const aumentarTexto = document.getElementById('aumentarTexto');
+    const diminuirTexto = document.getElementById('diminuirTexto'); // mantém o teu ID original se for diminuirTexto
+    const restaurarAcessibilidade = document.getElementById('restaurarAcessibilidade');
+    const alternarContraste = document.getElementById('alternarContraste');
+    const btnTemas = document.getElementById('btnTemas');
+    const opcoesTemas = document.getElementById('opcoesTemas');
+    const tipoDaltonismo = document.getElementById('tipoDaltonismo');
+    const destacarLinks = document.getElementById('destacarLinks');
 
     let escalaTexto = 1;
 
-    const elementosTexto = [
+    const elementosTextos = [
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'p', 'a', 'button', 'li', 'span',
         'label', 'strong', 'em', 'small',
         'input', 'textarea', 'select'
     ].join(', ');
 
+    // --- Abrir e fechar o painel ---
+    btnAcessibilidade.setAttribute('aria-expanded', 'false');
+    
+    btnAcessibilidade.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const vaiAbrir = painelAcessibilidade.hidden;
+        painelAcessibilidade.hidden = !vaiAbrir;
+        btnAcessibilidade.setAttribute('aria-expanded', String(vaiAbrir));
+    });
 
-    /* ---------- Abrir e fechar o painel ---------- */
+    // Fechar com Escape
+    document.addEventListener('keydown', evento => {
+        if (evento.key === 'Escape' && painelAcessibilidade) {
+            painelAcessibilidade.hidden = true;
+            if (btnAcessibilidade) btnAcessibilidade.setAttribute('aria-expanded', 'false');
+            if (opcoesTemas) opcoesTemas.hidden = true;
+            if (btnTemas) btnTemas.setAttribute('aria-expanded', 'false');
+            btnAcessibilidade.focus();
+        }
+    });
 
-    if (btnAcessibilidade && painelAcessibilidade) {
-        btnAcessibilidade.setAttribute('aria-expanded', 'false');
-
-        btnAcessibilidade.addEventListener('click', () => {
-            const vaiAbrir = painelAcessibilidade.hidden;
-
-            painelAcessibilidade.hidden = !vaiAbrir;
-            btnAcessibilidade.setAttribute('aria-expanded', String(vaiAbrir));
-        });
-
-        // Fechar com Escape
-        document.addEventListener('keydown', evento => {
-            if (evento.key === 'Escape') {
-                painelAcessibilidade.hidden = true;
-                btnAcessibilidade.setAttribute('aria-expanded', 'false');
-
-                if (opcoesTemas && btnTemas) {
-                    opcoesTemas.hidden = true;
-                    btnTemas.setAttribute('aria-expanded', 'false');
-                }
-
-                btnAcessibilidade.focus();
-            }
-        });
-
-        // Fechar ao clicar fora
-        document.addEventListener('click', evento => {
-            if (
-                evento.target instanceof Element &&
-                !evento.target.closest('.acessibilidade-container') &&
-                !painelAcessibilidade.hidden
-            ) {
-                painelAcessibilidade.hidden = true;
-                btnAcessibilidade.setAttribute('aria-expanded', 'false');
-            }
-        });
-    }
-
+    // Fechar ao clicar fora
+    document.addEventListener('click', evento => {
+        if (
+            painelAcessibilidade &&
+            evento.target instanceof Element &&
+            !evento.target.closest('.acessibilidade-container') &&
+            !painelAcessibilidade.hidden
+        ) {
+            painelAcessibilidade.hidden = true;
+            if (btnAcessibilidade) btnAcessibilidade.setAttribute('aria-expanded', 'false');
+        }
+    });
+    
+}
 
     /* ---------- Aumentar e diminuir texto ---------- */
 
     function aplicarEscalaTexto() {
-        document.querySelectorAll(elementosTexto).forEach(elemento => {
-            // Não modificar o painel de acessibilidade nem a prévia do editor
-            if (
-                elemento.closest('.acessibilidade-container') ||
-                elemento.closest('#preview-canvas')
-            ) {
-                return;
-            }
+    document.querySelectorAll(elementosTextos).forEach(elemento => {
+        // Não modificar o painel de acessibilidade nem a prévia do editor
+        if (
+            elemento.closest('.acessibilidade-container') ||
+            elemento.closest('#preview-canvas')
+        ) {
+            return;
+        }
 
-            // Guardar os tamanhos originais uma única vez
-            if (!elemento.dataset.tamanhoOriginal) {
-                elemento.dataset.tamanhoOriginal = getComputedStyle(elemento).fontSize;
-                elemento.dataset.estiloOriginal = elemento.style.fontSize;
-            }
+        // Guardar os tamanhos originais uma única vez
+        if (!elemento.dataset.tamanhoOriginal) {
+            elemento.dataset.tamanhoOriginal = getComputedStyle(elemento).fontSize;
+            elemento.dataset.estiloOriginal = elemento.style.fontSize;
+        }
 
-            const tamanhoOriginal = parseFloat(elemento.dataset.tamanhoOriginal);
-
-            elemento.style.fontSize = `${tamanhoOriginal * escalaTexto}px`;
-        });
-    }
+        const tamanhoOriginal = parseFloat(elemento.dataset.tamanhoOriginal);
+        elemento.style.fontSize = `${tamanhoOriginal * escalaTexto}px`;
+    });
+}
 
     if (aumentarTexto) {
         aumentarTexto.addEventListener('click', () => {
@@ -1281,4 +1277,45 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
             }
         });
     }
-})();
+
+
+import { auth, db } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+onAuthStateChanged(auth, async (user) => {
+  const adminLink = document.getElementById('adminDashboardLink');
+  
+  if (!adminLink) {
+    console.warn("Elemento 'adminDashboardLink' não foi encontrado no HTML desta página!");
+    return;
+  }
+
+  if (user) {
+    console.log("Utilizador logado com UID:", user.uid);
+    
+    try {
+      const adminRef = doc(db, 'admins', user.uid);
+      const adminSnap = await getDoc(adminRef);
+
+      console.log("O utilizador existe na coleção 'admins'?", adminSnap.exists());
+
+      if (adminSnap.exists()) {
+        adminLink.style.display = 'block';
+        console.log("Painel Admin ativado com sucesso!");
+      } else {
+        adminLink.style.display = 'none';
+        console.log("Este utilizador NÃO é administrador.");
+      }
+    } catch (error) {
+      console.error("Erro ao consultar a coleção admins:", error);
+      adminLink.style.display = 'none';
+    }
+} else {
+        console.log("Nenhum utilizador logado.");
+        adminLink.style.display = 'none';
+    }
+});
+
+// Executa a função de acessibilidade assim que o script carregar
+initAcessibilidade();

@@ -1,11 +1,24 @@
 :root {
     --deep: hsl(240, 15%, 5%);
     --deep-2: hsl(263, 20%, 8%);
-    --pink: hsl(320, 100%, 65%);
+    --pink: rgb(255, 77, 196);
     --purple: hsl(271, 91%, 65%);
     --ink: hsl(280, 21%, 95%);
     --muted: hsl(268, 10%, 66%);
     --line: hsla(340, 77%, 88%, 0.14);
+
+    /* Acessibilidade */
+    --acento-1: hsl(271, 91%, 65%);
+    --acento-2: hsl(320, 100%, 65%);
+    --acento-3: hsl(193, 100%, 42%);
+
+    --fundo-site: hsl(240, 15%, 5%);
+    --fundo-card: hsl(263, 20%, 8%);
+    --texto-principal: hsl(280, 21%, 95%);
+    --texto-secundario: hsl(268, 10%, 66%);
+    --borda-card: hsl(263, 20%, 22%);
+
+    --cor-foco: hsl(0, 0%, 100%);
 }
 
 * {
@@ -50,7 +63,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    max-height: 400px;
+    max-height: 500px;
     height: 100%;
     width: 100%;
     max-width: 500px;
@@ -351,3 +364,22 @@ button#loginButton:hover {
 .links-footer a:hover {
     text-decoration: underline;
 }
+
+/* Faz o botão do olho mudar de cor suavemente quando passas o rato por cima do input ou do próprio botão */
+.input-wrapper:hover #togglePassword,
+.Inputs-In:hover ~ #togglePassword,
+.Inputs-In:focus ~ #togglePassword {
+    color: #fff; /* Ou a cor que preferires quando estiver ativo/hover (ex: var(--pink) ou branco) */
+}
+
+/* Garante que o botão acompanha qualquer transição suave do input */
+#togglePassword {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* Esconde o botão nativo de mostrar senha do Edge e do Internet Explorer */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+

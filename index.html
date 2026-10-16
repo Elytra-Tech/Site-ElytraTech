@@ -34,20 +34,20 @@
                 <span class="avatar" id="avatar-topo"></span>
             </button>
 
-            <div class="user-panel" id="painel-usuario" hidden>
-                <div class="user-panel-head">
-                    <span class="avatar avatar-lg" id="avatar-painel"></span>
-                    <div>
-                        <strong id="user-nome">Usuário</strong>
-                        <span id="user-email"></span>
-                    </div>
-                </div>
-
-                <a href="editor.html" class="user-panel-item">Abrir editor</a>
-                <button type="button" class="user-panel-item" id="btn-editar-perfil">Editar perfil</button>
-                <button type="button" class="user-panel-item" id="btn-sair">Sair</button>
-            </div>
+<div class="user-panel" id="painel-usuario" hidden>
+    <div class="user-panel-head">
+        <span class="avatar avatar-lg" id="avatar-painel"></span>
+        <div>
+            <strong id="user-nome">Usuário</strong>
+            <span id="user-email"></span>
         </div>
+    </div>
+
+    <a href="editor.html" class="user-painel-item">Abrir editor</a>
+    <a href="admin-dashboard.html" class="user-painel-item" id="adminDashboardLink" style="display: none;">Painel Admin</a>
+    <button type="button" class="user-painel-item" id="btn-editar-perfil">Editar perfil</button>
+    <button type="button" class="user-painel-item" id="btn-sair">Sair</button>
+</div>
 
         <!-- BOTÃO DE ACESSIBILIDADE -->
         
@@ -535,7 +535,8 @@
             </form>
         </div>
     </div>
-    <script src="js.js"></script>
+
+<script type="module" src="js.js"></script>
     <script type="module" src="perfil.js"></script>
 </body>
 </html>
