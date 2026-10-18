@@ -10,6 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="icon" href="img/img_header.png">
 </head>
 <body class="editor-page">
 
@@ -21,7 +24,7 @@
 
         <div class="editor-topbar-info">
             <span class="editor-status"></span>
-            Editor de prévia
+            Criador de Prévia do seu Site
         </div>
 
         <a href="index.html" class="editor-back">Voltar ao site</a>
@@ -34,7 +37,17 @@
         <nav class="editor-tools" aria-label="Ferramentas do editor">
             <button class="editor-tool is-active" data-editor-tab="components" type="button">
                 <i class="ph ph-squares-four"></i>
-                <span>Componentes</span>
+                <span>1. Blocos</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="properties" type="button">
+                <i class="ph ph-sliders-horizontal"></i>
+                <span>2. Editar</span>
+            </button>
+
+            <button class="editor-tool" data-editor-tab="themes" type="button">
+                <i class="ph ph-palette"></i>
+                <span>3. Cores</span>
             </button>
 
             <button class="editor-tool" data-editor-tab="layers" type="button">
@@ -42,19 +55,9 @@
                 <span>Camadas</span>
             </button>
 
-            <button class="editor-tool" data-editor-tab="properties" type="button">
-                <i class="ph ph-sliders-horizontal"></i>
-                <span>Propriedades</span>
-            </button>
-
-            <button class="editor-tool" data-editor-tab="themes" type="button">
-                <i class="ph ph-palette"></i>
-                <span>Tema</span>
-            </button>
-
             <button class="editor-tool" data-editor-tab="preview" type="button">
-                <i class="ph ph-device-mobile"></i>
-                <span>Prévia</span>
+                <i class="ph ph-whatsapp-logo"></i>
+                <span>4. Finalizar</span>
             </button>
         </nav>
 
@@ -63,41 +66,145 @@
 
             <section class="editor-panel" data-editor-panel="components">
                 <div class="editor-panel-heading">
-                    <h2>Componentes</h2>
-                    <p>Adicione elementos ao seu site.</p>
+                    <h2>1. Adicione blocos</h2>
+                    <p>Monte a estrutura do seu site clicando nos blocos abaixo ou comece com um modelo completo.</p>
                 </div>
 
+                <div id="insert-target-banner" class="editor-insert-banner" hidden>
+                    <div>
+                        <small>Adicionando dentro de:</small>
+                        <strong id="insert-target-name">Seção</strong>
+                    </div>
+                    <button type="button" id="clear-insert-target" class="editor-banner-close">
+                        Sair da caixa ✕
+                    </button>
+                </div>
+
+                <button type="button" id="load-starter-template" class="editor-primary-button editor-starter-btn">
+                    <i class="ph ph-sparkle"></i>
+                    Começar com site de exemplo pronto
+                </button>
+
+                <div class="editor-divider"></div>
+
+                <h3 class="editor-subheading">Estrutura e Lado a Lado</h3>
                 <div class="editor-component-list">
                     <button type="button" data-add="header">
-                        <i class="ph ph-layout"></i> Cabeçalho
+                        <i class="ph ph-layout"></i>
+                        <div class="editor-comp-text">
+                            <strong>Cabeçalho / Menu</strong>
+                            <small>Topo com logo/nome e links do site</small>
+                        </div>
                     </button>
 
-                    <button type="button" data-add="title">
-                        <i class="ph ph-text-t"></i> Título
+                    <button type="button" data-add="columns2">
+                        <i class="ph ph-columns"></i>
+                        <div class="editor-comp-text">
+                            <strong>2 Colunas (Lado a Lado)</strong>
+                            <small>Coloque 2 itens um ao lado do outro</small>
+                        </div>
                     </button>
 
-                    <button type="button" data-add="text">
-                        <i class="ph ph-text-align-left"></i> Texto
-                    </button>
-
-                    <button type="button" data-add="button">
-                        <i class="ph ph-cursor-click"></i> Botão
+                    <button type="button" data-add="columns3">
+                        <i class="ph ph-squares-four"></i>
+                        <div class="editor-comp-text">
+                            <strong>3 Colunas (Lado a Lado)</strong>
+                            <small>Coloque 3 cards ou itens lado a lado</small>
+                        </div>
                     </button>
 
                     <button type="button" data-add="section">
-                        <i class="ph ph-columns"></i> Seção
+                        <i class="ph ph-selection-all"></i>
+                        <div class="editor-comp-text">
+                            <strong>Seção Agrupadora (Caixa)</strong>
+                            <small>Caixa onde você pode colocar itens dentro</small>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="editor-divider"></div>
+
+                <h3 class="editor-subheading">Textos, Imagem e Botão</h3>
+                <div class="editor-component-list">
+                    <button type="button" data-add="title">
+                        <i class="ph ph-text-t"></i>
+                        <div class="editor-comp-text">
+                            <strong>Título principal</strong>
+                            <small>Frase grande de destaque</small>
+                        </div>
+                    </button>
+
+                    <button type="button" data-add="text">
+                        <i class="ph ph-text-align-left"></i>
+                        <div class="editor-comp-text">
+                            <strong>Texto explicativo</strong>
+                            <small>Parágrafo sobre seu negócio ou produto</small>
+                        </div>
+                    </button>
+
+                    <button type="button" data-add="image">
+                        <i class="ph ph-image"></i>
+                        <div class="editor-comp-text">
+                            <strong>Imagem / Foto / Banner</strong>
+                            <small>Envie uma foto do seu aparelho ou link</small>
+                        </div>
+                    </button>
+
+                    <button type="button" data-add="button">
+                        <i class="ph ph-cursor-click"></i>
+                        <div class="editor-comp-text">
+                            <strong>Botão de ação</strong>
+                            <small>Botão clicável (ex: Fale Conosco)</small>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="editor-divider"></div>
+
+                <h3 class="editor-subheading">Blocos Prontos de Conversão</h3>
+                <div class="editor-component-list">
+                    <button type="button" data-add="card">
+                        <i class="ph ph-tag"></i>
+                        <div class="editor-comp-text">
+                            <strong>Card de Serviço / Preço</strong>
+                            <small>Caixa pronta com título, valor R$ e botão</small>
+                        </div>
+                    </button>
+
+                    <button type="button" data-add="testimonial">
+                        <i class="ph ph-star"></i>
+                        <div class="editor-comp-text">
+                            <strong>Depoimento de Cliente</strong>
+                            <small>Estrelas ★★★★★, avaliação e nome</small>
+                        </div>
+                    </button>
+
+                    <button type="button" data-add="form">
+                        <i class="ph ph-envelope-simple"></i>
+                        <div class="editor-comp-text">
+                            <strong>Formulário de Contato</strong>
+                            <small>Campos de nome, WhatsApp e mensagem</small>
+                        </div>
+                    </button>
+
+                    <button type="button" data-add="footer">
+                        <i class="ph ph-anchor-simple"></i>
+                        <div class="editor-comp-text">
+                            <strong>Rodapé do Site</strong>
+                            <small>Parte final com contatos e redes sociais</small>
+                        </div>
                     </button>
                 </div>
 
                 <div class="editor-panel-tip">
-                    Selecione um componente para adicioná-lo à prévia.
+                    💡 <strong>Como colocar um ao lado do outro ou dentro:</strong> Adicione <strong>2 Colunas</strong> ou uma <strong>Seção</strong> e clique no botão <em>"+ Adicionar item aqui"</em> dentro dela!
                 </div>
             </section>
 
             <section class="editor-panel" data-editor-panel="layers" hidden>
                 <div class="editor-panel-heading">
-                    <h2>Camadas</h2>
-                    <p>Selecione um elemento para editá-lo.</p>
+                    <h2>Ordem dos blocos (Camadas)</h2>
+                    <p>Veja todos os blocos (e o que está dentro de cada seção/coluna) e clique para editar.</p>
                 </div>
 
                 <div id="editor-layers-list" class="editor-layers-list">
@@ -105,22 +212,77 @@
                 </div>
 
                 <button type="button" id="clear-preview" class="editor-danger-button">
-                    <i class="ph ph-trash"></i> Limpar prévia
+                    <i class="ph ph-trash"></i> Limpar toda a prévia
                 </button>
             </section>
 
             <section class="editor-panel" data-editor-panel="properties" hidden>
                 <div class="editor-panel-heading">
-                    <h2>Propriedades</h2>
-                    <p>Personalize o componente selecionado.</p>
+                    <h2>2. Editar bloco</h2>
+                    <p>Personalize o bloco selecionado na prévia ao lado.</p>
                 </div>
-
+                <p id="editor-hint" class="editor-panel-tip" hidden>
+                    👆 Clique em qualquer bloco na prévia ao lado para editar o texto, imagem, colunas e cores dele.
+                </p>
                 <div id="editor-fields" class="editor-fields">
 
-                    <div class="editor-control">
-                        <label for="component-content">Texto do componente</label>
+                    <div id="container-controls" class="editor-container-box" hidden>
+                        <button type="button" id="add-inside-selected-btn" class="editor-primary-button editor-starter-btn">
+                            <i class="ph ph-plus-circle"></i>
+                            Adicionar bloco aqui dentro
+                        </button>
+
+                        <div class="editor-control" style="margin-top:12px;margin-bottom:0;">
+                            <label>Disposição dos itens aqui dentro</label>
+                            <div class="editor-button-row">
+                                <button type="button" class="grid-cols-btn" data-cols="1">1 Coluna</button>
+                                <button type="button" class="grid-cols-btn" data-cols="2">2 Lado a lado</button>
+                                <button type="button" class="grid-cols-btn" data-cols="3">3 Lado a lado</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="section-title-control" class="editor-control" hidden>
+                        <label for="component-section-title" id="section-title-label">Título</label>
+                        <input type="text" id="component-section-title" placeholder="Digite o título">
+                    </div>
+
+                    <div id="extra-field-control" class="editor-control" hidden>
+                        <label for="component-extra-field" id="extra-field-label">Destaque / Preço</label>
+                        <input type="text" id="component-extra-field" placeholder="Ex.: R$ 99,90">
+                    </div>
+
+                    <div id="content-field-control" class="editor-control">
+                        <label for="component-content" id="content-field-label">Texto do bloco</label>
                         <textarea id="component-content" rows="3"
                             placeholder="Digite o conteúdo"></textarea>
+                    </div>
+
+                    <div id="btn-text-control" class="editor-control" hidden>
+                        <label for="component-btn-text">Texto do botão</label>
+                        <input type="text" id="component-btn-text" placeholder="Ex.: Solicitar agora">
+                    </div>
+
+                    <div id="image-controls" class="editor-control" hidden>
+                        <label for="component-image-file">Enviar foto do aparelho</label>
+                        <input type="file" id="component-image-file" accept="image/*">
+                        <label for="component-image-url" style="margin-top:6px;">Ou cole o link (URL) da imagem</label>
+                        <input type="url" id="component-image-url" placeholder="https://...">
+                    </div>
+
+                    <div class="editor-control">
+                        <label for="parent-container-select">Onde este bloco fica?</label>
+                        <select id="parent-container-select">
+                            <option value="root">Página principal (Fora de caixas)</option>
+                        </select>
+                    </div>
+
+                    <div class="editor-control">
+                        <label>Posição / Ordem</label>
+                        <div class="editor-button-row">
+                            <button type="button" id="move-up-component">↑ Mover p/ antes</button>
+                            <button type="button" id="move-down-component">↓ Mover p/ depois</button>
+                        </div>
                     </div>
 
                     <div class="editor-control">
@@ -129,7 +291,7 @@
                     </div>
 
                     <div class="editor-control">
-                        <label>Alinhamento</label>
+                        <label>Alinhamento do texto</label>
                         <div class="editor-button-row">
                             <button type="button" class="alignment-button" data-align="left">Esquerda</button>
                             <button type="button" class="alignment-button" data-align="center">Centro</button>
@@ -138,8 +300,8 @@
                     </div>
 
                     <div class="editor-control">
-                        <label for="font-size">Tamanho da fonte</label>
-                        <input type="range" id="font-size" min="10" max="72" value="24">
+                        <label for="font-size">Tamanho da letra</label>
+                        <input type="range" id="font-size" min="10" max="72" value="18">
                     </div>
 
                     <div class="editor-control">
@@ -151,7 +313,7 @@
 
                     <div class="editor-control">
                         <label for="padding-size">Espaçamento interno</label>
-                        <input type="range" id="padding-size" min="0" max="60" value="12">
+                        <input type="range" id="padding-size" min="0" max="60" value="14">
                     </div>
 
                     <div class="editor-control">
@@ -160,45 +322,70 @@
                     </div>
 
                     <div class="editor-control">
-                        <label>Posição do texto</label>
-                        <div class="editor-button-row">
-                            <button type="button" class="position-button" data-position="left">Esquerda</button>
-                            <button type="button" class="position-button" data-position="center">Centro</button>
-                        </div>
-                    </div>
-
-                    <div class="editor-control">
-                        <label for="component-width">Largura</label>
+                        <label for="component-width">Largura (%)</label>
                         <input type="range" id="component-width" min="20" max="100" value="100">
                     </div>
 
                     <div class="editor-control">
-                        <label for="component-height">Altura</label>
-                        <input type="range" id="component-height" min="20" max="400" value="80">
+                        <label for="component-height">Altura mínima</label>
+                        <input type="range" id="component-height" min="0" max="400" value="0">
                     </div>
 
                     <button type="button" id="remove-component" class="editor-danger-button">
-                        <i class="ph ph-trash"></i> Remover componente
+                        <i class="ph ph-trash"></i> Excluir este bloco
                     </button>
                 </div>
             </section>
 
             <section class="editor-panel" data-editor-panel="themes" hidden>
                 <div class="editor-panel-heading">
-                    <h2>Personalização</h2>
-                    <p>Ajuste as cores e a tipografia.</p>
+                    <h2>3. Cores e Tema</h2>
+                    <p>Escolha um tema pronto em 1 clique ou personalize cada cor manualmente.</p>
                 </div>
 
+                <div class="editor-theme-presets">
+                    <h3 class="editor-subheading">Temas prontos</h3>
+
+                    <div class="editor-control">
+                        <label for="editor-theme-select">Escolha um estilo visual</label>
+                        <select id="editor-theme-select">
+                            <option value="elytra">Elytra Tech (Padrão)</option>
+                            <option value="purple">Roxo profissional</option>
+                            <option value="pink">Rosa tecnológico</option>
+                            <option value="minimal">Minimalista escuro</option>
+                        </select>
+                    </div>
+
+                    <div id="editor-theme-preview" class="editor-theme-preview">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <button type="button" id="apply-editor-theme" class="editor-primary-button">
+                        <i class="ph ph-paint-roller"></i> Aplicar tema pronto
+                    </button>
+                </div>
+
+                <div class="editor-divider"></div>
+
+                <h3 class="editor-subheading">Cores personalizadas</h3>
+
                 <div class="editor-control">
-                    <label for="visual-scope">Aplicar alteração em</label>
+                    <label for="visual-scope">Onde aplicar a cor</label>
                     <select id="visual-scope">
-                        <option value="selected">Componente selecionado</option>
-                        <option value="all">Todos os componentes</option>
+                        <option value="selected">Apenas no bloco selecionado</option>
+                        <option value="all">Em todos os blocos</option>
                     </select>
                 </div>
 
                 <div class="editor-control">
-                    <label for="rgb-target">Alterar</label>
+                    <label for="background-color">Cor de fundo do bloco</label>
+                    <input type="color" id="background-color" value="#17131f">
+                </div>
+
+                <div class="editor-control">
+                    <label for="rgb-target">Ajuste fino RGB</label>
                     <select id="rgb-target">
                         <option value="text">Cor do texto</option>
                         <option value="background">Cor de fundo</option>
@@ -225,26 +412,21 @@
                 <div id="rgb-preview" class="editor-rgb-preview"></div>
                 <p id="rgb-value" class="editor-rgb-value">RGB(168, 85, 247)</p>
 
-                <button type="button" id="apply-rgb" class="editor-primary-button">
-                    Aplicar cor
+                <button type="button" id="apply-rgb" class="editor-secondary-button">
+                    Aplicar cor RGB
                 </button>
-
-                <div class="editor-control">
-                    <label for="background-color">Cor de fundo</label>
-                    <input type="color" id="background-color" value="#17131f">
-                </div>
 
                 <div class="editor-divider"></div>
 
-                <h3 class="editor-subheading">Tipografia</h3>
+                <h3 class="editor-subheading">Tipografia (Fonte)</h3>
 
                 <div class="editor-control">
                     <label for="font-family-input">Nome da fonte</label>
-                    <input type="text" id="font-family-input" placeholder="Ex.: Inter">
+                    <input type="text" id="font-family-input" placeholder="Ex.: Inter, Poppins, Roboto">
                 </div>
 
                 <div class="editor-control">
-                    <label for="font-url-input">URL da fonte CSS</label>
+                    <label for="font-url-input">URL da fonte CSS (opcional)</label>
                     <input type="url" id="font-url-input" placeholder="https://...">
                 </div>
 
@@ -253,7 +435,7 @@
                 </button>
 
                 <div class="editor-control">
-                    <label for="font-file-input">Ou selecione um arquivo de fonte</label>
+                    <label for="font-file-input">Ou envie um arquivo de fonte</label>
                     <input type="file" id="font-file-input"
                         accept=".woff,.woff2,.ttf,.otf">
                 </div>
@@ -269,13 +451,33 @@
 
             <section class="editor-panel" data-editor-panel="preview" hidden>
                 <div class="editor-panel-heading">
-                    <h2>Prévia do site</h2>
-                    <p>Visualize os componentes no espaço ao lado.</p>
+                    <h2>4. Finalizar e Enviar</h2>
+                    <p>Sua prévia está pronta? Baixe o PDF e envie para nossa equipe no WhatsApp!</p>
                 </div>
 
-                <p class="editor-panel-tip">
-                    Para editar um elemento, selecione-o na prévia ou na aba Camadas.
-                </p>
+                <button type="button" id="panel-download-pdf" class="editor-secondary-button">
+                    <i class="ph ph-file-pdf"></i>
+                    Baixar PDF da prévia
+                </button>
+
+                <button type="button" id="save-preview-btn" class="editor-secondary-button">
+                    <i class="ph ph-floppy-disk"></i>
+                    Salvar prévia
+                </button>
+
+                <button type="button" id="finish-whatsapp-btn" class="editor-primary-button">
+                    <i class="ph ph-whatsapp-logo"></i>
+                    Baixar PDF + Enviar no WhatsApp
+                </button>
+
+                <p id="preview-save-status" class="editor-panel-tip" hidden></p>
+
+                <div class="editor-panel-tip">
+                    <strong>Como compartilhar o PDF no WhatsApp:</strong><br>
+                    1. Ao clicar em <strong>Baixar PDF + Enviar no WhatsApp</strong>, o arquivo <code>previa-site-elytratech.pdf</code> será salvo no seu aparelho.<br>
+                    2. O WhatsApp abrirá já com a mensagem pronta.<br>
+                    3. Basta anexar o PDF baixado na conversa e enviar!
+                </div>
             </section>
 
         </aside>
@@ -285,7 +487,7 @@
             <div class="editor-workspace-bar">
                 <div>
                     <span class="editor-status-dot"></span>
-                    <span id="editor-workspace-title">Componentes</span>
+                    <span id="editor-workspace-title">1. Blocos</span>
                 </div>
                 
                 <div class="editor-history-controls">
@@ -302,28 +504,77 @@
                     </button>
                 </div>
 
-                <button type="button" id="open-editor-preview" class="editor-preview-button">
-                    <i class="ph ph-device-mobile"></i>
-                    Abrir prévia
+                <button type="button" id="download-pdf" class="editor-preview-button">
+                    <i class="ph ph-file-pdf"></i>
+                    Baixar PDF
+                </button>
+
+                <button type="button" id="send-whatsapp" class="editor-preview-button editor-whatsapp-top-btn">
+                    <i class="ph ph-whatsapp-logo"></i>
+                    Enviar no WhatsApp
                 </button>
             </div>
 
-            <div id="editor-workspace-welcome" class="editor-workspace-welcome">
-                <div class="editor-welcome-icon">
-                    <i class="ph ph-magic-wand"></i>
+            <!-- GUIA PASSO A PASSO FÁCIL DE ENTENDER -->
+            <div id="editor-workspace-welcome" class="editor-steps-guide">
+                <div class="editor-steps-header">
+                    <div>
+                        <h2>Monte a prévia do seu site em 4 passos</h2>
+                        <p>Você pode colocar itens <strong>lado a lado (colunas)</strong>, colocar blocos <strong>dentro de seções</strong> e ver no <strong>Celular ou Computador</strong>:</p>
+                    </div>
                 </div>
 
-                <h2>Seu espaço de criação</h2>
-                <p>Escolha uma ferramenta na lateral para começar a editar.</p>
+                <div class="editor-steps-grid">
+                    <button type="button" class="editor-step-card is-active" data-step-tab="components">
+                        <span class="editor-step-num">1</span>
+                        <div>
+                            <strong>Adicionar blocos</strong>
+                            <span>Colunas, fotos, cards, textos e botões</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="editor-step-card" data-step-tab="properties">
+                        <span class="editor-step-num">2</span>
+                        <div>
+                            <strong>Editar e organizar</strong>
+                            <span>Mude textos, fotos e itens lado a lado</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="editor-step-card" data-step-tab="themes">
+                        <span class="editor-step-num">3</span>
+                        <div>
+                            <strong>Escolher cores</strong>
+                            <span>Aplique um tema ou mude as cores</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="editor-step-card" data-step-tab="preview">
+                        <span class="editor-step-num">4</span>
+                        <div>
+                            <strong>Baixar PDF e Enviar</strong>
+                            <span>Gere o PDF e mande no WhatsApp</span>
+                        </div>
+                    </button>
+                </div>
             </div>
 
             <div id="editor-preview-area" class="editor-preview-area">
-                <div class="editor-preview-caption">
-                    <span>VISUALIZAÇÃO MOBILE</span>
-                    <span class="editor-preview-indicator">Prévia interativa</span>
+                <div class="editor-device-switcher">
+                    <button type="button" class="editor-device-btn" data-device="desktop">
+                        <i class="ph ph-desktop"></i> Computador (Lado a Lado)
+                    </button>
+                    <button type="button" class="editor-device-btn is-active" data-device="mobile">
+                        <i class="ph ph-device-mobile"></i> Celular (Mobile)
+                    </button>
                 </div>
 
-                <div class="editor-phone">
+                <div class="editor-preview-caption">
+                    <span id="preview-device-label">VISUALIZAÇÃO DO SEU SITE</span>
+                    <span class="editor-preview-indicator">Clique em qualquer bloco para editar ou adicionar itens dentro dele</span>
+                </div>
+
+                <div id="editor-device-frame" class="editor-phone">
                     <div class="editor-phone-top">
                         <span class="editor-phone-camera"></span>
                         <span class="editor-phone-speaker"></span>
@@ -331,9 +582,14 @@
 
                     <div class="editor-phone-screen">
                         <div id="preview-canvas" class="editor-canvas">
-                            <p id="editor-empty" class="editor-empty">
-                                Adicione um componente para começar.
-                            </p>
+                            <div id="editor-empty" class="editor-empty">
+                                <i class="ph ph-hand-pointing"></i>
+                                <p><strong>Sua prévia está vazia!</strong></p>
+                                <p>Clique nos blocos à esquerda para começar ou carregue um site completo de exemplo (com colunas lado a lado, cards e botões):</p>
+                                <button type="button" id="empty-starter-btn" class="editor-primary-button">
+                                    <i class="ph ph-sparkle"></i> Carregar site completo de exemplo
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -343,43 +599,11 @@
                 </div>
             </div>
 
-
-            
-            <div class="editor-theme-presets">
-                <h3 class="editor-subheading">Temas profissionais</h3>
-
-                <div class="editor-control">
-                    <label for="editor-theme-select">Escolha um tema</label>
-                    <select id="editor-theme-select">
-                        <option value="elytra">Elytra Tech</option>
-                        <option value="purple">Roxo profissional</option>
-                        <option value="pink">Rosa tecnológico</option>
-                        <option value="minimal">Minimalista escuro</option>
-                    </select>
-                </div>
-
-                <div id="editor-theme-preview" class="editor-theme-preview">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-
-                <button type="button" id="apply-editor-theme" class="editor-primary-button">
-                    Aplicar tema
-                </button>
-
-                <p class="editor-panel-tip">
-                    Os temas usam somente cores da identidade visual da Elytra Tech.
-                    Você também pode personalizar as cores manualmente abaixo.
-                </p>
-            </div>
-
-            <div class="editor-divider"></div>
-
         </section>
 
     </main>
 
+    <script type="module" src="previa-nuvem.js"></script>
     <script src="js.js"></script>
 </body>
 </html>
