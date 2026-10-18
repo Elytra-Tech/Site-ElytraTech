@@ -57,15 +57,14 @@ onAuthStateChanged(auth, async (user) => {
     usuarioAtual = user;
     document.body.classList.toggle('logado', !!user);
 
+    const adminLink = document.getElementById('adminDashboardLink');
+
     if (!user) {
         perfil = { usuario: '', telefone: '', foto: '' };
+        document.body.classList.remove('is-admin');
+        if (adminLink) adminLink.style.display = 'none';
         fecharPainel();
         fecharModal();
-        
-        // Esconde o painel admin se sair da conta
-        const adminLink = document.getElementById('adminDashboardLink');
-        if (adminLink) adminLink.style.display = 'none';
-        
         return;
     }
 
@@ -80,19 +79,24 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     // --- VERIFICAÇÃO DE ADMINISTRADOR ---
-    const adminLink = document.getElementById('adminDashboardLink');
-    if (adminLink) {
-        try {
-            const adminSnap = await getDoc(doc(db, 'admins', user.uid));
-            if (adminSnap.exists()) {
-                adminLink.style.display = 'block'; // Mostra se for admin
-            } else {
-                adminLink.style.display = 'none'; // Esconde se não for
+    try {
+        const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+        const isAdmin = adminSnap.exists();
+        document.body.classList.toggle('is-admin', isAdmin);
+
+        if (isAdmin) {
+            const adminData = adminSnap.data();
+            if (!perfil.usuario && adminData.usuario) {
+                perfil.usuario = adminData.usuario;
             }
-        } catch (erroAdmin) {
-            console.error('Erro ao verificar admin:', erroAdmin);
-            adminLink.style.display = 'none';
+            if (adminLink) adminLink.style.display = 'block';
+        } else {
+            if (adminLink) adminLink.style.display = 'none';
         }
+    } catch (erroAdmin) {
+        console.error('Erro ao verificar admin:', erroAdmin);
+        document.body.classList.remove('is-admin');
+        if (adminLink) adminLink.style.display = 'none';
     }
 
     atualizarUI();

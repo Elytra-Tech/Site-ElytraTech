@@ -31,7 +31,7 @@
 
                 <p id="ErrorMessage"></p>
 
-                <button class="login-button" id="loginButton" onclick="window.location.href='index.html'" type="submit">Entrar como Admin</button>
+                <button class="login-button" id="loginButton" type="submit">Entrar como Admin</button>
                 <button class="return-btn" type="button" onclick="window.location.href='index.html'">Voltar</button>
             </form>
 
@@ -43,8 +43,9 @@
     </section>
 
     <script type="module">
-import { auth, traduzErro } from "./firebase.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { auth, db, traduzErro } from "./firebase.js";
+import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
 const form = document.querySelector('.login-form');
 const inputEmail = document.getElementById('email');
@@ -73,8 +74,17 @@ form.addEventListener('submit', async (event) => {
     botao.disabled = true;
 
     try {
-        await signInWithEmailAndPassword(auth, email, senha);
-        mostrar('Login efetuado com sucesso!', 'green');
+        const cred = await signInWithEmailAndPassword(auth, email, senha);
+        const adminSnap = await getDoc(doc(db, 'admins', cred.user.uid));
+
+        if (!adminSnap.exists()) {
+            await signOut(auth);
+            mostrar('Acesso negado: esta conta não é de Administrador.', 'red');
+            botao.disabled = false;
+            return;
+        }
+
+        mostrar('Login de Administrador efetuado com sucesso!', 'green');
         setTimeout(() => window.location.href = 'index.html', 800);
     } catch (erro) {
         mostrar(traduzErro(erro.code), 'red');
