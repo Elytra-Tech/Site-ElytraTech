@@ -1195,6 +1195,27 @@ img {
     background: rgba(168, 85, 247, 0.08);
 }
 
+.editor-comp-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.editor-comp-text strong {
+    font-size: 13px;
+    color: var(--ink);
+}
+
+.editor-comp-text small {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.35;
+}
+
+.editor-starter-btn {
+    margin-top: 0;
+}
+
 
 /* ----- Área de trabalho ----- */
 
@@ -1344,17 +1365,154 @@ img {
 }
 
 
-/* ----- Prévia (celular) ----- */
+.editor-whatsapp-top-btn {
+    background: linear-gradient(110deg, #7b2cbf, #e01e5a);
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.editor-whatsapp-top-btn:hover {
+    filter: brightness(1.1);
+    background: linear-gradient(110deg, #7b2cbf, #e01e5a);
+}
+
+
+/* ----- Guia Passo a Passo ----- */
+
+.editor-steps-guide {
+    margin: 18px 20px 0;
+    padding: 16px 18px;
+    border: 1px solid var(--editor-border);
+    border-radius: 14px;
+    background: rgba(168, 85, 247, 0.05);
+}
+
+.editor-steps-header h2 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    color: var(--ink);
+}
+
+.editor-steps-header p {
+    margin: 0 0 14px;
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.editor-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.editor-step-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--deep-2);
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+
+.editor-step-card:hover,
+.editor-step-card.is-active {
+    border-color: var(--purple);
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.editor-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.editor-step-card strong {
+    display: block;
+    font-size: 12.5px;
+    margin-bottom: 2px;
+    color: var(--ink);
+}
+
+.editor-step-card span:not(.editor-step-num) {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.35;
+}
+
+@media (max-width: 1100px) {
+    .editor-steps-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .editor-steps-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ----- Prévia (celular e computador) ----- */
 
 .editor-preview-area {
     display: flex;
     flex: 1;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
 
-    padding: 25px 16px 35px;
+    padding: 20px 16px 35px;
     overflow: auto;
+}
+
+.editor-device-switcher {
+    display: inline-flex;
+    gap: 8px;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--deep-2);
+}
+
+.editor-device-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.editor-device-btn:hover {
+    color: var(--ink);
+}
+
+.editor-device-btn.is-active {
+    background: linear-gradient(110deg, #7b2cbf, #e01e5a);
+    color: #ffffff;
 }
 
 .editor-preview-caption {
@@ -1376,8 +1534,9 @@ img {
     display: flex;
     flex-direction: column;
 
-    width: min(100%, 340px);
-    min-height: 480px;
+    width: min(100%, 350px);
+    height: 600px;
+    max-height: 600px;
     padding: 9px;
 
     border: 2px solid #7b2cbf;
@@ -1385,6 +1544,23 @@ img {
 
     background: #100d17;
     box-shadow: 0 0 35px rgba(168, 85, 247, 0.13);
+    transition: width 0.28s ease, border-radius 0.28s ease;
+}
+
+.editor-phone.is-desktop {
+    width: min(100%, 860px);
+    height: 620px;
+    max-height: 620px;
+    border-radius: 18px;
+    padding: 10px;
+}
+
+.editor-phone.is-desktop .editor-phone-screen {
+    border-radius: 12px;
+}
+
+.editor-phone.is-desktop .editor-phone-bottom {
+    display: none;
 }
 
 .editor-phone-top {
@@ -1392,6 +1568,7 @@ img {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    flex-shrink: 0;
 
     height: 23px;
 }
@@ -1414,9 +1591,11 @@ img {
 
 .editor-phone-screen {
     flex: 1;
-    min-height: 420px;
+    min-height: 0;
 
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
 
     border-radius: 23px;
     background: var(--deep-2);
@@ -1426,6 +1605,7 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 
     height: 22px;
 }
@@ -1439,23 +1619,79 @@ img {
 }
 
 .editor-canvas {
-    min-height: 420px;
+    min-height: 100%;
     padding: 16px;
+    box-sizing: border-box;
 
     color: var(--ink);
     overflow-wrap: anywhere;
 }
 
 .editor-empty {
-    padding: 35px 10px;
+    padding: 35px 14px;
 
     color: var(--muted);
     font-size: 13px;
     text-align: center;
 }
 
+.editor-empty i {
+    font-size: 32px;
+    color: var(--purple);
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.editor-empty p {
+    margin: 6px 0;
+}
+
 .editor-empty[hidden] {
     display: none;
+}
+
+
+/* ----- Banner e controles de container ----- */
+
+.editor-insert-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--pink);
+    border-radius: 10px;
+    background: rgba(255, 77, 196, 0.12);
+}
+
+.editor-insert-banner small {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.editor-insert-banner strong {
+    font-size: 12.5px;
+    color: var(--ink);
+}
+
+.editor-banner-close {
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--deep);
+    color: var(--pink);
+    font: inherit;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.editor-container-box {
+    padding: 12px;
+    border: 1px dashed rgba(168, 85, 247, 0.45);
+    border-radius: 10px;
+    background: rgba(168, 85, 247, 0.06);
 }
 
 
@@ -1465,15 +1701,28 @@ img {
     position: relative;
 
     margin-bottom: 12px;
-    padding: 16px;
+    padding: 14px;
 
     border: 1px solid transparent;
     border-radius: 8px;
 
     overflow-wrap: anywhere;
-    cursor: pointer;
+    cursor: grab;
+    box-sizing: border-box;
 
-    transition: border-color 0.2s, background-color 0.2s;
+    transition: border-color 0.2s, background-color 0.2s, opacity 0.2s;
+}
+
+.editor-component:active {
+    cursor: grabbing;
+}
+
+.editor-component.is-dragging {
+    opacity: 0.45;
+}
+
+.editor-component.is-drag-over {
+    border-top: 2px solid var(--pink);
 }
 
 .editor-component:hover {
@@ -1482,11 +1731,16 @@ img {
 
 .editor-component.is-selected {
     outline: 2px solid var(--pink);
-    outline-offset: 3px;
+    outline-offset: 2px;
+}
+
+.editor-component.is-insert-target {
+    border: 1px dashed var(--pink);
 }
 
 .editor-component h1,
 .editor-component h2,
+.editor-component h3,
 .editor-component p {
     margin: 0;
 }
@@ -1496,13 +1750,26 @@ img {
 }
 
 .editor-preview-header {
-    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 18px;
 
     background: var(--deep-2);
     border-bottom: 2px solid var(--purple);
 
     font-weight: 800;
     letter-spacing: 1px;
+}
+
+.editor-header-links {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.85;
 }
 
 .editor-preview-cta {
@@ -1521,12 +1788,193 @@ img {
 }
 
 .editor-preview-section {
-    padding: 24px;
+    padding: 18px;
 
     border: 1px solid var(--editor-border);
-    border-radius: 10px;
+    border-radius: 12px;
 
     background: var(--deep-2);
+}
+
+.editor-preview-section > h2 {
+    margin-bottom: 6px;
+    font-size: 18px;
+}
+
+.editor-preview-section > p[data-content] {
+    margin-bottom: 12px;
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.editor-inner-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 10px;
+    min-height: 24px;
+}
+
+/* No computador (ou PDF largo), divide em 2 ou 3 colunas com tamanho mínimo confortável */
+.editor-inner-list[data-cols="2"] {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.editor-inner-list[data-cols="3"] {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+/* No celular (tela estreita), adapta automaticamente para não espremer os blocos */
+.editor-phone:not(.is-desktop) .editor-inner-list[data-cols="2"],
+.editor-phone:not(.is-desktop) .editor-inner-list[data-cols="3"] {
+    grid-template-columns: 1fr;
+}
+
+.editor-inner-list > .editor-component {
+    margin-bottom: 0;
+}
+
+.editor-add-inside-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px 10px;
+    border: 1px dashed rgba(168, 85, 247, 0.45);
+    border-radius: 8px;
+    background: rgba(168, 85, 247, 0.06);
+    color: var(--muted);
+    font: inherit;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.editor-add-inside-chip:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+    background: rgba(255, 77, 196, 0.08);
+}
+
+/* Novos componentes: Card, Imagem, Depoimento, Formulário, Rodapé */
+
+.editor-preview-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid var(--editor-border);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.editor-card-badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(168, 85, 247, 0.18);
+    color: var(--pink);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.editor-preview-card h3 {
+    font-size: 16px;
+}
+
+.editor-preview-card p {
+    font-size: 13px;
+    opacity: 0.88;
+}
+
+.editor-preview-card .editor-preview-cta {
+    margin-top: 4px;
+    padding: 9px 16px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.editor-preview-image img {
+    display: block;
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--editor-border);
+}
+
+.editor-preview-image p {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.editor-preview-testimonial {
+    padding: 16px;
+    border: 1px solid var(--editor-border);
+    border-radius: 12px;
+    background: rgba(168, 85, 247, 0.06);
+}
+
+.editor-testimonial-stars {
+    color: #fbbf24;
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+}
+
+.editor-preview-testimonial p {
+    font-style: italic;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.editor-testimonial-author {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pink);
+}
+
+.editor-preview-form {
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid var(--editor-border);
+    border-radius: 12px;
+    background: var(--deep-2);
+}
+
+.editor-preview-form h3 {
+    font-size: 16px;
+    margin-bottom: 2px;
+}
+
+.editor-fake-input {
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--deep);
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.editor-preview-footer {
+    padding: 16px;
+    border-top: 1px solid var(--editor-border);
+    background: rgba(5, 2, 10, 0.7);
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.85;
+}
+
+.editor-layer-item.is-child {
+    margin-left: 16px;
+    width: calc(100% - 16px);
+    font-size: 12px;
+    border-left: 2px solid var(--purple);
 }
 
 
