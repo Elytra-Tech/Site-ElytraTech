@@ -61,6 +61,11 @@ onAuthStateChanged(auth, async (user) => {
         perfil = { usuario: '', telefone: '', foto: '' };
         fecharPainel();
         fecharModal();
+        
+        // Esconde o painel admin se sair da conta
+        const adminLink = document.getElementById('adminDashboardLink');
+        if (adminLink) adminLink.style.display = 'none';
+        
         return;
     }
 
@@ -72,6 +77,22 @@ onAuthStateChanged(auth, async (user) => {
         if (snap.exists()) perfil = { ...perfil, ...snap.data() };
     } catch (erro) {
         console.error('Erro ao carregar perfil:', erro);
+    }
+
+    // --- VERIFICAÇÃO DE ADMINISTRADOR ---
+    const adminLink = document.getElementById('adminDashboardLink');
+    if (adminLink) {
+        try {
+            const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+            if (adminSnap.exists()) {
+                adminLink.style.display = 'block'; // Mostra se for admin
+            } else {
+                adminLink.style.display = 'none'; // Esconde se não for
+            }
+        } catch (erroAdmin) {
+            console.error('Erro ao verificar admin:', erroAdmin);
+            adminLink.style.display = 'none';
+        }
     }
 
     atualizarUI();
@@ -238,3 +259,4 @@ form.addEventListener('submit', async (evento) => {
         botao.disabled = false;
     }
 });
+

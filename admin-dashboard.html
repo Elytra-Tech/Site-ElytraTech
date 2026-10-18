@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração</title>
+    <link rel="stylesheet" href="style.css"> <!-- Substitui pelo teu CSS se o nome for diferente -->
+    <style>
+        /* Estilos rápidos para os novos componentes do painel */
+        body {
+            background-color: #0b0b0f;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #13131a;
+            border: 1px solid #ff4bb4;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(255, 75, 180, 0.15);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a3c;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .admin-header h1 {
+            font-size: 24px;
+            color: #ffffff;
+            margin: 0;
+        }
+        .btn-sair {
+            background: transparent;
+            border: 1px solid #ff4bb4;
+            color: #ff4bb4;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-sair:hover {
+            background: #ff4bb4;
+            color: #ffffff;
+        }
+        .stats-card {
+            background: #1a1a24;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: inline-block;
+            border-left: 4px solid #ff4bb4;
+        }
+        .stats-card h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #a0a0b0;
+        }
+        .stats-card p {
+            margin: 5px 0 0 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1a1a24;
+            border: 1px solid #2a2a3c;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box:focus {
+            border-color: #ff4bb4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #2a2a3c;
+            font-size: 14px;
+        }
+        th {
+            color: #ff4bb4;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .error-msg {
+            color: #ff4b4b;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Painel ElytraTech - Admins</h1>
+            <button id="btnTerminarSessao" class="btn-sair">Terminar Sessão</button>
+        </div>
+
+        <!-- Estatística Rápida -->
+        <div class="stats-card">
+            <h3>Total de Clientes Registados</h3>
+            <p id="totalClientes">0</p>
+        </div>
+
+        <!-- Barra de Pesquisa -->
+        <input type="text" id="inputPesquisa" class="search-box" placeholder="Pesquisar cliente por nome ou e-mail...">
+
+        <div class="Clientes Registados">
+            <h2>Clientes Registados</h2>
+            
+            <table id="tabelaClientes">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th>Data de Registo</th>
+                    </tr>
+                </thead>
+                <tbody id="listaClientes">
+                    <!-- Preenchido via JavaScript -->
+                </tbody>
+            </table>
+            <p id="mensagemErro" class="error-msg" style="display: none;">Erro ao carregar dados do banco de dados.</p>
+        </div>
+    </div>
+
+    
+
+    <!-- Script de Gestão do Painel -->
+    <script type="module">
+        import { auth, db } from "./firebase.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+        let todosClientes = [];
+
+        // 1. Verificar se o utilizador autenticado é administrador
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "Admin-Login.html"; // Redireciona se não estiver logado
+                return;
+            }
+
+            try {
+                const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+                if (!adminSnap.exists()) {
+                    alert("Acesso negado. Apenas administradores.");
+                    window.location.href = "index.html";
+                    return;
+                }
+                
+                // Se for admin, carrega os dados da tabela
+                carregarClientes();
+
+            } catch (error) {
+                console.error("Erro ao validar admin:", error);
+                document.getElementById('mensagemErro').style.display = 'block';
+            }
+        });
+
+        // 2. Carregar clientes do Firestore
+        async function carregarClientes() {
+            const tbody = document.getElementById('listaClientes');
+            const totalElement = document.getElementById('totalClientes');
+            const erroElement = document.getElementById('mensagemErro');
+            
+            tbody.innerHTML = "";
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                todosClientes = [];
+
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    todosClientes.push({
+                        id: docSnap.id,
+                        nome: data.usuario || "Sem Nome",
+                        email: data.email || "Não registado",
+                        telefone: data.telefone || "Não informado",
+                        dataRegisto: data.dataRegisto ? new Date(data.dataRegisto).toLocaleString('pt-BR') : "Desconhecida"
+                    });
+                });
+
+                // Atualiza o contador total
+                totalElement.textContent = todosClientes.length;
+
+                // Renderiza a tabela inicial
+                renderizarTabela(todosClientes);
+
+            } catch (error) {
+                console.error("Erro ao carregar clientes:", error);
+                erroElement.style.display = 'block';
+            }
+        }
+
+        // 3. Renderizar dados na tabela HTML
+        function renderizarTabela(clientes) {
+            const tbody = document.getElementById('listaClientes');
+            tbody.innerHTML = "";
+
+            if (clientes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #a0a0b0;">Nenhum cliente encontrado.</td></tr>`;
+                return;
+            }
+
+            clientes.forEach(cliente => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${cliente.nome}</td>
+                    <td>${cliente.email}</td>
+                    <td>${cliente.telefone}</td>
+                    <td>${cliente.dataRegisto}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 4. Funcionalidade da Barra de Pesquisa em Tempo Real
+        document.getElementById('inputPesquisa').addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase();
+            const clientesFiltrados = todosClientes.filter(c => 
+                c.nome.toLowerCase().includes(termo) || c.email.toLowerCase().includes(termo)
+            );
+            renderizarTabela(clientesFiltrados);
+        });
+
+        // 5. Botão de Terminar Sessão (Logout)
+        document.getElementById('btnTerminarSessao').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = "Admin-Login.html";
+            } catch (error) {
+                console.error("Erro ao terminar sessão:", error);
+            }
+        });
+    </script>
+</body>
+</html>

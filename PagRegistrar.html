@@ -20,11 +20,19 @@
                 <input class="Inputs-In" id="DataLog" type="text" placeholder="Usuário" required>
                 <input class="Inputs-In" id="numero" maxlength="11" type="tel" placeholder="Número de telefone" required>
                 <input class="Inputs-In" id="email" type="email" placeholder="Email" required>
-                <input class="Inputs-In" id="password" type="password" placeholder="Senha (mínimo 6 caracteres)" required>
+<div class="input-wrapper" style="position: relative; width: 100%; display: flex; align-items: center;">
+    <input class="Inputs-In" id="password" type="password" placeholder="Senha (mínimo 6 caracteres)" required style="width: 100%; padding-right: 45px;">
+    <button type="button" id="togglePassword" style="position: absolute; right: 12px; background: none; border: none; cursor: pointer; color: var(--line); display: flex; align-items: center; justify-content: center; padding: 0; z-index: 10;">
+        <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+    </button>
+</div>
                 <p id="ErrorMessage"></p>
                 <button class="login-button" id="loginButton" type="submit">Registrar</button>
                 <button class="return-btn" type="button" onclick="window.location.href='index.html'">Voltar</button>
-                <p>Já tem uma conta? <a href="PagLogin.html" class="register-link">Faça login</a></p>
+                <p>Já tem uma conta? <a href="PagLogin.html" class="register-link">Faça login</a> ou <a style="text-decoration: none; color: var(--pink);" href="Admin-Login.html">Login Admin</a></p>
             </form>
 
         </div>
@@ -88,6 +96,34 @@ form.addEventListener('submit', async (event) => {
         msgErro.style.display = 'none';
     })
 );
+
+// === CONTROLO DO BOTÃO DE VER/OCULTAR SENHA ===
+const togglePasswordBtn = document.getElementById('togglePassword');
+const eyeIcon = document.getElementById('eyeIcon');
+
+if (togglePasswordBtn && inputSenha && eyeIcon) {
+    togglePasswordBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isPassword = inputSenha.getAttribute('type') === 'password';
+        
+        inputSenha.setAttribute('type', isPassword ? 'text' : 'password');
+        
+        if (isPassword) {
+            // Olho cortado/fechado
+            eyeIcon.innerHTML = `
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+            `;
+        } else {
+            // Olho aberto
+            eyeIcon.innerHTML = `
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            `;
+        }
+    });
+}
+
 </script>
 
 </body>

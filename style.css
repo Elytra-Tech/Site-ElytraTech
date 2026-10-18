@@ -2437,3 +2437,117 @@ body:not(.logado) #link-previa { display: none; }
 }
 
 .btn-secundario:hover { border-color: var(--purple); }
+
+
+/* Garantir que todos os itens do menu partilham a mesma fonte e espaçamento */
+.menu-item {
+    display: block;
+    padding: 10px 16px;
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400; /* Tira o negrito excessivo */
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 6px;
+}
+
+/* Efeito ao passar o rato (hover) igual aos outros */
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+/* Destaque sutil opcional apenas para o Painel Admin */
+.admin-item {
+    color: #ff4bb4; /* Cor rosa/roxa da tua identidade visual */
+}
+
+.admin-item:hover {
+    background-color: rgba(255, 75, 180, 0.15);
+    color: #ffffff;
+}
+
+/* Padronização perfeita de todos os itens do menu */
+.user-painel-item {
+    display: block !important;
+    width: 100% !important;
+    padding: 10px 16px !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #ffffff !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+/* Efeito suave ao passar o rato por cima (Hover limpo) */
+.user-painel-item:hover {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    color: #ffffff !important;
+}
+
+/* Garante que o link de Admin fica escondido por padrão se o JS assim determinar */
+#adminDashboardLink[style*="display: none"] {
+    display: none !important;
+}
+
+/* --- REGRAS DE RESPONSIVIDADE (MOBILE & TABLET) --- */
+
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .header-panel {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+    }
+
+    .header-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .theme-select {
+        flex: 1;
+    }
+
+    .stats-bar {
+        grid-template-columns: 1fr; /* Cartões empilhados em telemóveis */
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    /* Ajuste da tabela para scroll horizontal em ecrãs pequenos */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 550px; /* Garante que a tabela não esmaga as colunas */
+    }
+
+    th, td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .feed-container {
+        max-height: 300px;
+    }
+}

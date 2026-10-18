@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
+    
     <section class="login-section">
         <div class="login-container">
 
@@ -18,64 +18,106 @@
 
             <form class="login-form">
                 <input class="Inputs-In" id="email" type="email" placeholder="Email" required>
-                <input class="Inputs-In" id="password" type="password" placeholder="Senha" required>
+                
+                <!-- Campo de Senha com o Botão do Olho Integrado -->
+                <div class="input-wrapper" style="position: relative; width: 100%; display: flex; align-items: center;">
+                    <input class="Inputs-In" id="password" type="password" placeholder="Senha (mínimo 6 caracteres)" required style="width: 100%; padding-right: 45px;">
+                    <button type="button" id="togglePassword" style="position: absolute; right: 12px; background: none; border: none; cursor: pointer; color: var(--line); display: flex; align-items: center; justify-content: center; padding: 0; z-index: 10;">
+                        <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
 
                 <p id="ErrorMessage"></p>
 
                 <button class="login-button" id="loginButton" type="submit">Entrar</button>
+                <button class="login-button" type="button" onclick="window.location.href='Admin-Login.html'">Sou Admin</button>
                 <button class="return-btn" type="button" onclick="window.location.href='index.html'">Voltar</button>
-            </form>
 
-            <p class="login-text">Não tem uma conta? <a href="PagRegistrar.html" class="register-link">Registrar</a></p>
+                <p class="login-text">Não tem uma conta? <a href="PagRegistrar.html" class="register-link">Registar</a> ou <a style="text-decoration: none; color: var(--pink);" href="AdmRegister.html">Registar Admin</a></p>
+            </form>
 
         </div>
     </section>
 
-<script type="module">
-import { auth, traduzErro } from "./firebase.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    <script type="module">
+        import { auth, traduzErro } from "./firebase.js";
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
-const form = document.querySelector('.login-form');
-const inputEmail = document.getElementById('email');
-const inputSenha = document.getElementById('password');
-const botao = document.getElementById('loginButton');
-const msgErro = document.getElementById('ErrorMessage');
+        const form = document.querySelector('.login-form');
+        const inputEmail = document.getElementById('email');
+        const inputSenha = document.getElementById('password');
+        const botao = document.getElementById('loginButton');
+        const msgErro = document.getElementById('ErrorMessage');
 
-function mostrar(texto, cor) {
-    msgErro.style.color = cor;
-    msgErro.textContent = texto;
-    msgErro.style.display = 'block';
-    botao.style.borderColor = cor === 'red' ? 'red' : '';
-}
+        function mostrar(texto, cor) {
+            msgErro.style.color = cor;
+            msgErro.textContent = texto;
+            msgErro.style.display = 'block';
+            botao.style.borderColor = cor === 'red' ? 'red' : '';
+        }
 
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-    const email = inputEmail.value.trim();
-    const senha = inputSenha.value;
+            const email = inputEmail.value.trim();
+            const senha = inputSenha.value;
 
-    if (!email || !senha) {
-        mostrar('Por favor, preencha todos os campos.', 'red');
-        return;
-    }
+            if (!email || !senha) {
+                mostrar('Por favor, preencha todos os campos.', 'red');
+                return;
+            }
 
-    botao.disabled = true;
+            botao.disabled = true;
 
-    try {
-        await signInWithEmailAndPassword(auth, email, senha);
-        mostrar('Login efetuado com sucesso!', 'green');
-        setTimeout(() => window.location.href = 'index.html', 800);
-    } catch (erro) {
-        mostrar(traduzErro(erro.code), 'red');
-        botao.disabled = false;
-    }
-});
+            try {
+                await signInWithEmailAndPassword(auth, email, senha);
+                mostrar('Login efetuado com sucesso!', 'green');
+                setTimeout(() => window.location.href = 'index.html', 800);
+            } catch (erro) {
+                mostrar(traduzErro(erro.code), 'red');
+                botao.disabled = false;
+            }
+        });
 
-[inputEmail, inputSenha].forEach(i => i.addEventListener('input', () => {
-    botao.style.borderColor = '';
-    msgErro.style.display = 'none';
-}));
-</script>
+        // Limpar erros ao escrever nos inputs existentes
+        [inputEmail, inputSenha].forEach(i => {
+            if (i) {
+                i.addEventListener('input', () => {
+                    botao.style.borderColor = '';
+                    msgErro.style.display = 'none';
+                });
+            }
+        });
 
+        // === CONTROLO DO BOTÃO DE VER/OCULTAR SENHA ===
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (togglePasswordBtn && inputSenha && eyeIcon) {
+            togglePasswordBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const isPassword = inputSenha.getAttribute('type') === 'password';
+                
+                inputSenha.setAttribute('type', isPassword ? 'text' : 'password');
+                
+                if (isPassword) {
+                    // Olho cortado/fechado
+                    eyeIcon.innerHTML = `
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    `;
+                } else {
+                    // Olho aberto
+                    eyeIcon.innerHTML = `
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    `;
+                }
+            });
+        }
+    </script>
 </body>
 </html>
