@@ -137,11 +137,11 @@ img {
 
 .brand:hover .img-logo {
     transform: scale(1.1) rotate(5deg);
-    filter: drop-shadow(0 0 8px #e01e5a);
+    filter: drop-shadow(0 0 8px var(--purple));
 }
 
 .brand:hover .brand-name {
-    color: #e01e5a;
+    color: var(--pink);
 }
 
 .STYcabecalho ul {
@@ -500,7 +500,7 @@ img {
 }
 
 .diff-card:hover {
-    border-color: #e01e5a;
+    border-color: var(--purple);
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(224, 30, 90, 0.2);
 }
@@ -746,8 +746,10 @@ img {
 /* ================= FOOTER ================= */
 
 .STYrodape {
-    border-top: 1px solid var(--line);
-    padding: 24px 0;
+    border-top: 1px solid rgba(168, 85, 247, 0.22);
+    background: rgba(11, 9, 18, 0.95);
+    backdrop-filter: blur(12px);
+    padding: 14px 0;
 }
 
 .footer-row {
@@ -755,37 +757,74 @@ img {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.footer-brand {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.footer-brand:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
 }
 
 .img-escrita {
-    height: 60px;
+    height: 26px;
     width: auto;
+    display: block;
+}
+
+.footer-copy {
+    color: #a99fb8;
+    font-size: 12px;
+    letter-spacing: 0.2px;
+    margin: 0;
 }
 
 .footer-links {
     display: flex;
     align-items: center;
-    gap: 24px;
-    font-size: 13.5px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
 .footer-links a {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    color: var(--ink);
-    text-decoration: underline;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(168, 85, 247, 0.22);
+    color: #f3edf5;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .footer-links a:hover {
-    color: var(--purple);
+    background: rgba(168, 85, 247, 0.16);
+    border-color: var(--pink);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(168, 85, 247, 0.2);
 }
 
 .footer-links i {
-    font-size: 19px;
-    color: var(--purple);
+    font-size: 16px;
+    color: var(--pink);
+    transition: transform 0.2s ease;
+}
+
+.footer-links a:hover i {
+    transform: scale(1.12);
 }
 
 
@@ -951,12 +990,13 @@ img {
     .footer-row {
         flex-direction: column;
         text-align: center;
-        gap: 16px;
+        gap: 12px;
+        padding: 10px 16px;
     }
 
     .footer-links {
-        flex-direction: column;
-        gap: 12px;
+        justify-content: center;
+        gap: 8px;
     }
 }
 
@@ -2506,9 +2546,29 @@ body.tema-claro .STYcabecalho {
 
 body.tema-claro .Prim-Sec,
 body.tema-claro .Seg-Sec,
-body.tema-claro .Quart-Sec,
-body.tema-claro .STYrodape {
+body.tema-claro .Quart-Sec {
     background-color: var(--fundo-site);
+}
+
+body.tema-claro .STYrodape {
+    background-color: #f8f6fb;
+    border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+body.tema-claro .footer-copy {
+    color: #60586e;
+}
+
+body.tema-claro .footer-links a {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.12);
+    color: #201b27;
+}
+
+body.tema-claro .footer-links a:hover {
+    background: rgba(168, 85, 247, 0.12);
+    border-color: var(--purple);
+    color: #000000;
 }
 
 body.tema-claro .Terc-Sec {
@@ -2739,8 +2799,8 @@ html.a11y-nomotion *::after {
 .user-menu { display: none; position: relative; }
 body.logado .user-menu { display: block; }
 body.logado .nav-cta { display: none !important; }
-body:not(.logado) #link-previa { display: none; }
-body:not(.is-admin) #link-dashboard { display: none; }
+body:not(.logado) #link-previa { display: none !important; }
+body:not(.is-admin) #link-dashboard { display: none !important; }
 
 .nav-dashboard-link {
     display: inline-flex;
@@ -3083,5 +3143,94 @@ body:not(.is-admin) #link-dashboard { display: none; }
 
     .feed-container {
         max-height: 300px;
+    }
+}
+
+
+/* =========================================
+   ANIMAÇÃO DE REVELAÇÃO AO ROLAR (SCROLL REVEAL)
+========================================= */
+
+/* Estado inicial (oculto e levemente deslocado) */
+html.has-scroll-reveal .reveal-info {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+html.has-scroll-reveal .reveal-card {
+    opacity: 0;
+    transform: translateY(38px) scale(0.97);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+    will-change: opacity, transform;
+}
+
+/* Estado revelado (animado para a posição final) */
+html.has-scroll-reveal .reveal-info.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+html.has-scroll-reveal .reveal-card.is-revealed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Limpeza de GPU e garantias de hover após conclusão */
+html.has-scroll-reveal .reveal-card.reveal-done {
+    will-change: auto;
+}
+
+/* Efeitos de hover refinados nos quadros revelados */
+html.has-scroll-reveal .diff-card.is-revealed:hover {
+    transform: translateY(-4px) scale(1);
+    border-color: var(--purple);
+    box-shadow: 0 10px 30px rgba(224, 30, 90, 0.2);
+}
+
+html.has-scroll-reveal .service-card.is-revealed:hover {
+    transform: translateY(-3px) scale(1);
+    border-color: rgba(255, 79, 195, 0.4);
+}
+
+html.has-scroll-reveal .case-card.is-revealed:hover {
+    transform: translateY(-4px) scale(1);
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+}
+
+html.has-scroll-reveal .mvv-card.is-revealed:hover {
+    transform: translateY(-3px) scale(1);
+    border-color: rgba(168, 85, 247, 0.35);
+}
+
+html.has-scroll-reveal .team-member.is-revealed:hover .member-photo {
+    transform: scale(1.05);
+    border-color: var(--pink);
+}
+
+.case-card,
+.mvv-card {
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-photo {
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+/* Suporte à redução de movimento / acessibilidade */
+html.a11y-nomotion .reveal-info,
+html.a11y-nomotion .reveal-card,
+@media (prefers-reduced-motion: reduce) {
+    html.has-scroll-reveal .reveal-info,
+    html.has-scroll-reveal .reveal-card {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
     }
 }

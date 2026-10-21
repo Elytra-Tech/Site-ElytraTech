@@ -649,10 +649,6 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
     }
 
     function loadStarterTemplate() {
-        if (allComponents().length > 0) {
-            const confirmar = confirm('Isso substituirá os blocos atuais por um site completo de exemplo pronto para editar. Deseja continuar?');
-            if (!confirmar) return;
-        }
 
         allComponents().forEach(function (component) {
             component.remove();
@@ -2377,3 +2373,99 @@ function initAcessibilidade() {
 
 // Executa a função de acessibilidade assim que o script carregar
 initAcessibilidade();
+
+
+/* =========================================
+   ANIMAÇÃO DE REVELAÇÃO AO ROLAR (SCROLL REVEAL)
+   Faz com que informações e quadros vão
+   aparecendo suavemente conforme a página é rolada.
+========================================= */
+
+function initScrollReveal() {
+    const infoSelectors = [
+        '.section-head',
+        '.team-head',
+        '.problem-box',
+        '.footer-row'
+    ];
+
+    const cardSelectors = [
+        '.mvv-card',
+        '.diff-card',
+        '.team-member',
+        '.service-card',
+        '.case-card'
+    ];
+
+    const allTargets = document.querySelectorAll([...infoSelectors, ...cardSelectors].join(', '));
+    if (!allTargets.length) return;
+
+    // Respeitar preferências de acessibilidade
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasA11yNoMotion = document.documentElement.classList.contains('a11y-nomotion');
+
+    if (prefersReducedMotion || hasA11yNoMotion) return;
+
+    // Habilita as classes de animação na página
+    document.documentElement.classList.add('has-scroll-reveal');
+
+    document.querySelectorAll(infoSelectors.join(', ')).forEach(el => {
+        el.classList.add('reveal-info');
+    });
+
+    document.querySelectorAll(cardSelectors.join(', ')).forEach(el => {
+        el.classList.add('reveal-card');
+    });
+
+    // Configurar atraso escalonado (stagger) para os quadros de cada grid
+    const gridConfigs = [
+        { selector: '.mvv-grid', step: 120 },
+        { selector: '.differentials-grid', step: 140 },
+        { selector: '.team-grid', step: 90 },
+        { selector: '.services-grid', step: 120 },
+        { selector: '.cases-grid', step: 130 }
+    ];
+
+    gridConfigs.forEach(({ selector, step }) => {
+        const grid = document.querySelector(selector);
+        if (!grid) return;
+
+        const cards = grid.querySelectorAll('.reveal-card');
+        cards.forEach((card, index) => {
+            card.dataset.revealDelay = `${index * step}ms`;
+        });
+    });
+
+    // Observador para disparar as animações conforme entram no campo de visão
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+
+                if (target.dataset.revealDelay) {
+                    target.style.transitionDelay = target.dataset.revealDelay;
+                }
+
+                target.classList.add('is-revealed');
+                obs.unobserve(target);
+
+                const cleanDelay = () => {
+                    target.style.transitionDelay = '';
+                    target.classList.add('reveal-done');
+                };
+
+                target.addEventListener('transitionend', cleanDelay, { once: true });
+                setTimeout(cleanDelay, 1200);
+            }
+        });
+    }, {
+        root: null,
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.08
+    });
+
+    allTargets.forEach(el => observer.observe(el));
+}
+
+// Executa o scroll reveal
+initScrollReveal();

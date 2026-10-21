@@ -1,6 +1,15 @@
 import { auth, db } from "./firebase.js";
+import { onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { collection, addDoc, doc, getDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+// Bloqueia o acesso à prévia para quem não está logado
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = "PagLogin.html";
+    }
+});
 
 window.salvarPreviaNuvem = async function (html, resumo, canvasStyle = null) {
     const ref = await addDoc(collection(db, 'previews'), {
