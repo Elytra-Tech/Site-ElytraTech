@@ -57,8 +57,9 @@
 
 
     <section id="Home-Scroll" class="Prim-Sec">
-        <canvas id="particles"></canvas>    
-        <div class="hero-content">
+<!-- CANVAS DO FUNDO INTERATIVO ELYTRA TECH -->
+    <canvas id="interactive-cyber-bg"></canvas>
+    <div class="hero-content">
 
             
 <!-- BOTÃO DE ACESSIBILIDADE -->
@@ -164,114 +165,52 @@
 
         </div>
 
-         <!-- PAINEL DIREITO -->
-        <div class="hero-dashboard">
+        <!-- CARD DE CONTATO DIRETO INTEGRADO AO FIREBASE -->
+<div class="contact-card-hero glass-panel">
+    <div class="form-header">
+        <span class="pill-status">
+            <span class="online-dot"></span> Solictar Orçamento
+        </span>
+        <h3>Inicie o seu Projeto</h3>
+        <p>Preencha os dados abaixo para receber um atendimento personalizado.</p>
+    </div>
 
-            <div class="dashboard-header">
-                <div>
-                    <span class="dashboard-label">ELYTRA TECH</span>
-                    <h3>Performance</h3>
-                </div>
-
-                <span class="dashboard-status">
-                    ● Operacional
-                </span>
-            </div>
-
-
-            <div class="chart-area">
-
-                <div class="chart-value">
-                    +42.8%
-                </div>
-
-                <div class="chart-subtitle">
-                    Evolução dos resultados
-                </div>
-
-                <svg
-                    class="chart"
-                    viewBox="0 0 600 220"
-                    preserveAspectRatio="none"
-                >
-                    <defs>
-                        <linearGradient
-                            id="chartGradient"
-                            x1="0%"
-                            y1="0%"
-                            x2="100%"
-                            y2="0%"
-                        >
-                            <stop offset="0%" stop-color="#a855f7"/>
-                            <stop offset="100%" stop-color="#ff4fc3"/>
-                        </linearGradient>
-
-                        <linearGradient
-                            id="areaGradient"
-                            x1="0%"
-                            y1="0%"
-                            x2="0%"
-                            y2="100%"
-                        >
-                            <stop
-                                offset="0%"
-                                stop-color="#a855f7"
-                                stop-opacity=".30"
-                            />
-
-                            <stop
-                                offset="100%"
-                                stop-color="#ff4fc3"
-                                stop-opacity="0"
-                            />
-                        </linearGradient>
-                    </defs>
-
-                    <!-- área abaixo da curva -->
-                    <path
-                        class="chart-area-fill"
-                        d="
-                            M0,190
-                            L60,175
-                            L120,180
-                            L180,145
-                            L240,155
-                            L300,110
-                            L360,125
-                            L420,75
-                            L480,90
-                            L540,45
-                            L600,20
-                            L600,220
-                            L0,220
-                            Z
-                        "
-                    />
-
-                    <!-- linha -->
-                    <path
-                        class="chart-line"
-                        d="
-                            M0,190
-                            L60,175
-                            L120,180
-                            L180,145
-                            L240,155
-                            L300,110
-                            L360,125
-                            L420,75
-                            L480,90
-                            L540,45
-                            L600,20
-                        "
-                    />
-                </svg>
-
-            </div>
-
+    <form id="heroLeadForm" class="hero-form">
+        <div class="form-group">
+            <label for="lead-nome">Nome Completo</label>
+            <input type="text" id="lead-nome" placeholder="Ex: Carlos Eduardo" required>
         </div>
 
-    </section>
+        <div class="form-group">
+            <label for="lead-contato">WhatsApp ou E-mail</label>
+            <input type="text" id="lead-contato" placeholder="(62) 99999-9999 ou seu@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="lead-assunto">Serviço Desejado</label>
+            <select id="lead-assunto" required>
+                <option value="" disabled selected>Selecione um serviço...</option>
+                <option value="Criação de Website / Landing Page">Criação de Website / Landing Page</option>
+                <option value="Desenvolvimento de Sistema / Web App">Desenvolvimento de Sistema / Web App</option>
+                <option value="Consultoria & Arquitetura Tech">Consultoria & Arquitetura Tech</option>
+                <option value="Outros Assuntos">Outros Assuntos</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="lead-mensagem">Detalhes do Projeto (Opcional)</label>
+            <textarea id="lead-mensagem" rows="2" placeholder="Conte-nos um pouco sobre a sua ideia..."></textarea>
+        </div>
+
+        <button type="submit" id="btnEnviarLead" class="btn-neon-send">
+            <i class="ph ph-paper-plane-tilt"></i>
+            Enviar Solicitação
+        </button>
+
+        <div id="leadFeedback" class="form-feedback" hidden></div>
+    </form>
+</div>
+         <!-- PAINEL DIREITO -->
 
     <section id="QuemSomos-Scroll" class="Seg-Sec">
 

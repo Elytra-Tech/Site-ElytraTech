@@ -49,6 +49,14 @@ body {
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
     transition: background-color 0.2s ease, color 0.2s ease;
+
+
+    background-color: #0b0614;
+    background-image: url('img/fundo-ondas.png'); /* Coloca a imagem exportada do Canva aqui */
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: 600px auto;
+
 }
 
 #particles {
@@ -226,6 +234,7 @@ img {
 .hero-content {
     flex: 1 1 380px;
     max-width: 520px;
+    margin-left: 30px;
 }
 
 .company-name {
@@ -3085,3 +3094,607 @@ body:not(.is-admin) #link-dashboard { display: none; }
         max-height: 300px;
     }
 }
+
+/* ========================================================
+   ESTILOS MODERNOS - GLASSMORPHISM & BENTO GRID
+   ======================================================== */
+
+/* Variáveis de Cor & Identidade */
+:root {
+  --bg-dark: #0b0614;
+  --card-bg: rgba(23, 16, 32, 0.65);
+  --card-border: rgba(168, 85, 247, 0.25);
+  --neon-purple: #a855f7;
+  --neon-pink: #ff4fc3;
+  --text-primary: #f2edf5;
+  --text-muted: #a195b0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* --- Hero Layout Limpo & Moderno --- */
+.hero-cyber {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 5% 60px;
+}
+
+.hero-container-modern {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 40px;
+  max-width: 1250px;
+  width: 100%;
+  align-items: center;
+  z-index: 2;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 50px;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: var(--neon-pink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.hero-title-modern {
+  font-size: clamp(2.5rem, 4.5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-desc-modern {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 540px;
+}
+
+.hero-actions-modern {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.btn-neon {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 0 20px rgba(255, 79, 195, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-neon:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 30px rgba(255, 79, 195, 0.55);
+}
+
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--neon-purple);
+}
+
+/* --- Cartões Glassmorphism --- */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 79, 195, 0.45);
+  transform: translateY(-4px);
+}
+
+/* --- Secção Bento Grid --- */
+.bento-section {
+  padding: 80px 5%;
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+.section-header-center {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-header-center h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.section-header-center p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(220px, auto);
+  gap: 24px;
+}
+
+/* Tamanhos Assimétricos do Bento Grid */
+.bento-card.bento-wide {
+  grid-column: span 2;
+}
+
+.bento-card.bento-tall {
+  grid-row: span 2;
+}
+
+.bento-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bento-icon {
+  font-size: 2.2rem;
+  color: var(--neon-pink);
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.bento-card h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.bento-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.bento-stat {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--neon-purple);
+  margin-top: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 968px) {
+  .hero-container-modern {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero-desc-modern { margin: 0 auto 32px; }
+  .hero-actions-modern { justify-content: center; }
+  .bento-grid { grid-template-columns: 1fr; }
+  .bento-card.bento-wide, .bento-card.bento-tall {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+/* --- FUNDO INTERATIVO FULLSCREEN --- */
+#interactive-cyber-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Fica estritamente no fundo */
+    pointer-events: none; /* Deixa o rato clicar nos botões e links normalmente */
+    background-color: #0b0614; /* Cor escura base Elytra */
+}
+
+.ai-status-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+    background: rgba(18, 11, 26, 0.75);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.ai-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ai-pulse-icon {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #ff4fc3;
+}
+
+.pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    border: 1px solid #ff4fc3;
+    animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.35); opacity: 0; }
+}
+
+.ai-subtitle {
+    font-size: 0.75rem;
+    color: #a195b0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.ai-card-header h4 {
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin: 0;
+}
+
+.ai-status-badge {
+    margin-left: auto;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    background: rgba(168, 85, 247, 0.2);
+    color: #a855f7;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.ai-metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.metric-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.metric-title {
+    display: block;
+    font-size: 0.75rem;
+    color: #a195b0;
+    margin-bottom: 4px;
+}
+
+.metric-data {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.metric-data small {
+    font-size: 0.7rem;
+    color: #34d399;
+    font-weight: normal;
+}
+
+.ai-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #a195b0;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    width: 99%;
+    height: 100%;
+    background: linear-gradient(90deg, #a855f7, #ff4fc3);
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ff4fc3;
+}
+
+/* --- FORMULÁRIO HERO COMPACTO --- */
+.contact-card-hero {
+    background: rgba(18, 11, 26, 0.75);
+    border: 4px solid rgba(168, 85, 247, 0.35);
+    border-radius: 16px;
+    margin-left: 50px;
+    padding: 20px 22px; /* Reduzido de 28px para 20px */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    max-width: 420px; /* Mantém a largura bem ajustada */
+    width: 100%;
+}
+
+.form-header h3 {
+    font-size: 1.25rem; /* Reduzido o tamanho do título */
+    color: #ffffff;
+    margin: 6px 0 2px 0;
+}
+
+.form-header p {
+    font-size: 0.8rem; /* Subtítulo mais discreto */
+    color: #a195b0;
+    margin-bottom: 14px;
+}
+
+.pill-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.hero-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Reduzido o espaço entre os campos */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.75rem;
+    color: #f2edf5;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 8px 12px; /* Inputs mais finos e elegantes */
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Deixa a caixa de mensagem com altura pequena */
+.form-group textarea {
+    resize: none;
+    height: 38px; 
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #ff4fc3;
+    box-shadow: 0 0 10px rgba(255, 79, 195, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-neon-send {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px; /* Botão mais enxuto */
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #a855f7, #ff4fc3);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 79, 195, 0.35);
+    transition: all 0.3s ease;
+    margin-top: 4px;
+}
+
+.btn-neon-send:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(255, 79, 195, 0.55);
+}
+
+/* ========================================================
+   RESPONSIVIDADE (MOBILE & TABLETS) - ELYTRA TECH
+   ======================================================== */
+
+/* --- TABLETS E ECRÃS MÉDIOS (Até 992px) --- */
+@media (max-width: 992px) {
+    /* Ajusta a Secção Hero para organizar os elementos verticalmente */
+    .Prim-Sec,
+    .hero-cyber {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 100px 20px 40px 20px;
+        min-height: auto;
+        gap: 40px;
+    }
+
+    /* Centraliza os textos e botões da esquerda */
+    .hero-content,
+    .hero-text-side {
+        text-align: center;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-content h1,
+    .hero-title-modern {
+        font-size: 2.2rem;
+    }
+
+    .hero-description,
+    .hero-desc-modern {
+        font-size: 0.95rem;
+        margin: 0 auto 20px auto;
+        max-width: 500px;
+    }
+
+    .hero-buttons,
+    .hero-actions-modern {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* O Card do Formulário ganha destaque central */
+    .contact-card-hero {
+        max-width: 480px;
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+/* --- TELEMÓVEIS (Até 576px) --- */
+@media (max-width: 576px) {
+    /* Ajuste de espaçamentos gerais */
+    .Prim-Sec,
+    .hero-cyber {
+        padding: 90px 16px 30px 16px;
+        gap: 30px;
+    }
+
+    /* Ajuste da Tipografia */
+    .hero-content h1,
+    .hero-title-modern {
+        font-size: 1.8rem;
+        line-height: 1.2;
+    }
+
+    .company-name,
+    .hero-pill {
+        font-size: 0.75rem;
+    }
+
+    .hero-description,
+    .hero-desc-modern {
+        font-size: 0.88rem;
+    }
+
+    /* Botões empilhados em telemóveis pequenos para facilitar o clique */
+    .hero-buttons,
+    .hero-actions-modern {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .hero-button,
+    .btn-neon,
+    .btn-glass {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        padding: 12px 16px;
+    }
+
+    /* Otimização do Formulário em Ecrãs Pequenos */
+    .contact-card-hero {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .form-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .form-group label {
+        font-size: 0.72rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 7px 10px;
+        font-size: 0.82rem;
+    }
+
+    .btn-neon-send {
+        padding: 11px;
+        font-size: 0.85rem;
+    }
+
+    /* Ajuste de posição da Acessibilidade em telemóveis */
+    .acessibilidade-container {
+        bottom: 15px;
+        right: 15px;
+    }
+}
+

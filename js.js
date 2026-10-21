@@ -2377,3 +2377,223 @@ function initAcessibilidade() {
 
 // Executa a função de acessibilidade assim que o script carregar
 initAcessibilidade();
+
+/* ========================================================
+   FUNDO INTERATIVO DE ONDAS NÉON & PARTÍCULAS - ELYTRA TECH
+   ======================================================== */
+(function initInteractiveCyberBg() {
+    const canvas = document.getElementById('interactive-cyber-bg');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    
+    let width, height;
+    let particles = [];
+    
+    // Posição do rato (inicia no centro)
+    const mouse = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        targetX: window.innerWidth / 2,
+        targetY: window.innerHeight / 2
+    };
+
+    // Ajusta dimensões e alta resolução (DPI)
+    function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+        
+        createParticles();
+    }
+
+    // Cria partículas flutuantes no fundo
+    function createParticles() {
+        particles = [];
+        const count = Math.floor((width * height) / 18000); // Quantidade baseada na resolução
+
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2 + 0.5,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                alpha: Math.random() * 0.6 + 0.2
+            });
+        }
+    }
+
+    // Regista a movimentação do rato
+    window.addEventListener('mousemove', (e) => {
+        mouse.targetX = e.clientX;
+        mouse.targetY = e.clientY;
+    });
+
+    // Animação contínua
+    let time = 0;
+    function animate() {
+        time += 0.015;
+
+        // Suavização da posição do rato (Efeito Lerp/Inércia)
+        mouse.x += (mouse.targetX - mouse.x) * 0.05;
+        mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+        // Limpa o frame anterior com rastro sutil
+        ctx.fillStyle = '#0b0614';
+        ctx.fillRect(0, 0, width, height);
+
+        // 1. DESENHA AS ONDAS NÉON INTERATIVAS (Linhas do Canva)
+        const waveLines = 6;
+        for (let w = 0; w < waveLines; w++) {
+            ctx.beginPath();
+            
+            // Gradiente Néon Roxo / Rosa
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, `rgba(168, 85, 247, ${0.4 - w * 0.05})`);
+            gradient.addColorStop(0.5, `rgba(255, 79, 195, ${0.6 - w * 0.08})`);
+            gradient.addColorStop(1, `rgba(126, 34, 206, ${0.2 - w * 0.03})`);
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 2 + (waveLines - w) * 0.5;
+
+            // Desenha a curva fluida ponto a ponto
+            for (let x = 0; x <= width; x += 15) {
+                // Influência do movimento do rato na física da onda
+                const mouseDistance = (x - mouse.x) / width;
+                const mouseForce = Math.sin(mouseDistance * Math.PI) * (mouse.y - height / 2) * 0.25;
+
+                // Equação senoidal combinada
+                const y = (height * 0.5) +
+                    Math.sin(x * 0.003 + time + w * 0.3) * 60 +
+                    Math.cos(x * 0.0015 - time * 0.8) * 40 +
+                    mouseForce * Math.exp(-Math.pow(mouseDistance * 2, 2)); // Atenuação lateral
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+
+        // 2. DESENHA E ATUALIZA AS PARTÍCULAS
+        ctx.fillStyle = '#ff4fc3';
+        particles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Rebobina nas bordas
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            // Reação ao aproximar o rato
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            const dist = Math.hypot(dx, dy);
+            
+            let currentSize = p.size;
+            let currentAlpha = p.alpha;
+
+            if (dist < 120) {
+                const factor = (1 - dist / 120);
+                currentSize += factor * 2;
+                currentAlpha = Math.min(1, currentAlpha + factor * 0.5);
+            }
+
+            ctx.globalAlpha = currentAlpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        requestAnimationFrame(animate);
+    }
+
+    // Inicialização
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+})();
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// 1. Configuração do Firebase
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "seu-projeto.firebaseapp.com",
+  projectId: "seu-projeto",
+  storageBucket: "seu-projeto.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef"
+};
+
+// 2. INICIALIZAR PRIMEIRO (Isto corrige o erro!)
+
+import { db } from "./firebase.js";
+
+import {
+    collection,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+    const leadForm = document.getElementById("heroLeadForm");
+    const btnEnviar = document.getElementById("btnEnviarLead");
+    const feedback = document.getElementById("leadFeedback");
+
+    if (!leadForm || !btnEnviar || !feedback) return;
+
+    leadForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const nome = document.getElementById("lead-nome").value.trim();
+        const contato = document.getElementById("lead-contato").value.trim();
+        const assunto = document.getElementById("lead-assunto").value;
+        const mensagem =
+            document.getElementById("lead-mensagem").value.trim() ||
+            "Nenhuma informação adicional.";
+
+        btnEnviar.disabled = true;
+        btnEnviar.textContent = "Enviando...";
+
+        try {
+            await addDoc(collection(db, "leads"), {
+                nome,
+                contato,
+                assunto,
+                mensagem,
+                status: "Pendente",
+                dataCriacao: serverTimestamp()
+            });
+
+            feedback.hidden = false;
+            feedback.className = "form-feedback success";
+            feedback.textContent =
+                "Solicitação enviada com sucesso! Nossa equipe entrará em contato em breve.";
+
+            leadForm.reset();
+        } catch (error) {
+            console.error("Erro ao salvar lead:", error);
+
+            feedback.hidden = false;
+            feedback.className = "form-feedback error";
+            feedback.textContent =
+                "Não foi possível enviar a solicitação. Tente novamente.";
+
+        } finally {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = "Enviar Solicitação";
+        }
+    });
+});

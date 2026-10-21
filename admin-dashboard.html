@@ -668,6 +668,117 @@
                 flex-shrink: 0;
             }
         }
+
+        /* --- CORREÇÃO E ESTILIZAÇÃO DO DASHBOARD ADM --- */
+.admin-section {
+    padding: 30px 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Tabela em formato Glassmorphism */
+.table-container {
+    background: rgba(18, 11, 26, 0.75);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 16px;
+    padding: 10px;
+    backdrop-filter: blur(12px);
+    overflow-x: auto; /* Permite scroll horizontal em telas pequenas */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.leads-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Dá um espaçamento entre cada linha */
+    text-align: left;
+    font-size: 0.88rem;
+}
+
+.leads-table th {
+    background: rgba(168, 85, 247, 0.12);
+    color: #ff4fc3;
+    padding: 14px 18px; /* Garante que os nomes do cabeçalho não fiquem colados */
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leads-table th:first-child { border-radius: 10px 0 0 10px; }
+.leads-table th:last-child { border-radius: 0 10px 10px 0; }
+
+.leads-table td {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 14px 18px;
+    color: #a195b0;
+    vertical-align: middle;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.leads-table td:first-child { border-radius: 10px 0 0 10px; border-left: 1px solid rgba(255, 255, 255, 0.04); }
+.leads-table td:last-child { border-radius: 0 10px 10px 0; border-right: 1px solid rgba(255, 255, 255, 0.04); }
+
+.leads-table tr:hover td {
+    background: rgba(168, 85, 247, 0.08);
+    color: #ffffff;
+}
+
+/* Badges de Status */
+.status-select {
+    background: rgba(11, 6, 20, 0.8);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Suporte de Acessibilidade no Formulário */
+body.font-lg .contact-card-hero input,
+body.font-lg .contact-card-hero select,
+body.font-lg .contact-card-hero textarea,
+body.font-lg .contact-card-hero label {
+    font-size: 1rem !important;
+}
+
+body.font-sm .contact-card-hero input,
+body.font-sm .contact-card-hero select,
+body.font-sm .contact-card-hero textarea,
+body.font-sm .contact-card-hero label {
+    font-size: 0.7rem !important;
+}
+
+/* --- RESPONSIVIDADE DO DASHBOARD ADM --- */
+@media (max-width: 1024px) {
+    .admin-section {
+        padding: 20px 15px;
+    }
+
+    /* Permite scroll suave na tabela sem quebrar o layout */
+    .table-container {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-header-title h2 {
+        font-size: 1.4rem;
+    }
+
+    .leads-table th, 
+    .leads-table td {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+}
     </style>
 </head>
 <body class="admin-page">
@@ -892,11 +1003,48 @@
         </div>
     </div>
 
+    <section class="admin-section">
+    <div class="admin-header-title">
+        <h2>Solicitações de Clientes <span class="badge-count" id="countLeads">0</span></h2>
+        <p>Acompanhe e gerencie todos os contatos recebidos pelo site.</p>
+    </div>
+
+    <!-- Tabela para o Administrador gerenciar os leads -->
+    <div class="table-container glass-panel">
+        <table class="leads-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Cliente</th>
+                    <th>Contato</th>
+                    <th>Serviço Desejado</th>
+                    <th>Mensagem</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="listaLeadsTabela">
+                <!-- As solicitações do Firebase serão renderizadas aqui dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+</section>
+
     <!-- Script de Gestão do Painel -->
     <script type="module">
         import { auth, db } from "./firebase.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-        import { collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+        import {
+    collection,
+    getDocs,
+    doc,
+    getDoc,
+    deleteDoc,
+    query,
+    orderBy,
+    onSnapshot,
+    updateDoc
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
         let todosClientes = [];
         let todasPrevias = [];
@@ -1337,6 +1485,68 @@
                 console.error("Erro ao terminar sessão:", error);
             }
         });
+
+// Carrega todas as solicitações em tempo real no Dashboard do ADM
+function carregarLeadsAdmin() {
+    const tabelaBody = document.getElementById('listaLeadsTabela');
+    const badgeCount = document.getElementById('countLeads');
+    
+    if (!tabelaBody) return;
+
+    const q = query(collection(db, "leads"), orderBy("dataCriacao", "desc"));
+
+    onSnapshot(q, (snapshot) => {
+        tabelaBody.innerHTML = '';
+        if (badgeCount) badgeCount.textContent = snapshot.docs.length;
+
+        if (snapshot.empty) {
+            tabelaBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: #a195b0;">Nenhuma solicitação encontrada.</td></tr>`;
+            return;
+        }
+
+        snapshot.forEach((documento) => {
+            const lead = documento.data();
+            const id = documento.id;
+            const data = lead.dataCriacao ? new Date(lead.dataCriacao.toDate()).toLocaleDateString('pt-BR') : 'Recente';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${data}</td>
+                <td><strong>${lead.nome}</strong></td>
+                <td><a href="https://wa.me/55${lead.contato.replace(/\D/g, '')}" target="_blank" class="link-contato">${lead.contato}</a></td>
+                <td><span class="badge-servico">${lead.assunto}</span></td>
+                <td class="msg-cell" title="${lead.mensagem}">${lead.mensagem}</td>
+                <td>
+                    <select onchange="atualizarStatusLead('${id}', this.value)" class="status-select ${lead.status.toLowerCase()}">
+                        <option value="Pendente" ${lead.status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                        <option value="Em Atendimento" ${lead.status === 'Em Atendimento' ? 'selected' : ''}>Em Atendimento</option>
+                        <option value="Concluído" ${lead.status === 'Concluído' ? 'selected' : ''}>Concluído</option>
+                    </select>
+                </td>
+                <td>
+                    <a href="https://wa.me/55${lead.contato.replace(/\D/g, '')}?text=Olá ${encodeURIComponent(lead.nome)}, vi sua solicitação no site da Elytra Tech!" 
+                       target="_blank" class="btn-acao-whatsapp">
+                       <i class="ph ph-whatsapp-logo"></i> Responder
+                    </a>
+                </td>
+            `;
+            tabelaBody.appendChild(tr);
+        });
+    });
+}
+
+// Atualizar status do atendimento no Firestore
+window.atualizarStatusLead = async (id, novoStatus) => {
+    try {
+        const leadRef = doc(db, "leads", id);
+        await updateDoc(leadRef, { status: novoStatus });
+    } catch (e) {
+        console.error("Erro ao atualizar status:", e);
+    }
+};
+
+carregarLeadsAdmin();
+
     </script>
 </body>
 </html>
