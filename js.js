@@ -1,17 +1,3 @@
-import { auth, db } from "./firebase.js";
-
-import { onAuthStateChanged } from
-    "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-import {
-    doc,
-    getDoc,
-    collection,
-    addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-
-
 /* ========================================
    UTILITÁRIOS
    ======================================== */
@@ -2220,31 +2206,29 @@ function initAcessibilidade() {
             if (btnAcessibilidade) btnAcessibilidade.setAttribute('aria-expanded', 'false');
         }
     });
-    
-}
 
     /* ---------- Aumentar e diminuir texto ---------- */
 
     function aplicarEscalaTexto() {
-    document.querySelectorAll(elementosTextos).forEach(elemento => {
-        // Não modificar o painel de acessibilidade nem a prévia do editor
-        if (
-            elemento.closest('.acessibilidade-container') ||
-            elemento.closest('#preview-canvas')
-        ) {
-            return;
-        }
+        document.querySelectorAll(elementosTextos).forEach(elemento => {
+            // Não modificar o painel de acessibilidade nem a prévia do editor
+            if (
+                elemento.closest('.acessibilidade-container') ||
+                elemento.closest('#preview-canvas')
+            ) {
+                return;
+            }
 
-        // Guardar os tamanhos originais uma única vez
-        if (!elemento.dataset.tamanhoOriginal) {
-            elemento.dataset.tamanhoOriginal = getComputedStyle(elemento).fontSize;
-            elemento.dataset.estiloOriginal = elemento.style.fontSize;
-        }
+            // Guardar os tamanhos originais uma única vez
+            if (!elemento.dataset.tamanhoOriginal) {
+                elemento.dataset.tamanhoOriginal = getComputedStyle(elemento).fontSize;
+                elemento.dataset.estiloOriginal = elemento.style.fontSize;
+            }
 
-        const tamanhoOriginal = parseFloat(elemento.dataset.tamanhoOriginal);
-        elemento.style.fontSize = `${tamanhoOriginal * escalaTexto}px`;
-    });
-}
+            const tamanhoOriginal = parseFloat(elemento.dataset.tamanhoOriginal);
+            elemento.style.fontSize = `${tamanhoOriginal * escalaTexto}px`;
+        });
+    }
 
     if (aumentarTexto) {
         aumentarTexto.addEventListener('click', () => {
@@ -2389,45 +2373,7 @@ function initAcessibilidade() {
             }
         });
     }
-
-
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-
-onAuthStateChanged(auth, async (user) => {
-  const adminLink = document.getElementById('adminDashboardLink');
-  
-  if (!adminLink) {
-    console.warn("Elemento 'adminDashboardLink' não foi encontrado no HTML desta página!");
-    return;
-  }
-
-  if (user) {
-    console.log("Utilizador logado com UID:", user.uid);
-    
-    try {
-      const adminRef = doc(db, 'admins', user.uid);
-      const adminSnap = await getDoc(adminRef);
-
-      console.log("O utilizador existe na coleção 'admins'?", adminSnap.exists());
-
-      if (adminSnap.exists()) {
-        adminLink.style.display = 'block';
-        console.log("Painel Admin ativado com sucesso!");
-      } else {
-        adminLink.style.display = 'none';
-        console.log("Este utilizador NÃO é administrador.");
-      }
-    } catch (error) {
-      console.error("Erro ao consultar a coleção admins:", error);
-      adminLink.style.display = 'none';
-    }
-} else {
-        console.log("Nenhum utilizador logado.");
-        adminLink.style.display = 'none';
-    }
-});
+}
 
 // Executa a função de acessibilidade assim que o script carregar
 initAcessibilidade();

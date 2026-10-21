@@ -2214,20 +2214,36 @@ img {
     }
 }
 
-@media (max-width: 768px) {
-  /* Força o botão CTA do header a aparecer nos telemóveis */
-  header .nav-cta {
-    display: inline-block !important;
-    font-size: 11px !important; 
-    width: 100px;    /* Letra pequenininha para caber */
-    padding: 5px 15px !important;   /* Espaçamento compacto */
-    margin-right: 8px;              /* Espaço entre ele e o menu hambúrguer */
-  }
+@media (max-width: 900px) {
+    body.logado .user-menu {
+        margin-left: auto;
+        margin-right: 12px;
+    }
+
+    body:not(.logado) header .nav-cta {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        white-space: nowrap;
+        font-size: 12px !important;
+        padding: 7px 13px !important;
+        margin-left: auto;
+        margin-right: 10px;
+    }
+
+    .STYcabecalho ul li .nav-dashboard-link {
+        display: inline-flex;
+        margin: 8px 0;
+        padding: 8px 16px;
+        width: auto;
+    }
 }
 
 @media (max-width: 700px) {
     .editor-layout {
         grid-template-columns: 1fr;
+        border-radius: 10px;
     }
 
     .editor-tools {
@@ -2264,12 +2280,63 @@ img {
     }
 
     .editor-preview-button {
-        padding: 9px;
+        padding: 9px 12px;
         font-size: 12px;
+    }
+
+    .editor-steps-guide {
+        margin: 12px 12px 0;
+        padding: 12px;
+    }
+
+    .editor-preview-area {
+        padding: 14px 10px 24px;
+    }
+
+    .editor-device-switcher {
+        flex-wrap: wrap;
+        justify-content: center;
+        border-radius: 14px;
+        width: 100%;
+    }
+
+    .editor-device-btn {
+        flex: 1 1 140px;
+        justify-content: center;
+        font-size: 11.5px;
+        padding: 8px 10px;
+    }
+
+    .editor-phone,
+    .editor-phone.is-desktop {
+        max-width: 100%;
+        height: 520px;
+        max-height: 520px;
+        padding: 12px;
+        border-radius: 20px;
     }
 }
 
 @media (max-width: 480px) {
+    .STYcabecalho {
+        padding: 0 14px;
+    }
+
+    body:not(.logado) header .nav-cta {
+        font-size: 10.5px !important;
+        padding: 6px 10px !important;
+        margin-right: 8px;
+    }
+
+    .user-panel {
+        right: -36px;
+        width: min(260px, calc(100vw - 24px));
+    }
+
+    .painel-acessibilidade {
+        width: min(290px, calc(100vw - 32px));
+    }
+
     .editor-topbar {
         padding: 12px;
         flex-wrap: wrap;
@@ -2668,11 +2735,30 @@ html.a11y-nomotion *::after {
    CONTA DO USUÁRIO (avatar, menu e perfil)
 ========================================= */
 
-/* Visitante x logado */
+/* Visitante x logado x admin */
 .user-menu { display: none; position: relative; }
 body.logado .user-menu { display: block; }
 body.logado .nav-cta { display: none !important; }
 body:not(.logado) #link-previa { display: none; }
+body:not(.is-admin) #link-dashboard { display: none; }
+
+.nav-dashboard-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--pink);
+    border-radius: 999px;
+    background: rgba(255, 77, 196, 0.14);
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-dashboard-link:hover {
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    transform: translateY(-1px);
+}
 
 /* Avatar */
 .avatar {
@@ -2948,7 +3034,7 @@ body:not(.logado) #link-previa { display: none; }
 /* --- REGRAS DE RESPONSIVIDADE (MOBILE & TABLET) --- */
 
 @media (max-width: 768px) {
-    body {
+    body.admin-page {
         padding: 12px;
     }
 
