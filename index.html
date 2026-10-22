@@ -14,10 +14,12 @@
 </head>
 <body>
     <header class="STYcabecalho">
-        <div class="brand">
-            <img class="img-logo" src="img/img_header.png" alt="Elytra Tech">
-            <span class="brand-name">ELYTRA TECH</span>
-        </div>
+<div class="brand">
+    <a href="#Home-Scroll" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+        <img class="img-logo" src="img/img_header.png" alt="Elytra Tech">
+        <span class="brand-name">ELYTRA TECH</span>
+    </a>
+</div>
         <ul>
             <li><a href="#Home-Scroll">Home</a></li>
             <li><a href="#QuemSomos-Scroll">Quem Somos?</a></li>
@@ -426,6 +428,38 @@
 
     </section>
 
+    <div class="modal-perfil" id="modal-perfil" hidden>
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-perfil-titulo">
+            <h2 id="modal-perfil-titulo">Editar perfil</h2>
+            
+            <form id="form-perfil">
+                <div class="perfil-foto">
+                    <span class="avatar avatar-xl" id="avatar-edicao"></span>
+                    <div class="perfil-foto-acoes">
+                        <label class="btn-secundario" for="input-foto">Trocar foto</label>
+                        <input type="file" id="input-foto" accept="image/*" hidden>
+                        <button type="button" class="btn-secundario" id="btn-remover-foto">Remover foto</button>
+                    </div>
+                </div>
+                
+                <label for="perfil-usuario">Nome de usuário</label>
+                <input id="perfil-usuario" type="text" maxlength="40" required>
+                
+                <label for="perfil-telefone">Telefone</label>
+                <input id="perfil-telefone" type="tel" maxlength="11">
+                
+                <label for="perfil-email">E-mail</label>
+                <input id="perfil-email" type="email" disabled>
+                
+                <p id="perfil-msg" class="perfil-msg"></p>
+                
+                <div class="modal-acoes">
+                    <button type="button" class="btn-secundario" id="btn-cancelar-perfil">Cancelar</button>
+                    <button type="submit" class="btn-principal" id="btn-salvar-perfil">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <footer class="STYrodape">
         <div class="wrap footer-row">
             <div class="footer-brand">
@@ -444,39 +478,7 @@
             </div>
         </div>
     </footer>
-        <div class="modal-perfil" id="modal-perfil" hidden>
-        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-perfil-titulo">
-            <h2 id="modal-perfil-titulo">Editar perfil</h2>
-
-            <form id="form-perfil">
-                <div class="perfil-foto">
-                    <span class="avatar avatar-xl" id="avatar-edicao"></span>
-                    <div class="perfil-foto-acoes">
-                        <label class="btn-secundario" for="input-foto">Trocar foto</label>
-                        <input type="file" id="input-foto" accept="image/*" hidden>
-                        <button type="button" class="btn-secundario" id="btn-remover-foto">Remover foto</button>
-                    </div>
-                </div>
-
-                <label for="perfil-usuario">Nome de usuário</label>
-                <input id="perfil-usuario" type="text" maxlength="40" required>
-
-                <label for="perfil-telefone">Telefone</label>
-                <input id="perfil-telefone" type="tel" maxlength="11">
-
-                <label for="perfil-email">E-mail</label>
-                <input id="perfil-email" type="email" disabled>
-
-                <p id="perfil-msg" class="perfil-msg"></p>
-
-                <div class="modal-acoes">
-                    <button type="button" class="btn-secundario" id="btn-cancelar-perfil">Cancelar</button>
-                    <button type="submit" class="btn-principal" id="btn-salvar-perfil">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    
 <script type="module" src="js.js"></script>
     <script type="module" src="perfil.js"></script>
 </body>

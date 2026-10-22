@@ -635,7 +635,7 @@ img {
     border-radius: 8px;
     padding: 24px;
     margin-bottom: 40px;
-    background: rgba(255, 79, 195, 0.05);
+    background: #272333;
 }
 
 .problem-box .section-tag {
@@ -755,8 +755,19 @@ img {
 /* ================= FOOTER ================= */
 
 .STYrodape {
-    border-top: 1px solid var(--line);
-    padding: 24px 0;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    background-color: #1a1225; /* Ajusta para a cor exata do teu fundo */
+    padding: 30px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    box-sizing: border-box;
 }
 
 .footer-row {
