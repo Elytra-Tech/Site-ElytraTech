@@ -649,10 +649,6 @@ const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(sel
     }
 
     function loadStarterTemplate() {
-        if (allComponents().length > 0) {
-            const confirmar = confirm('Isso substituirá os blocos atuais por um site completo de exemplo pronto para editar. Deseja continuar?');
-            if (!confirmar) return;
-        }
 
         allComponents().forEach(function (component) {
             component.remove();
