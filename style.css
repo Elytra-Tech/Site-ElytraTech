@@ -3698,3 +3698,6 @@ body {
     }
 }
 
+.lead-option option{
+    background-color: var(--fundo-card);
+}

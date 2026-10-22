@@ -188,7 +188,7 @@
 
         <div class="form-group">
             <label for="lead-assunto">Serviço Desejado</label>
-            <select id="lead-assunto" required>
+            <select class="lead-option" id="lead-assunto" required>
                 <option value="" disabled selected>Selecione um serviço...</option>
                 <option value="Criação de Website / Landing Page">Criação de Website / Landing Page</option>
                 <option value="Desenvolvimento de Sistema / Web App">Desenvolvimento de Sistema / Web App</option>
@@ -201,6 +201,8 @@
             <label for="lead-mensagem">Detalhes do Projeto (Opcional)</label>
             <textarea id="lead-mensagem" rows="2" placeholder="Conte-nos um pouco sobre a sua ideia..."></textarea>
         </div>
+
+        <p id="form-feedback" style="margin-top: 10px; font-weight: bold;" hidden></p>
 
         <button type="submit" id="btnEnviarLead" class="btn-neon-send">
             <i class="ph ph-paper-plane-tilt"></i>

@@ -2524,76 +2524,59 @@ initAcessibilidade();
     animate();
 })();
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// 1. Configuração do Firebase
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "seu-projeto.firebaseapp.com",
-  projectId: "seu-projeto",
-  storageBucket: "seu-projeto.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
-};
-
-// 2. INICIALIZAR PRIMEIRO (Isto corrige o erro!)
-
+// Importa a ligação do teu ficheiro firebase.js
 import { db } from "./firebase.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-import {
-    collection,
-    addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+// Captura o envio do formulário do site
+// Captura o envio do formulário do site
+document.addEventListener('DOMContentLoaded', () => {
+    const leadForm = document.getElementById('heroLeadForm');
+    const feedback = document.getElementById('form-feedback');
+    
+    if (leadForm) {
+        leadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Lê os valores DENTRO do evento de submissão
+            const nome = document.getElementById('lead-nome')?.value || '';
+            const contato = document.getElementById('lead-contato')?.value || '';
+            const assunto = document.getElementById('lead-assunto')?.value || '';
+            const mensagem = document.getElementById('lead-mensagem')?.value || '';
 
-document.addEventListener("DOMContentLoaded", () => {
-    const leadForm = document.getElementById("heroLeadForm");
-    const btnEnviar = document.getElementById("btnEnviarLead");
-    const feedback = document.getElementById("leadFeedback");
+            try {
+                // Envia para a coleção 'leads' no Firestore
+                await addDoc(collection(db, "leads"), {
+                    nome: nome,
+                    contato: contato,
+                    assunto: assunto,
+                    mensagem: mensagem,
+                    status: "Pendente",
+                    dataCriacao: serverTimestamp()
+                });
 
-    if (!leadForm || !btnEnviar || !feedback) return;
+                if (feedback) {
+                    feedback.textContent = "Solicitação enviada com sucesso!";
+                    feedback.style.color = "#4ade80"; // Verde
+                    feedback.hidden = false;
+                }
 
-    leadForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
+                leadForm.reset();
 
-        const nome = document.getElementById("lead-nome").value.trim();
-        const contato = document.getElementById("lead-contato").value.trim();
-        const assunto = document.getElementById("lead-assunto").value;
-        const mensagem =
-            document.getElementById("lead-mensagem").value.trim() ||
-            "Nenhuma informação adicional.";
+                setTimeout(() => {
+                    if (feedback) feedback.hidden = true;
+                }, 5000);
 
-        btnEnviar.disabled = true;
-        btnEnviar.textContent = "Enviando...";
-
-        try {
-            await addDoc(collection(db, "leads"), {
-                nome,
-                contato,
-                assunto,
-                mensagem,
-                status: "Pendente",
-                dataCriacao: serverTimestamp()
-            });
-
-            feedback.hidden = false;
-            feedback.className = "form-feedback success";
-            feedback.textContent =
-                "Solicitação enviada com sucesso! Nossa equipe entrará em contato em breve.";
-
-            leadForm.reset();
-        } catch (error) {
-            console.error("Erro ao salvar lead:", error);
-
-            feedback.hidden = false;
-            feedback.className = "form-feedback error";
-            feedback.textContent =
-                "Não foi possível enviar a solicitação. Tente novamente.";
-
-        } finally {
-            btnEnviar.disabled = false;
-            btnEnviar.textContent = "Enviar Solicitação";
-        }
-    });
+            } catch (error) {
+                console.error("Erro ao enviar formulário:", error);
+                
+                if (feedback) {
+                    feedback.textContent = "Erro ao enviar: " + error.message;
+                    feedback.style.color = "#f87171"; // Vermelho
+                    feedback.hidden = false;
+                }
+            }
+        });
+    }
 });
+
