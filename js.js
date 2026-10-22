@@ -2440,7 +2440,9 @@ initAcessibilidade();
         mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
         // Limpa o frame anterior com rastro sutil
-        ctx.fillStyle = '#0b0614';
+// Limpa o frame anterior adaptando-se ao tema atual (escuro ou claro)
+        const isLightMode = document.body.classList.contains('tema-claro');
+        ctx.fillStyle = isLightMode ? '#f5f5f8' : '#0b0614';
         ctx.fillRect(0, 0, width, height);
 
         // 1. DESENHA AS ONDAS NÉON INTERATIVAS (Linhas do Canva)

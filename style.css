@@ -3817,4 +3817,77 @@ body {
     background-color: var(--fundo-card);
 }
 
+/* Quando o Tema Claro estiver ativo no body, altera o formulário e inputs */
+body.tema-claro .contact-card-hero,
+body.tema-claro .hero-form,
+body.tema-claro .form-group input,
+body.tema-claro .form-group select,
+body.tema-claro .form-group textarea,
+body.tema-claro .lead-option option {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: var(--line) !important;
+}
 
+/* Garante a legibilidade dos textos e títulos dentro do formulário no tema claro */
+body.tema-claro .contact-card-hero h3,
+body.tema-claro .contact-card-hero p,
+body.tema-claro .form-group label {
+    color: #0f172a !important;
+}
+
+body.tema-claro .form-group input::placeholder,
+body.tema-claro .form-group textarea::placeholder {
+    color: #94a3b8 !important;
+}
+/* Adaptação da caixa "Problema que resolvemos" para o Tema Claro */
+body.tema-claro .problem-box {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    border-left-color: var(--pink) !important; /* Mantém o detalhe rosa na lateral */
+}
+
+body.tema-claro .problem-box h3 {
+    color: #0f172a !important;
+}
+
+body.tema-claro .problem-box p,
+body.tema-claro .problem-box .section-tag {
+    color: #475569 !important;
+}
+
+/* Centraliza a secção inicial e corrige o desalinhamento em telemóveis */
+@media (max-width: 992px) {
+    .hero-content {
+        margin-left: 0 !important;
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .hero-description {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+/* Adaptação completa do rodapé para o Tema Claro */
+body.tema-claro .STYrodape {
+    background: #f1f5f9 !important;
+    border-top: 1px solid #cbd5e1 !important;
+}
+
+body.tema-claro .STYrodape p {
+    color: #334155 !important;
+}
+
+body.tema-claro .STYrodape a {
+    color: #0f172a !important;
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.tema-claro .STYrodape a:hover {
+    background: rgba(168, 85, 247, 0.15) !important;
+    color: #7c3aed !important;
+}
